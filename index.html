@@ -235,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
       <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 6:54 PM</span>
+      <span id="fb-msg" style="color:#90CAF9;">Synced 6:56 PM</span>
       <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
       <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:10px;cursor:pointer;padding:4px 4px;white-space:nowrap;">Key</button>
@@ -2031,10 +2031,17 @@ function saveToday() {
     fbSchedule();
   } catch(e) {}
 }
-function todayStr()      { return new Date().toISOString().slice(0,10); }
+function _localDate(d) {
+  // Use local time, not UTC
+  var y = d.getFullYear();
+  var mo = d.getMonth() + 1;
+  var day = d.getDate();
+  return y + '-' + (mo<10?'0'+mo:mo) + '-' + (day<10?'0'+day:day);
+}
+function todayStr() { return _localDate(new Date()); }
 function nowStr() {
   var d = new Date();
-  var date = d.toISOString().slice(0,10);
+  var date = _localDate(d);
   var h = d.getHours(), m = d.getMinutes();
   var ampm = h >= 12 ? 'PM' : 'AM';
   h = h % 12 || 12;
