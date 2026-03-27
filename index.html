@@ -274,15 +274,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <input type="search" id="dash-search" placeholder="Search restaurants, cuisine, address..." autocomplete="off" spellcheck="false" style="flex:1;">
     <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
   </div>
-  <div id="search-result-bar" style="display: none; padding: 6px 16px 2px; font-size: 12px; font-weight: 700; color: rgb(21, 101, 192); background: rgb(227, 242, 253); border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(187, 222, 251);">
-    <span id="search-result-txt">1033 results for "c"</span>
+  <div id="search-result-bar" style="display: block; padding: 6px 16px 2px; font-size: 12px; font-weight: 700; color: rgb(21, 101, 192); background: rgb(227, 242, 253); border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(187, 222, 251);">
+    <span id="search-result-txt">1 result for "boa"</span>
     <span onclick="clearDashSearch()" style="float:right;cursor:pointer;color:#C62828;font-size:13px;">✕ Clear</span>
   </div>
 
 
 
-  <div id="list"><div class="card pending" id="dc1160"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(1160)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(1160)">Email Sent</button><button class="btn btn-dm" onclick="openDM(1160)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(1160)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(1160)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(1160)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(1160)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(1160)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(1160)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(1160)" style="background:#546E7A;">Edit Email</button></div><div class="ctag"></div><div class="rname">Chilechingonfood <button onclick="openNameModal(1160)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Local Operators &nbsp;|&nbsp; <span class="ig">@Chilechingonfood</span> <button onclick="toggleBadIG(1160)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(1160)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(1160)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(1160)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(1160)" class="btn btn-followup flagged">Follow Up - 2026-03-27</button></div><div class="note-preview">3/27</div></div></div>
-  <div id="no-results" style="display: none;">No results for "chile".</div>
+  <div id="list"><div class="card sent" id="dc1036"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(1036)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(1036)">Sent 2026-03-27</button><button class="btn btn-dm" onclick="openDM(1036)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(1036)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(1036)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(1036)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(1036)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(1036)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(1036)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(1036)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">BOA Steakhouse Las Vegas <button onclick="openNameModal(1036)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Innovative Dining Group &nbsp;|&nbsp; <span class="ig">@boavegas</span> <button onclick="toggleBadIG(1036)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(1036)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(1036)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(1036)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(1036)" class="btn btn-followup flagged">Follow Up - 2026-03-27</button></div><div class="info"><a href="tel:7029975050" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 997-5050</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">lasvegas@innovativedining.com</span> <span class="attempt-status s-sent">SENT</span> <span class="attempt-date">2026-03-27 11:00 AM</span></div></div><div class="addr-line">📍 3355 S Las Vegas Blvd, Las Vegas, NV 89109</div><div class="note-preview">Hi there! Thank you for reaching out! For influencer collabs please email Kevin …</div></div></div>
+  <div id="no-results" style="display: none;">Everyone has been DM'd!</div>
 
   <div class="scroller" id="dash-scroller">
     <div class="sc-arrow" id="dash-scUp">▲</div>
@@ -387,16 +387,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
 <div class="modal-backdrop" id="note-modal-backdrop">
   <div class="modal">
-    <h2 id="note-modal-title">Chilechingonfood</h2>
+    <h2 id="note-modal-title">BOA Steakhouse Las Vegas</h2>
     <p class="modal-sub" id="note-modal-sub">Your private note for this restaurant.</p>
     <label for="note-modal-input">Note</label>
     <div id="note-scroll-wrap" style="position:relative;border:1.5px solid #ccc;border-radius:10px;overflow:hidden;display:flex;">
       <textarea id="note-modal-input" placeholder="e.g. Spoke to manager, follow up next week..." maxlength="5000" style="flex:1;width:calc(100% - 22px);height:260px;padding:10px 10px 10px 12px;border:none;border-radius:10px 0 0 10px;font-size:14px;outline:none;font-family:inherit;resize:none;overflow:hidden;display:block;box-sizing:border-box;"></textarea>
       <div id="note-scroll-track" style="width:18px;background:#e8e8e8;border-left:1px solid #ddd;border-radius:0 10px 10px 0;position:relative;cursor:pointer;flex-shrink:0;">
-        <div id="note-scroll-thumb" style="width: 10px; background: rgb(27, 46, 74); border-radius: 5px; position: absolute; left: 4px; top: 0px; cursor: grab; height: 134px;"></div>
+        <div id="note-scroll-thumb" style="width: 10px; background: rgb(27, 46, 74); border-radius: 5px; position: absolute; left: 4px; top: 155px; cursor: grab; height: 49px;"></div>
       </div>
     </div>
-    <div id="note-char-count" style="font-size:11px;color:#aaa;text-align:right;margin-top:3px;">773 / 5000</div>
+    <div id="note-char-count" style="font-size:11px;color:#aaa;text-align:right;margin-top:3px;">1836 / 5000</div>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeNoteModal()">Cancel</button>
       <button class="btn" style="background:#F57F17;flex:1;justify-content:center;padding:12px;font-size:14px;" onclick="saveNote()">Save</button>
