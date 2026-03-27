@@ -207,10 +207,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="pin-logo">LV Master Dashboard</div>
   <div class="pin-sub">Enter your PIN to continue</div>
   <div class="pin-dots">
-    <div class="pin-dot filled" id="pd0"></div>
-    <div class="pin-dot filled" id="pd1"></div>
-    <div class="pin-dot filled" id="pd2"></div>
-    <div class="pin-dot filled" id="pd3"></div>
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-key" onclick="pinKey('1')">1</button>
@@ -235,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
       <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 7:15 PM</span>
+      <span id="fb-msg" style="color:#90CAF9;">Saved 7:42 PM</span>
       <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
       <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:10px;cursor:pointer;padding:4px 4px;white-space:nowrap;">Key</button>
@@ -1645,6 +1645,7 @@ function saveAll() {
     localStorage.setItem(LS_INTERESTED,   JSON.stringify(interestedMap));
     localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap));
     localStorage.setItem(LS_IG_OVERRIDE,  JSON.stringify(igOverrideMap));
+    localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap));
     localStorage.setItem(LS_USER_NOTES,   JSON.stringify(userNotesMap));
     localStorage.setItem(LS_PROBLEM,      JSON.stringify(problemMap));
     localStorage.setItem(LS_FOLLOWUP,     JSON.stringify(followupMap));
@@ -1706,7 +1707,20 @@ function fbSave() {
   fbStatus('#FFB300', 'Saving...');
   var payload = {
     status:   statusMap,
-    attempts: attemptsMap,
+    attempts: (function(){
+      // Only save attempts that have been modified from seed defaults
+      var out = {};
+      Object.keys(attemptsMap).forEach(function(k){
+        var num = parseInt(k);
+        // Include if: status changed, DM recorded, or user has interacted with this record
+        if (statusMap[num] || dmMap[num] || badIGMap[num] || userNotesMap[num] || interestedMap[num] || notInterestedMap[num] || followupMap[num] || problemMap[num] || foodTradeMap[num]) {
+          out[k] = attemptsMap[k];
+        }
+      });
+      // Always include custom records
+      for (var ci=0; ci<customRecords.length; ci++) { var cn=customRecords[ci].num; if(attemptsMap[cn]) out[cn]=attemptsMap[cn]; }
+      return out;
+    })(),
     dm:       dmMap,
     badig:    badIGMap,
     igovr:    igOverrideMap,
@@ -2738,7 +2752,7 @@ function saveIG() {
     r.igHandle  = val.replace('@','');
     var _attempts = attemptsMap[r.num] || [];
     var _emails = _attempts.map(function(a){ return a.email||''; }).join(' ');
-    r._search = (r.name+r.owner+r.cuisine+val+(r.address||'')+(r.notes||'')+r.phone+_emails+(userNotesMap[r.num]||'')).toLowerCase();
+    r._search = ((nameOverrideMap[r.num]||r.name)+r.owner+r.cuisine+val+(r.address||'')+(r.notes||'')+r.phone+_emails+(userNotesMap[r.num]||'')).toLowerCase();
   }
   closeIGModal();
   _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
@@ -2747,11 +2761,12 @@ function saveIG() {
 
 
 var currentView='dashboard';
-var _vDash  = document.getElementById('view-dashboard')||{};
-var _vBatch = document.getElementById('view-batch')||{};
+var _vDash  = document.getElementById('view-dashboard') || {classList:{toggle:function(){},add:function(){},remove:function(){}}};
+var _vBatch = document.getElementById('view-batch') || {classList:{toggle:function(){},add:function(){},remove:function(){}}};
 
 function switchView(v) {
   currentView=v;
+  cancelDelete();
   var d=(v==='dashboard');
   _vDash.classList.toggle('active',d);
   _vBatch.classList.toggle('active',!d);
@@ -2804,8 +2819,9 @@ function toggleFollowup(num) {
 
 function recordDM(num) {
   if (badIGMap[num]) return; // don't record DM on bad IG accounts
-  // Small delay so iOS navigation happens first — stamp regardless of cancel
-  // (we assume intent = action; user can manually clear if needed)
+  if (dmMap[num]) return; // already stamped — ignore double-tap
+  // Small delay so iOS navigation happens first
+  dmMap[num] = 'pending'; // optimistic lock
   setTimeout(function() {
     dmMap[num] = nowStr();
     saveDMDates();
@@ -2873,7 +2889,7 @@ function _buildCard(r, bqMode, displayNum) {
 
   if (!bqMode) {
     // Dashboard — Email Sent button on EVERY card
-    btns += '<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="manualMarkSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate:''):'Email Sent')+'</button>';
+    btns += '<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="manualMarkSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
     btns += '<a class="btn btn-dm" href="https://ig.me/m/'+r.igHandle+'" onclick="recordDM('+r.num+')">DM</a>';
     btns += '<button class="btn btn-copy-dm" onclick="copyDM('+r.num+')">Copy DM</button>';
     if (dmDate) btns += '<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
@@ -2886,7 +2902,7 @@ function _buildCard(r, bqMode, displayNum) {
     btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
   } else {
     // Batch queue
-    btns += '<button class="btn btn-done'+(isSent?' marked':'')+'" onclick="bqManualSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate:''):'Email Sent')+'</button>';
+    btns += '<button class="btn btn-done'+(isSent?' marked':'')+'" onclick="bqManualSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
     btns += '<a class="btn btn-dm" href="https://ig.me/m/'+r.igHandle+'" onclick="recordDM('+r.num+')">DM</a>';
     btns += '<button class="btn btn-copy-dm" onclick="copyDM('+r.num+')" style="font-size:11px;padding:7px 10px">Copy DM</button>';
     if (dmDate) btns += '<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
@@ -3022,7 +3038,9 @@ function manualMarkSent(num){
   if(s==='sent'){
     var attempts=attemptsMap[num]||[];
     for(var i=attempts.length-1;i>=0;i--){if(attempts[i].status==='sent'){attempts[i].status='pending';attempts[i].date=null;break;}}
-    statusMap[num]='pending';saveAttempts();saveStatuses();
+    // Restore to bounced if any other attempt is still bounced, else pending
+    var hasBounced=attempts.some(function(a){return a.status==='bounced';});
+    statusMap[num]=hasBounced?'bounced':'pending';saveAttempts();saveStatuses();
     sentToday.delete(num);saveToday();BD.sentSet.delete(num);saveBD();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
   } else {
