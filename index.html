@@ -199,6 +199,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-cancel { background: #CFD8DC; color: #37474F; }
 .btn-save   { background: #1A237E; }
 </style>
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -236,14 +238,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 10:39 AM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 10:42 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="switchView('batch')" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
+        <button onclick="exportExcel()" style="background:#1B5E20;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">📊 Excel</button>
         <button onclick="document.getElementById('import-file-input').click()" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Restore</button>
         <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
-        <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Push to GitHub</button>
+        <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
         <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:11px;cursor:pointer;padding:7px 4px;white-space:nowrap;">Key</button>
         <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">Guest</button>
       </div>
@@ -1820,6 +1823,98 @@ function exportBackup() {
   URL.revokeObjectURL(url);
   fbStatus('#4CAF50', 'Backup downloaded!');
   setTimeout(function(){ fbStatus('#4CAF50', 'Synced ' + fbTs()); }, 3000);
+}
+
+function exportExcel() {
+  if (typeof XLSX === 'undefined') { alert('Excel library not loaded — check your connection and try again.'); return; }
+  fbStatus('#FFB300', 'Building Excel...');
+  setTimeout(function() {
+    try {
+      // Build rows
+      var rows = [['#','Name','Owner','Instagram','Phone','Email','Cuisine','Address','Status','DM Date','Email Sent Date','Notes','Bounced','Bad IG','Interested','Not Interested','Follow Up','Problem','Food Trade']];
+      for (var i = 0; i < RESTAURANTS.length; i++) {
+        var r = RESTAURANTS[i];
+        var num = r.num;
+        var s = statusMap[num] || r.defaultStatus;
+        var attempts = attemptsMap[num] || [];
+        // Get best email
+        var bestEmail = '';
+        for (var j = 0; j < attempts.length; j++) {
+          if (attempts[j].email) { bestEmail = attempts[j].email; break; }
+        }
+        // Get sent date
+        var sentDate = '';
+        for (var j = attempts.length - 1; j >= 0; j--) {
+          if (attempts[j].status === 'sent' && attempts[j].date) { sentDate = attempts[j].date; break; }
+        }
+        // Bounce count
+        var bounced = attempts.some(function(a){ return a.status === 'bounced'; }) ? 'Yes' : '';
+        rows.push([
+          num,
+          nameOverrideMap[num] || r.name,
+          r.owner || '',
+          igOverrideMap[num] || r.instagram || '',
+          r.phone || '',
+          bestEmail,
+          r.cuisine || '',
+          r.address || '',
+          s.charAt(0).toUpperCase() + s.slice(1),
+          dmMap[num] && dmMap[num] !== 'pending' ? dmMap[num] : '',
+          sentDate,
+          userNotesMap[num] || '',
+          bounced,
+          badIGMap[num] ? 'Yes' : '',
+          interestedMap[num] ? 'Yes' : '',
+          notInterestedMap[num] ? 'Yes' : '',
+          followupMap[num] ? followupMap[num] : '',
+          problemMap[num] ? 'Yes' : '',
+          foodTradeMap[num] ? 'Yes' : ''
+        ]);
+      }
+      var ws = XLSX.utils.aoa_to_sheet(rows);
+      // Column widths
+      ws['!cols'] = [
+        {wch:6},{wch:30},{wch:20},{wch:22},{wch:16},{wch:34},{wch:18},{wch:36},
+        {wch:10},{wch:22},{wch:22},{wch:40},{wch:9},{wch:8},{wch:11},{wch:13},{wch:22},{wch:9},{wch:11}
+      ];
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Restaurants');
+
+      // Summary sheet
+      var sent = 0, bounced = 0, pending = 0, baded = 0;
+      for (var i = 0; i < RESTAURANTS.length; i++) {
+        var s2 = statusMap[RESTAURANTS[i].num] || RESTAURANTS[i].defaultStatus;
+        if (s2 === 'sent') sent++;
+        else if (s2 === 'bounced') bounced++;
+        else pending++;
+        if (badIGMap[RESTAURANTS[i].num]) baded++;
+      }
+      var summary = [
+        ['LV Restaurants Dashboard Export'],
+        ['Exported', new Date().toLocaleString()],
+        [''],
+        ['Total Records', RESTAURANTS.length],
+        ['Email Sent', sent],
+        ['Waiting Email', pending],
+        ['Bounced', bounced],
+        ['Bad IG', baded],
+        ['Interested', Object.keys(interestedMap).length],
+        ['Follow Up', Object.keys(followupMap).length],
+        ['Notes', Object.keys(userNotesMap).length]
+      ];
+      var ws2 = XLSX.utils.aoa_to_sheet(summary);
+      ws2['!cols'] = [{wch:20},{wch:30}];
+      XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+
+      var ts = new Date().toISOString().slice(0,10);
+      XLSX.writeFile(wb, 'LV-Restaurants-' + ts + '.xlsx');
+      fbStatus('#4CAF50', 'Excel downloaded! ✓');
+      setTimeout(function(){ fbStatus('#4CAF50', 'Synced ' + fbTs()); }, 3000);
+    } catch(e) {
+      fbStatus('#EF5350', 'Excel export failed');
+      console.error(e);
+    }
+  }, 50);
 }
 
 function importBackup(event) {
