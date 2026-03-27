@@ -236,7 +236,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 9:11 AM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 9:18 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="switchView('batch')" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
@@ -245,7 +245,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
         <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
         <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:11px;cursor:pointer;padding:7px 4px;white-space:nowrap;">Key</button>
-        <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">🔑 Guest</button>
+        <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">Guest</button>
       </div>
     </div>
   </div>
@@ -2600,10 +2600,19 @@ function openDM(num) {
   var r = getR(num);
   if (!r) return;
   if (!r.igHandle) { showDMToast('No Instagram handle — use Edit IG to add one'); return; }
-  recordDM(num);
+  // Open URL first (must be synchronous in the tap handler — any delay blocks iOS)
+  // Use location.href so it works in standalone PWA mode (window.open is blocked)
   var url = 'https://ig.me/m/' + r.igHandle;
-  var w = window.open(url, '_blank');
-  if (!w) window.location.href = url;
+  window.location.href = url;
+  // Record the DM stamp after a short delay
+  setTimeout(function() {
+    if (dmMap[num] && dmMap[num] !== 'pending') return;
+    dmMap[num] = nowStr();
+    saveDMDates();
+    _dashDirty = true;
+    dashRefreshCard(num); dashUpdateStats();
+    if (currentView === 'batch') bqRefreshCard(num);
+  }, 800);
 }
 
 function openEmail(num) {
@@ -2625,10 +2634,8 @@ function openEmail(num) {
     addr = input;
   }
   var link = buildMailtoLink(addr, r.name);
-  // window.open with _blank keeps the PWA open while launching the mail app
-  // Falls back to location.href if window.open is blocked
-  var w = window.open(link, '_blank');
-  if (!w) window.location.href = link;
+  // location.href is the only reliable way to trigger mailto: in iOS standalone PWA
+  window.location.href = link;
 }
 
 function buildMailtoLink(addr, rname) {
@@ -3589,7 +3596,7 @@ function toggleGuestAccess() {
     // Deactivate
     try { localStorage.removeItem('lv_guest_expiry'); } catch(e) {}
     var btn = document.getElementById('guest-btn');
-    if (btn) { btn.style.background = '#E65100'; btn.textContent = '🔑 Guest'; }
+    if (btn) { btn.style.background = '#E65100'; btn.textContent = 'Guest'; }
     showDMToast('Guest access deactivated');
   } else {
     // Activate for 4 hours
