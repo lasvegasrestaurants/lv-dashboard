@@ -254,16 +254,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   </div>
 
   <div class="stats">
-    <div class="badge b-total" onclick="dashSetFilter('all')">Total: <span id="s-total">1029</span></div>
+    <div class="badge b-total" onclick="dashSetFilter('all')">Total: <span id="s-total">1028</span></div>
     <div class="badge b-verified" onclick="dashSetFilter('sent')">Email Sent: <span id="s-done">131</span></div>
-    <div class="badge b-noemail" onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">449</span></div>
+    <div class="badge b-noemail" onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">448</span></div>
     <div class="badge b-bounced" onclick="dashSetFilter('bounced')">Bounced: <span id="s-bounced">449</span></div>
     <div class="badge b-bad-ig" onclick="dashSetFilter('badig')">Bad IG: <span id="s-badig">328</span></div>
-    <div class="badge b-interested" onclick="dashSetFilter('interested')">👍 <span id="s-interested">16</span></div>
+    <div class="badge b-interested" onclick="dashSetFilter('interested')">👍 <span id="s-interested">17</span></div>
     <div class="badge b-not-interested" onclick="dashSetFilter('notinterested')">👎 <span id="s-notinterested">0</span></div>
-    <div class="badge b-notes" onclick="dashSetFilter('notes')">Notes: <span id="s-notes">27</span></div>
-    <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">26</span></div>
-    <div class="badge b-problem active-badge" onclick="dashSetFilter('problem')">Problem: <span id="s-problem">3</span></div>
+    <div class="badge b-notes" onclick="dashSetFilter('notes')">Notes: <span id="s-notes">26</span></div>
+    <div class="badge b-followup active-badge" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">27</span></div>
+    <div class="badge b-problem" onclick="dashSetFilter('problem')">Problem: <span id="s-problem">3</span></div>
     <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">1</span></div>
     <div class="badge b-nodm" onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">0</span></div>
 
@@ -275,20 +275,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
   </div>
   <div id="search-result-bar" style="display: block; padding: 6px 16px 2px; font-size: 12px; font-weight: 700; color: rgb(21, 101, 192); background: rgb(227, 242, 253); border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(187, 222, 251);">
-    <span id="search-result-txt">1 result for "le ma"</span>
+    <span id="search-result-txt">1 result for "boa"</span>
     <span onclick="clearDashSearch()" style="float:right;cursor:pointer;color:#C62828;font-size:13px;">✕ Clear</span>
   </div>
 
 
 
-  <div id="list"><div class="card pending" id="dc1114"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(1114)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(1114)">Email Sent</button><button class="btn btn-dm" onclick="openDM(1114)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(1114)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(1114)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(1114)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(1114)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(1114)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(1114)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(1114)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">French Pastry/Coffee</div><div class="rname">Le Macaron French Pastries Town Square <button onclick="openNameModal(1114)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Joe Eckart &nbsp;|&nbsp; <span class="ig">@lemacaronfrenchpastries</span> <button onclick="toggleBadIG(1114)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(1114)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(1114)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(1114)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(1114)" class="btn btn-followup flagged">Follow Up - 2026-03-27</button></div><div class="info"><a href="tel:7024233595" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 423-3595</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">lasvegas@lemacaron-us.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 6587 S Las Vegas Blvd Suite M186 (Town Square), Las Vegas, NV 89119</div><div class="note-preview">Hello Shane, </div></div></div>
+  <div id="list"><div class="card sent" id="dc1036"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(1036)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(1036)">Sent 2026-03-27</button><button class="btn btn-dm" onclick="openDM(1036)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(1036)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(1036)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(1036)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(1036)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(1036)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(1036)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(1036)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">BOA Steakhouse Las Vegas <button onclick="openNameModal(1036)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Innovative Dining Group &nbsp;|&nbsp; <span class="ig">@boavegas</span> <button onclick="toggleBadIG(1036)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(1036)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(1036)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(1036)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(1036)" class="btn btn-followup flagged">Follow Up - 2026-03-27</button></div><div class="info"><a href="tel:7029975050" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 997-5050</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">lasvegas@innovativedining.com</span> <span class="attempt-status s-sent">SENT</span> <span class="attempt-date">2026-03-27 11:00 AM</span></div></div><div class="addr-line">📍 3355 S Las Vegas Blvd, Las Vegas, NV 89109</div><div class="note-preview">Hi there! Thank you for reaching out! For influencer collabs please email Kevin …</div></div></div>
   <div id="no-results" style="display: none;">Everyone has been DM'd!</div>
 
   <div class="scroller" id="dash-scroller">
     <div class="sc-arrow" id="dash-scUp">▲</div>
-    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb" style="top: 27px;"></div></div>
+    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb" style="top: 0px;"></div></div>
     <div class="sc-arrow" id="dash-scDown">▼</div>
-    <div class="sc-pct" id="dash-scPct">19%</div>
+    <div class="sc-pct" id="dash-scPct">0%</div>
   </div>
 </div>
 
@@ -369,7 +369,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     </div>
   </div>
 </div>
-<div id="delete-confirm" style="display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgb(183, 28, 28); color: rgb(255, 255, 255); padding: 12px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 99999; align-items: center; white-space: nowrap; box-shadow: rgba(0, 0, 0, 0.4) 0px 4px 16px;">Delete <b>Teaspoon Las Vegas</b>? <span onclick="confirmDelete(1013)" style="cursor:pointer;text-decoration:underline;margin-left:8px;">Yes</span> <span onclick="cancelDelete()" style="cursor:pointer;margin-left:8px;opacity:.7;">No</span></div>
+<div id="delete-confirm" style="display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgb(183, 28, 28); color: rgb(255, 255, 255); padding: 12px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 99999; align-items: center; white-space: nowrap; box-shadow: rgba(0, 0, 0, 0.4) 0px 4px 16px;">Delete <b>BOA Steakhouse Venetian Las Vegas</b>? <span onclick="confirmDelete(435)" style="cursor:pointer;text-decoration:underline;margin-left:8px;">Yes</span> <span onclick="cancelDelete()" style="cursor:pointer;margin-left:8px;opacity:.7;">No</span></div>
 
 <div class="modal-backdrop" id="name-modal-backdrop">
   <div class="modal">
@@ -385,18 +385,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 </div>
 
 
-<div class="modal-backdrop open" id="note-modal-backdrop">
+<div class="modal-backdrop" id="note-modal-backdrop">
   <div class="modal">
-    <h2 id="note-modal-title">Le Macaron French Pastries Town Square</h2>
+    <h2 id="note-modal-title">BOA Steakhouse Las Vegas</h2>
     <p class="modal-sub" id="note-modal-sub">Your private note for this restaurant.</p>
     <label for="note-modal-input">Note</label>
     <div id="note-scroll-wrap" style="position:relative;border:1.5px solid #ccc;border-radius:10px;overflow:hidden;display:flex;">
       <textarea id="note-modal-input" placeholder="e.g. Spoke to manager, follow up next week..." maxlength="5000" style="flex:1;width:calc(100% - 22px);height:260px;padding:10px 10px 10px 12px;border:none;border-radius:10px 0 0 10px;font-size:14px;outline:none;font-family:inherit;resize:none;overflow:hidden;display:block;box-sizing:border-box;"></textarea>
       <div id="note-scroll-track" style="width:18px;background:#e8e8e8;border-left:1px solid #ddd;border-radius:0 10px 10px 0;position:relative;cursor:pointer;flex-shrink:0;">
-        <div id="note-scroll-thumb" style="width: 10px; background: rgb(27, 46, 74); border-radius: 5px; position: absolute; left: 4px; top: 84px; cursor: grab; height: 99px;"></div>
+        <div id="note-scroll-thumb" style="width: 10px; background: rgb(27, 46, 74); border-radius: 5px; position: absolute; left: 4px; top: 116px; cursor: grab; height: 144px;"></div>
       </div>
     </div>
-    <div id="note-char-count" style="font-size:11px;color:#aaa;text-align:right;margin-top:3px;">914 / 5000</div>
+    <div id="note-char-count" style="font-size:11px;color:#aaa;text-align:right;margin-top:3px;">743 / 5000</div>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeNoteModal()">Cancel</button>
       <button class="btn" style="background:#F57F17;flex:1;justify-content:center;padding:12px;font-size:14px;" onclick="saveNote()">Save</button>
