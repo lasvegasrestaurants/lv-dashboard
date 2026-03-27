@@ -1,13 +1,13 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1B2E4A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>LV Master Dashboard</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; }
+* { box-sizing: border-box; margin: 0; padding: 0; max-width: 100%; }
+html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; max-width: 100vw; overflow-x: hidden; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #eef0f3; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .view { position: fixed; inset: 0; bottom: 0; overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior: none; display: none; }
 .view.active { display: block; }
@@ -71,11 +71,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .card.pending  { background: #FFFFFF; border-color: #E0E0E0; }
 .card.sent     { background: #C8E6C9; border-color: #4CAF50; }
 .card.bounced  { background: #FFF5F5; border-color: #FFCDD2; }
-.card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; max-width: 100%; }
 .card-num { font-size: 13px; font-weight: 700; color: #666; min-width: 28px; }
 
 /* ── BUTTONS ── */
-.btn { display: inline-flex; align-items: center; gap: 4px; padding: 9px 13px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; border: none; color: #fff; -webkit-user-select: none; user-select: none; transition: filter .1s; white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; gap: 4px; padding: 10px 15px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; border: none; color: #fff; -webkit-user-select: none; user-select: none; transition: filter .1s; white-space: nowrap; }
 .btn:active { filter: brightness(.8); }
 .btn-email   { background: #1565C0; }
 .btn-dm      { background: #2E7D32; }
@@ -233,16 +233,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 <div class="view active" id="view-dashboard">
 
   <div class="hdr">
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
-      <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 9:06 AM</span>
-      <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
-      <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
-      <button onclick="document.getElementById('import-file-input').click()" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Restore</button>
-      <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
-      <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
-      <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:10px;cursor:pointer;padding:4px 4px;white-space:nowrap;">Key</button>
-      <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🔑 Guest</button>
+    <div id="fb-bar" style="padding:4px 0 0;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
+        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 9:11 AM</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+        <button onclick="switchView('batch')" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
+        <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
+        <button onclick="document.getElementById('import-file-input').click()" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Restore</button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
+        <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
+        <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:11px;cursor:pointer;padding:7px 4px;white-space:nowrap;">Key</button>
+        <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">🔑 Guest</button>
+      </div>
     </div>
   </div>
 
