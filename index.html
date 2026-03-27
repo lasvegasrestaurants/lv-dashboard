@@ -235,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
       <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 11:11 PM</span>
+      <span id="fb-msg" style="color:#90CAF9;">Saved 11:17 PM</span>
       <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
       <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
       <button onclick="document.getElementById('import-file-input').click()" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Restore</button>
@@ -264,7 +264,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
     <input type="search" id="dash-search" placeholder="Search restaurants, cuisine, address..." autocomplete="off" spellcheck="false" style="flex:1;">
-    <button class="btn-add-record" onclick="openAddRecord()">Add</button>
+    <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
+  </div>
+  <div id="search-result-bar" style="display:none;padding:6px 16px 2px;font-size:12px;font-weight:700;color:#1565C0;background:#E3F2FD;border-bottom:1px solid #BBDEFB;">
+    <span id="search-result-txt"></span>
+    <span onclick="clearDashSearch()" style="float:right;cursor:pointer;color:#C62828;font-size:13px;">✕ Clear</span>
   </div>
 
 
@@ -3153,6 +3157,12 @@ var _dashViewEl=document.getElementById('view-dashboard')||{};
 
 function dashSetFilter(f) {
   dashFilter=f; _dashDirty=true;
+  // Clear search when tapping a filter badge
+  if(dashSearch){
+    dashSearch='';
+    var si=document.getElementById('dash-search');if(si)si.value='';
+    var srBar=document.getElementById('search-result-bar');if(srBar)srBar.style.display='none';
+  }
   document.querySelectorAll('.stats .badge').forEach(function(b){ b.classList.remove('active-badge'); });
   var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade'};
   if(bmap[f]){var el=document.querySelector(bmap[f]);if(el)el.classList.add('active-badge');}
@@ -3162,19 +3172,28 @@ function dashSetFilter(f) {
 }
 
 var _dsTimer=0;
-try{document.getElementById('dash-search').addEventListener('focus',function(){
-  // Reset filter to All when tapping search so typing searches everything
-  if(dashFilter!=='all'){dashSetFilter('all');}
-});}catch(e){}
-try{document.getElementById('dash-search').addEventListener('input',function(){
-  clearTimeout(_dsTimer); var val=this.value.toLowerCase().trim();
-  _dsTimer=setTimeout(function(){
-    if(val===dashSearch)return;
-    dashSearch=val;
-    _dashDirty=true;
-    dashScheduleRender();
-  },160);
-});}catch(e){}
+function _doSearch(val){
+  if(val===dashSearch)return;
+  dashSearch=val;
+  // When typing, always search across all restaurants
+  dashFilter='all';
+  document.querySelectorAll('.stats .badge').forEach(function(b){b.classList.remove('active-badge');});
+  var el=document.querySelector('.b-total');if(el)el.classList.add('active-badge');
+  _dashViewEl.scrollTop=0;
+  _dashRenderedRange=[-1,-1];
+  _dashDirty=true;
+  dashRender();
+}
+try{
+  var _si=document.getElementById('dash-search');
+  _si.addEventListener('focus',function(){
+    if(dashFilter!=='all'){ dashFilter='all'; _dashDirty=true; dashRender(); }
+  });
+  _si.addEventListener('input',function(){ clearTimeout(_dsTimer); var v=this.value.toLowerCase().trim(); _dsTimer=setTimeout(function(){_doSearch(v);},80); });
+  _si.addEventListener('keyup', function(){ clearTimeout(_dsTimer); var v=this.value.toLowerCase().trim(); _dsTimer=setTimeout(function(){_doSearch(v);},80); });
+  // Handle the X clear button on iOS search input
+  _si.addEventListener('search',function(){ _doSearch(''); });
+}catch(e){}
 
 function dashScheduleRender(){
   if(_dashRafPending)return; _dashRafPending=true;
@@ -3202,12 +3221,29 @@ function _refilter(){
   }
 }
 
+function clearDashSearch(){
+  dashSearch='';
+  document.getElementById('dash-search').value='';
+  document.getElementById('search-result-bar').style.display='none';
+  _dashDirty=true;
+  dashScheduleRender();
+}
+
 function dashRender(){
   _refilter();
   var total=_dashFiltered.length;
+  // Show/hide search result bar
+  var srBar=document.getElementById('search-result-bar');
+  var srTxt=document.getElementById('search-result-txt');
+  if(dashSearch && srBar && srTxt){
+    srBar.style.display='block';
+    srTxt.textContent = total + (total===1?' result':' results') + ' for "'+dashSearch+'"';
+  } else if(srBar){
+    srBar.style.display='none';
+  }
   if(total===0){
     _dashList.innerHTML=''; _dashNR.style.display='block';
-    _dashNR.innerHTML=({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'Everyone has been emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.';
+    _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'Everyone has been emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
     dashUpdateStats();dashUpdateSlider();return;
   }
   _dashNR.style.display='none';
