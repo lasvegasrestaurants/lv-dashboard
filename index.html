@@ -207,10 +207,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="pin-logo">LV Master Dashboard</div>
   <div class="pin-sub">Enter your PIN to continue</div>
   <div class="pin-dots">
-    <div class="pin-dot" id="pd0"></div>
-    <div class="pin-dot" id="pd1"></div>
-    <div class="pin-dot" id="pd2"></div>
-    <div class="pin-dot" id="pd3"></div>
+    <div class="pin-dot filled" id="pd0"></div>
+    <div class="pin-dot filled" id="pd1"></div>
+    <div class="pin-dot filled" id="pd2"></div>
+    <div class="pin-dot filled" id="pd3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-key" onclick="pinKey('1')">1</button>
@@ -235,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
       <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 8:03 PM</span>
+      <span id="fb-msg" style="color:#90CAF9;">Saved 9:47 PM</span>
       <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
       <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:10px;cursor:pointer;padding:4px 4px;white-space:nowrap;">Key</button>
@@ -1685,7 +1685,7 @@ function loadToday() {
 // FIREBASE AUTO-SYNC
 // ══════════════════════════════════════════════════════
 var FB_URL = 'https://lv-dashboard-662dc-default-rtdb.firebaseio.com/data.json';
-var _fbTimer = null, _fbBusy = false;
+var _fbTimer = null, _fbBusy = false, _fbLoaded = false, _fbSaveFailCount = 0;
 
 function fbStatus(color, msg) {
   var dot = document.getElementById('fb-dot');
@@ -1702,6 +1702,7 @@ function fbTs() {
 }
 
 function fbSave() {
+  if (!_fbLoaded) return; // never overwrite Firebase before loading from it
   if (_fbBusy) { clearTimeout(_fbTimer); _fbTimer = setTimeout(fbSave, 2000); return; }
   _fbBusy = true;
   fbStatus('#FFB300', 'Saving...');
@@ -1742,16 +1743,21 @@ function fbSave() {
     _fbBusy = false; fbStatus('#EF5350', 'Save error — data too large?'); return;
   }
   fetch(FB_URL, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: bodyStr
   }).then(function(r) {
     _fbBusy = false;
-    if (r.ok) { fbStatus('#4CAF50', 'Saved ' + fbTs()); }
+    if (r.ok) { _fbSaveFailCount = 0; fbStatus('#4CAF50', 'Saved ' + fbTs()); }
     else { r.text().then(function(t){ fbStatus('#EF5350', t.slice(0,60)); }); }
   }).catch(function() {
     _fbBusy = false;
-    fbStatus('#EF5350', 'No connection — retrying...');
+    _fbSaveFailCount = (_fbSaveFailCount || 0) + 1;
+    if (_fbSaveFailCount >= 3) {
+      fbStatus('#EF5350', 'WARNING: Data not saving — check connection!');
+    } else {
+      fbStatus('#EF5350', 'No connection — retrying...');
+    }
     _fbTimer = setTimeout(fbSave, 8000);
   });
 }
@@ -1771,23 +1777,49 @@ function fbLoad() {
   .then(function(rec) {
     if (!rec) return;
     if (!rec || rec.error) { 
+      _fbLoaded = true;
       fbStatus('#4CAF50', 'Ready — no data yet');
       return; 
     }
     if (rec.status)   { statusMap   = rec.status;   localStorage.setItem(LS_STATUS,   JSON.stringify(statusMap)); }
     if (rec.attempts) { attemptsMap = rec.attempts; localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); }
     if (rec.dm)       { dmMap       = rec.dm;       localStorage.setItem(LS_DM,       JSON.stringify(dmMap)); }
-    if (rec.badig)      { badIGMap      = rec.badig;      localStorage.setItem(LS_BAD_IG,      JSON.stringify(badIGMap)); }
+    if (rec.badig)      {
+      // Merge: keep local flags that aren't in Firebase (never delete flags)
+      Object.keys(rec.badig).forEach(function(k){ badIGMap[k] = rec.badig[k]; });
+      localStorage.setItem(LS_BAD_IG, JSON.stringify(badIGMap));
+    }
     if (rec.igovr)      { igOverrideMap = rec.igovr;      localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); }
-    if (rec.usernotes)    { userNotesMap    = rec.usernotes;    localStorage.setItem(LS_USER_NOTES,    JSON.stringify(userNotesMap)); }
+    if (rec.usernotes)    {
+      Object.keys(rec.usernotes).forEach(function(k){ userNotesMap[k] = rec.usernotes[k]; });
+      localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap));
+    }
     if (rec.nameoverride) { nameOverrideMap = rec.nameoverride; localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); }
-    if (rec.followup)     { followupMap     = rec.followup;     localStorage.setItem(LS_FOLLOWUP,      JSON.stringify(followupMap)); }
-    if (rec.interested)    { interestedMap    = rec.interested;    localStorage.setItem(LS_INTERESTED,     JSON.stringify(interestedMap)); }
-    if (rec.notinterested) { notInterestedMap = rec.notinterested; localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); }
-    if (rec.deleted)       { deletedMap       = rec.deleted;       localStorage.setItem(LS_DELETED,        JSON.stringify(deletedMap)); }
-    if (rec.problem)       { problemMap       = rec.problem;       localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); }
+    if (rec.followup)     {
+      Object.keys(rec.followup).forEach(function(k){ followupMap[k] = rec.followup[k]; });
+      localStorage.setItem(LS_FOLLOWUP, JSON.stringify(followupMap));
+    }
+    if (rec.interested)    {
+      Object.keys(rec.interested).forEach(function(k){ interestedMap[k] = rec.interested[k]; });
+      localStorage.setItem(LS_INTERESTED, JSON.stringify(interestedMap));
+    }
+    if (rec.notinterested) {
+      Object.keys(rec.notinterested).forEach(function(k){ notInterestedMap[k] = rec.notinterested[k]; });
+      localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap));
+    }
+    if (rec.deleted)       {
+      Object.keys(rec.deleted).forEach(function(k){ deletedMap[k] = rec.deleted[k]; });
+      localStorage.setItem(LS_DELETED, JSON.stringify(deletedMap));
+    }
+    if (rec.problem)       {
+      Object.keys(rec.problem).forEach(function(k){ problemMap[k] = rec.problem[k]; });
+      localStorage.setItem(LS_PROBLEM, JSON.stringify(problemMap));
+    }
     if (rec.ghtoken)       { try { localStorage.setItem(LS_GH_TOKEN, rec.ghtoken); } catch(e) {} }
-    if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); }
+    if (rec.foodtrade)     {
+      Object.keys(rec.foodtrade).forEach(function(k){ foodTradeMap[k] = rec.foodtrade[k]; });
+      localStorage.setItem(LS_FOODTRADE, JSON.stringify(foodTradeMap));
+    }
     if (rec.customrecords) { customRecords    = rec.customrecords; localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); }
     if (rec.batch) {
       BD = { date: rec.batch.date, sentSet: new Set(rec.batch.sentSet || []), batchIndex: rec.batch.batchIndex || 0 };
@@ -1847,8 +1879,10 @@ function fbLoad() {
     _dashDirty = true;
     dashSetFilter(dashFilter);
     dashUpdateStats();
+    _fbLoaded = true;
     fbStatus('#4CAF50', 'Synced ' + fbTs());
   }).catch(function() {
+    _fbLoaded = true; // allow saves even if Firebase unreachable
     fbStatus('#EF5350', 'Could not connect');
   });
 }
