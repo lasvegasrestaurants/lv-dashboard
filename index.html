@@ -235,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 0 0;font-size:12px;font-weight:700;" id="fb-bar">
       <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-      <span id="fb-msg" style="color:#90CAF9;">Saved 6:47 PM</span>
+      <span id="fb-msg" style="color:#90CAF9;">Saved 6:54 PM</span>
       <button onclick="switchView('batch')" style="margin-left:auto;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
       <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:10px;cursor:pointer;padding:4px 4px;white-space:nowrap;">Key</button>
@@ -254,7 +254,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">12</span></div>
     <div class="badge b-problem" onclick="dashSetFilter('problem')">Problem: <span id="s-problem">0</span></div>
     <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">0</span></div>
-    <div class="badge b-nodm" onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">459</span></div>
+    <div class="badge b-nodm" onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">458</span></div>
 
   </div>
 
@@ -1898,23 +1898,36 @@ function _doPush(token) {
 
   function _encode(html) {
     return new Promise(function(resolve, reject) {
-      // Best approach: Blob + FileReader — fully async, works on all iOS versions
       try {
-        var blob = new Blob([html], {type: 'text/html; charset=utf-8'});
-        var reader = new FileReader();
-        reader.onload = function(e) {
+        // Convert to UTF-8 bytes
+        var bytes = new TextEncoder().encode(html);
+        var len = bytes.length;
+        var CHUNK = 3000; // must be multiple of 3 for clean base64
+        var parts = [];
+        var pos = 0;
+
+        function processChunk() {
           try {
-            var result = e.target.result;
-            var comma = result.indexOf(',');
-            var b64 = comma >= 0 ? result.slice(comma + 1) : result;
-            if (b64 && b64.length > 100) { resolve(b64); }
-            else { reject('empty encode'); }
-          } catch(err) { reject('parse error'); }
-        };
-        reader.onerror = function() { reject('reader error'); };
-        reader.readAsDataURL(blob);
+            var end = Math.min(pos + CHUNK, len);
+            var slice = bytes.subarray(pos, end);
+            var binary = '';
+            for (var i = 0; i < slice.length; i++) {
+              binary += String.fromCharCode(slice[i]);
+            }
+            parts.push(btoa(binary));
+            pos = end;
+            if (pos < len) {
+              // Yield to browser between chunks so iOS doesn't kill it
+              setTimeout(processChunk, 0);
+            } else {
+              resolve(parts.join(''));
+            }
+          } catch(e) { reject('chunk error: ' + e.message); }
+        }
+
+        processChunk();
       } catch(e) {
-        reject('blob error: ' + e.message);
+        reject('encode error: ' + e.message);
       }
     });
   }
