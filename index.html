@@ -236,7 +236,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(76, 175, 80); flex-shrink: 0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 9:30 AM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Saved 10:34 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="switchView('batch')" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
@@ -2037,9 +2037,11 @@ function fbLoad() {
     dashUpdateStats();
     _fbLoaded = true;
     fbStatus('#4CAF50', 'Synced ' + fbTs());
+    _startAutoSave(); // begin background GitHub auto-save
   }).catch(function() {
     _fbLoaded = true; // allow saves even if Firebase unreachable
     fbStatus('#EF5350', 'Could not connect');
+    _startAutoSave(); // still try auto-save even if Firebase offline
   });
 }
 
@@ -2209,6 +2211,94 @@ function _doPush(token) {
   });
 }
 
+
+// ══════════════════════════════════════════════════════
+// AUTO-PUSH TO GITHUB (every 30 min + on background)
+// ══════════════════════════════════════════════════════
+var _autoSaveTimer = null;
+var _autoSaveInterval = 30 * 60 * 1000; // 30 minutes
+var _lastAutoPush = 0;
+var _autoPushBusy = false;
+
+function _silentPush() {
+  var token = getGHToken();
+  if (!token || _autoPushBusy) return;
+  var now = Date.now();
+  // Don't push more than once every 5 minutes
+  if (now - _lastAutoPush < 5 * 60 * 1000) return;
+  _autoPushBusy = true;
+  _lastAutoPush = now;
+
+  fbStatus('#FFB300', 'Auto-saving...');
+
+  // Reuse the same GitHub push machinery
+  fetch(GH_API, {
+    method: 'GET',
+    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  })
+  .then(function(r) { return r.ok ? r.json() : Promise.reject('gh-err'); })
+  .then(function(data) {
+    if (!data || !data.sha) return Promise.reject('no-sha');
+    var bytes = new TextEncoder().encode(document.documentElement.outerHTML);
+    var len = bytes.length, CHUNK = 3000, parts = [], pos = 0;
+    return new Promise(function(resolve, reject) {
+      function chunk() {
+        var end = Math.min(pos + CHUNK, len);
+        var slice = bytes.subarray(pos, end);
+        var bin = '';
+        for (var i = 0; i < slice.length; i++) bin += String.fromCharCode(slice[i]);
+        parts.push(btoa(bin));
+        pos = end;
+        if (pos < len) setTimeout(chunk, 0);
+        else resolve({ sha: data.sha, encoded: parts.join('') });
+      }
+      chunk();
+    });
+  })
+  .then(function(obj) {
+    return fetch(GH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Auto-save ' + new Date().toISOString().slice(0,16).replace('T',' '), content: obj.encoded, sha: obj.sha })
+    });
+  })
+  .then(function(r) {
+    _autoPushBusy = false;
+    if (r && r.ok) {
+      fbStatus('#4CAF50', 'Auto-saved ' + fbTs());
+      try { localStorage.setItem('lv_last_autopush', String(Date.now())); } catch(e) {}
+    } else {
+      fbStatus('#4CAF50', 'Synced ' + fbTs());
+    }
+  })
+  .catch(function() {
+    _autoPushBusy = false;
+    fbStatus('#4CAF50', 'Synced ' + fbTs());
+  });
+}
+
+function _scheduleAutoSave() {
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(function() {
+    _silentPush();
+    _scheduleAutoSave(); // reschedule
+  }, _autoSaveInterval);
+}
+
+// Start auto-save once Firebase is loaded and token exists
+function _startAutoSave() {
+  if (!getGHToken()) return; // no token — skip silently
+  _scheduleAutoSave();
+}
+
+// Push on background/close too
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') {
+    clearTimeout(_fbTimer);
+    if (!_fbBusy) fbSave();
+    _silentPush();
+  }
+});
 
 function saveAttempts()  { try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap));} catch(e) {} fbSchedule(); }
 function saveBD()        { try { localStorage.setItem(LS_BATCH, JSON.stringify({date:BD.date,sentSet:Array.from(BD.sentSet),batchIndex:BD.batchIndex})); } catch(e) {} fbSchedule(); }
@@ -3749,16 +3839,10 @@ function _pinInit() {
 // ══════════════════════════════════════════════════════
 // SAVE ON PAGE CLOSE / BACKGROUND
 // ══════════════════════════════════════════════════════
-document.addEventListener('visibilitychange', function() {
-  if (document.visibilityState === 'hidden') {
-    clearTimeout(_fbTimer);
-    // Only force-save if not already in a save — don't corrupt an in-flight request
-    if (!_fbBusy) fbSave();
-  }
-});
 window.addEventListener('pagehide', function() {
   clearTimeout(_fbTimer);
   if (!_fbBusy) fbSave();
+  _silentPush();
 });
 
 // ══════════════════════════════════════════════════════
