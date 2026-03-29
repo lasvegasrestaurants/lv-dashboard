@@ -197,7 +197,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 7:23 AM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 7:32 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
@@ -1609,15 +1609,7 @@ function exportBackup() {
   var ts = new Date().toISOString().slice(0,10);
   var filename = 'lv-dashboard-backup-' + ts + '.json';
   var blob = new Blob([json], { type: 'application/json' });
-  if (navigator.share && navigator.canShare) {
-    var shareFile = new File([blob], filename, { type: 'application/json' });
-    if (navigator.canShare({ files: [shareFile] })) {
-      navigator.share({ files: [shareFile], title: 'LV Dashboard Backup', text: 'Backup from ' + ts })
-        .then(function() { lsStatus('#4CAF50', 'Backup shared!'); })
-        .catch(function(e) { if (e.name !== 'AbortError') _exportFallback(blob, filename); });
-      return;
-    }
-  }
+  // Always download directly to iPhone Files — no share sheet
   _exportFallback(blob, filename);
 }
 
@@ -1704,15 +1696,17 @@ function exportCSV() {
   var ts = new Date().toISOString().slice(0,10);
   var filename = 'lv-restaurants-' + ts + '.csv';
 
+  // Use share sheet so Google Drive appears as a save option
   if (navigator.share && navigator.canShare) {
     var shareFile = new File([blob], filename, { type: 'text/csv' });
     if (navigator.canShare({ files: [shareFile] })) {
-      navigator.share({ files: [shareFile], title: 'LV Restaurants Export', text: 'Restaurant data ' + ts })
-        .then(function() { lsStatus('#4CAF50', 'CSV exported!'); })
+      navigator.share({ files: [shareFile], title: 'LV Restaurants Excel Export', text: 'Restaurant data ' + ts })
+        .then(function() { lsStatus('#4CAF50', 'Excel exported to Google Drive!'); })
         .catch(function(e) { if (e.name !== 'AbortError') _exportFallback(blob, filename); });
       return;
     }
   }
+  // Fallback for desktop
   _exportFallback(blob, filename);
 }
 
@@ -3076,21 +3070,18 @@ function _doPush(token) {
     setTimeout(function(){ document.getElementById('token-modal-input').focus(); }, 200);
   }
   function _encode(html) {
+    // Use FileReader — iOS handles this natively, much faster than manual chunking
     return new Promise(function(resolve, reject) {
       try {
-        var bytes = new TextEncoder().encode(html);
-        var len = bytes.length, CHUNK = 30000, parts = [], pos = 0;
-        function processChunk() {
-          try {
-            var end = Math.min(pos + CHUNK, len);
-            var slice = bytes.subarray(pos, end);
-            parts.push(btoa(String.fromCharCode.apply(null, slice)));
-            pos = end;
-            if (pos < len) setTimeout(processChunk, 1);
-            else resolve(parts.join(''));
-          } catch(e) { reject('chunk error: ' + e.message); }
-        }
-        processChunk();
+        var blob = new Blob([html], { type: 'text/plain' });
+        var reader = new FileReader();
+        reader.onload = function() {
+          // result is "data:text/plain;base64,XXXXX" — strip the prefix
+          var b64 = reader.result.split(',')[1];
+          resolve(b64);
+        };
+        reader.onerror = function() { reject('FileReader error'); };
+        reader.readAsDataURL(blob);
       } catch(e) { reject('encode error: ' + e.message); }
     });
   }
