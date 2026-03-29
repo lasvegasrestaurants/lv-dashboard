@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1B2E4A">
@@ -8,12 +6,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>LV Master Dashboard</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; max-width: 100%; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+*:not(.scroller):not(.sc-track):not(.sc-thumb):not(.sc-arrow) { max-width: 100%; }
 html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; max-width: 100vw; overflow-x: hidden; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #eef0f3; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .view { position: fixed; inset: 0; bottom: 0; overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior: none; display: none; }
 .view.active { display: block; }
-
 
 /* ── PIN LOCK SCREEN ── */
 #pin-screen { position: fixed; inset: 0; background: #1B2E4A; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -32,12 +30,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; }
-.notice { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 0; }
-.notice.info { background: #E3F2FD; color: #1565C0; }
-.notice.good { background: #E8F5E9; color: #2E7D32; }
-.notice.warn { background: #FFF3E0; color: #E65100; }
-.notice.stop { background: #FFEBEE; color: #C62828; }
+.hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -48,7 +41,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .badge.active-badge { outline: 3px solid #fff; opacity: 1; }
 .b-total    { background: #2E4057; }
 .b-verified { background: #1B5E20; }
-.b-remaining{ background: #E65100; }
 .b-noemail  { background: #283593; }
 .b-bounced  { background: #C62828; }
 .b-bad-ig      { background: #6A1B9A; }
@@ -59,16 +51,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-not-interested { background: #AD1457; color: #fff; border: 2px solid #AD1457 !important; font-size: 18px; padding: 7px 12px; opacity: 0.45; }
 .btn-not-interested.flagged { opacity: 1; }
 
-
 /* ── SEARCH ── */
 .search-wrap { padding: 10px 14px 4px; }
 .search-wrap input { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid #ccc; border-radius: 24px; font-size: 14px; outline: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 14px center; }
 .search-wrap input:focus { border-color: #1B2E4A; box-shadow: 0 0 0 3px rgba(27,46,74,.1); }
 
-
-
 /* ── CARDS ── */
-#list, #bq-list { padding: 4px 14px 40px; }
+#list { padding: 4px 14px 40px; }
 .card { border-radius: 14px; margin-bottom: 10px; padding: 13px 14px; border: 1.5px solid; }
 .card.pending  { background: #FFFFFF; border-color: #E0E0E0; }
 .card.sent     { background: #C8E6C9; border-color: #4CAF50; }
@@ -82,52 +71,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-email   { background: #1565C0; }
 .btn-dm      { background: #2E7D32; }
 .btn-dm.marked { background: #1B5E20; }
-.btn-verify  { background: #fff; color: #1B5E20; border: 2px solid #1B5E20 !important; }
+.btn-verify  { background: #fff; color: #1B5E20; border: 2px solid #1B5E20; }
 .btn-verify.marked { background: #1B5E20; color: #fff; }
-.btn-bounce-off { background: #fff; color: #C62828; border: 2px solid #C62828 !important; }
+.btn-bounce-off { background: #fff; color: #C62828; border: 2px solid #C62828; }
 .btn-bounce-on  { background: #C62828; color: #fff; }
-.btn-done { background: #fff; color: #1B5E20; border: 2px solid #1B5E20 !important; font-weight: 700; }
-.btn-done.marked { background: #1B5E20; color: #fff; }
 
 /* ── CARD CONTENT ── */
 .ctag { display: inline-block; background: #EEEEEE; color: #555; border-radius: 7px; padding: 4px 12px; font-size: 13px; margin-bottom: 6px; }
 .card.bounced .ctag  { background: #FFCDD2; color: #B71C1C; }
-.card.sent .ctag, .card.sent-now .ctag { background: #A5D6A7; color: #1B5E20; }
+.card.sent .ctag { background: #A5D6A7; color: #1B5E20; }
 .rname { font-size: 20px; font-weight: 800; color: #1B2E4A; margin-bottom: 5px; line-height: 1.2; }
 .card.bounced .rname { color: #C62828; }
-.card.sent .rname, .card.sent-now .rname { color: #1B5E20; }
+.card.sent .rname { color: #1B5E20; }
 .info { font-size: 14px; color: #444; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
 .ig { color: #1565C0; }
 .ig.bad-ig { color: #7B1FA2; font-weight: 800; }
-.btn-bad-ig { background: #fff; color: #7B1FA2; border: 2px solid #7B1FA2 !important; font-size: 13px; padding: 8px 13px; }
+.btn-bad-ig { background: #fff; color: #7B1FA2; border: 2px solid #7B1FA2; font-size: 13px; padding: 8px 13px; }
 .btn-bad-ig.flagged { background: #7B1FA2; color: #fff; }
 .addr-line { font-size: 13px; color: #666; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; }
-.notes-line { font-size: 11px; color: #888; margin-top: 3px; font-style: italic; }
-
-/* ── BATCH CONTROLS ── */
-.batch-ctrl { padding: 8px 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: #fff; border-bottom: 1px solid #e0e0e0; }
-.batch-info { flex: 1; font-size: 13px; color: #444; }
-.batch-info b { color: #1B2E4A; }
-.btn-batch { padding: 11px 18px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; color: #fff; white-space: nowrap; }
-.btn-prev   { background: #546E7A; }
-.btn-next   { background: #37474F; }
-.btn-newday { background: #5D4037; }
-
-/* ── PACE STATS ── */
-.pace-wrap { background: #1B2E4A; padding: 0 16px 14px; }
-.pace-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; padding-top: 10px; }
-.pace-stat { flex: 1; min-width: 80px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 12px; text-align: center; }
-.pace-stat .val { color: #fff; font-size: 22px; font-weight: 800; line-height: 1; }
-.pace-stat .lbl { color: #90CAF9; font-size: 10px; margin-top: 3px; }
-.pace-stat.green .val  { color: #69F0AE; }
-.pace-stat.red .val    { color: #FF5252; }
-.pace-stat.yellow .val { color: #FFD740; }
-.limit-bar { height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
-.limit-fill { height: 100%; border-radius: 4px; transition: width .4s; background: linear-gradient(90deg, #69F0AE, #FFD740, #FF5252); }
-.limit-label { color: #90CAF9; font-size: 10px; display: flex; justify-content: space-between; padding-bottom: 10px; }
 
 /* ── SCROLLER ── */
-.scroller { position: fixed; right: 0; top: 62%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; background: rgba(27,46,74,0.88); border-radius: 16px 0 0 16px; box-shadow: -2px 0 12px rgba(0,0,0,0.25); }
+.scroller { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; background: rgba(27,46,74,0.88); border-radius: 16px 0 0 16px; box-shadow: -2px 0 12px rgba(0,0,0,0.25); }
 .sc-arrow { width: 42px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 16px; user-select: none; -webkit-user-select: none; }
 .sc-arrow:active { background: rgba(255,255,255,0.35); }
 .sc-track { width: 42px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 18px; position: relative; cursor: pointer; touch-action: none; }
@@ -135,12 +99,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .sc-thumb:active { cursor: grabbing; }
 .sc-pct { color: rgba(255,255,255,0.7); font-size: 9px; font-weight: 700; font-family: monospace; }
 
-
 /* ── NO RESULTS ── */
-#no-results, #bq-no-results { text-align: center; color: #aaa; padding: 60px 20px; display: none; font-size: 15px; line-height: 1.6; }
-
-/* ── TODAY BADGE ── */
-.today-badge { display: inline-block; background: #0288D1; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: 10px; font-weight: 800; margin-left: 6px; vertical-align: middle; letter-spacing: .3px; }
+#no-results { text-align: center; color: #aaa; padding: 60px 20px; display: none; font-size: 15px; line-height: 1.6; }
 
 /* ── ATTEMPT LOG ── */
 .attempt-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
@@ -155,30 +115,29 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .attempt-date  { font-size: 10px; color: #999; }
 .attempt-note  { font-size: 10px; color: #888; font-style: italic; width: 100%; padding-left: 2px; }
 .attempts-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; }
-.attempts-label { font-size: 10px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
 
 /* ── ADD EMAIL BUTTON ── */
 .b-notes   { background: #F57F17; }
 .b-followup { background: #00695C; }
-.btn-followup { background: #fff; color: #00695C; border: 2px solid #00695C !important; font-size: 13px; padding: 8px 13px; }
+.btn-followup { background: #fff; color: #00695C; border: 2px solid #00695C; font-size: 13px; padding: 8px 13px; }
 .btn-followup.flagged { background: #00695C; color: #fff; }
-.btn-note { background: #fff; color: #F57F17; border: 2px solid #F57F17 !important; font-size: 13px; padding: 8px 13px; }
+.btn-note { background: #fff; color: #F57F17; border: 2px solid #F57F17; font-size: 13px; padding: 8px 13px; }
 .btn-note.has-note { background: #F57F17; color: #fff; }
 .note-preview { font-size: 11px; color: #F57F17; font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .btn-delete { background: #B71C1C; color: #fff; border: none !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem { background: #fff; color: #BF360C; border: 2px solid #BF360C !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem.flagged { background: #BF360C; color: #fff; }
-.b-problem { background: #BF360C; }
+.btn-problem { background: #fff; color: #F9A825; border: 2px solid #F9A825; font-size: 13px; padding: 8px 13px; }
+.btn-problem.flagged { background: #F9A825; color: #fff; }
+.b-problem { background: #F9A825; }
 .b-foodtrade  { background: #2E7D32; }
-.btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32 !important; font-size: 13px; padding: 8px 13px; }
+.btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 13px; padding: 8px 13px; }
 .btn-foodtrade.flagged { background: #2E7D32; color: #fff; }
 .b-nodm    { background: #004D40; }
 .btn-add-record { background: #4527A0; color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn-add-record:active { filter: brightness(.85); }
 .btn-delete:active { background: #7F0000; }
-.btn-add-email { background: #0277BD; color: #fff; border: 1.5px solid #0277BD !important; font-size: 14px; padding: 9px 14px; }
+.btn-add-email { background: #0277BD; color: #fff; border: none; font-size: 14px; padding: 9px 14px; }
 .btn-add-email:active { background: #01579B; }
-.btn-copy-dm { background: #fff; color: #2E7D32; border: 2px solid #2E7D32 !important; font-size: 14px; padding: 9px 13px; }
+.btn-copy-dm { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 14px; padding: 9px 13px; }
 .btn-copy-dm:active { background: #DCEDC8; }
 /* Toast */
 #dm-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1B2E4A; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 99999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
@@ -186,7 +145,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 /* ── MODAL ── */
 .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
 .modal-backdrop.open { display: flex; }
-.modal { background: #fff; border-radius: 20px 20px 0 0; padding: 20px 18px 32px; width: 100%; max-width: 540px; max-height: 85vh; overflow-y: auto; }
+.modal { background: #fff; border-radius: 20px 20px 0 0; padding: 20px 18px 32px; width: 100%; max-width: 540px; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .modal h2 { font-size: 16px; font-weight: 800; color: #1B2E4A; margin-bottom: 4px; }
 .modal .modal-sub { font-size: 12px; color: #888; margin-bottom: 16px; }
 .modal label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 4px; margin-top: 12px; }
@@ -201,19 +160,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-cancel { background: #CFD8DC; color: #37474F; }
 .btn-save   { background: #1A237E; }
 </style>
-<!-- SheetJS removed — Excel export not used -->
 </head>
 <body>
 
 <!-- PIN LOCK SCREEN -->
-<div id="pin-screen">
+<div id="pin-screen" class="hidden">
   <div class="pin-logo">LV Master Dashboard</div>
   <div class="pin-sub">Enter your PIN to continue</div>
   <div class="pin-dots">
-    <div class="pin-dot" id="pd0"></div>
-    <div class="pin-dot" id="pd1"></div>
-    <div class="pin-dot" id="pd2"></div>
-    <div class="pin-dot" id="pd3"></div>
+    <div class="pin-dot filled" id="pd0"></div>
+    <div class="pin-dot filled" id="pd1"></div>
+    <div class="pin-dot filled" id="pd2"></div>
+    <div class="pin-dot filled" id="pd3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-key" onclick="pinKey('1')">1</button>
@@ -233,45 +191,42 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 </div>
 
 <!-- ═══════════════════════════════ DASHBOARD VIEW ═══════════════════════════════ -->
-<div class="view" id="view-dashboard">
+<div class="view active" id="view-dashboard">
 
   <div class="hdr">
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">Ready</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 10:04 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-        <button onclick="switchView('batch')" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Batch Queue</button>
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
-        <button onclick="document.getElementById('import-file-input').click()" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Restore</button>
-        <input type="file" id="import-file-input" accept=".json,application/json,text/plain" style="display:none" onchange="importBackup(event)">
-        <button onclick="pushToGitHub()" oncontextmenu="resetGHToken();return false;" id="gh-push-btn" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ GitHub</button>
-        <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:11px;cursor:pointer;padding:7px 4px;white-space:nowrap;">Key</button>
-        <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">Guest</button>
+        <button onclick="exportCSV()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Excel</button>
+        <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&amp;&amp;Date.now()-this._t&lt;500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
+        <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
+        <button onclick="pushToGitHub()" id="gh-push-btn" oncontextmenu="resetGHToken();return false;" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       </div>
     </div>
   </div>
 
   <div class="stats">
-    <div class="badge b-total"          onclick="dashSetFilter('all')">Total: <span id="s-total">0</span></div>
-    <div class="badge b-verified"       onclick="dashSetFilter('sent')">Email Sent: <span id="s-done">0</span></div>
-    <div class="badge b-noemail"       onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">0</span></div>
-    <div class="badge b-bounced"        onclick="dashSetFilter('bounced')">Bounced: <span id="s-bounced">0</span></div>
-    <div class="badge b-bad-ig"         onclick="dashSetFilter('badig')">Bad IG: <span id="s-badig">0</span></div>
-    <div class="badge b-interested"     onclick="dashSetFilter('interested')">👍 <span id="s-interested">0</span></div>
+    <div class="badge b-total active-badge" onclick="dashSetFilter('all')">Total: <span id="s-total">1010</span></div>
+    <div class="badge b-verified" onclick="dashSetFilter('sent')">Email Sent: <span id="s-done">130</span></div>
+    <div class="badge b-noemail" onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">431</span></div>
+    <div class="badge b-bounced" onclick="dashSetFilter('bounced')">Bounced: <span id="s-bounced">449</span></div>
+    <div class="badge b-bad-ig" onclick="dashSetFilter('badig')">Bad IG: <span id="s-badig">306</span></div>
+    <div class="badge b-interested" onclick="dashSetFilter('interested')">👍 <span id="s-interested">21</span></div>
     <div class="badge b-not-interested" onclick="dashSetFilter('notinterested')">👎 <span id="s-notinterested">0</span></div>
-    <div class="badge b-notes"    onclick="dashSetFilter('notes')">Notes: <span id="s-notes">0</span></div>
-    <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">0</span></div>
-    <div class="badge b-problem"  onclick="dashSetFilter('problem')">Problem: <span id="s-problem">0</span></div>
-    <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">0</span></div>
-    <div class="badge b-nodm"     onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">0</span></div>
+    <div class="badge b-notes" onclick="dashSetFilter('notes')">Notes: <span id="s-notes">31</span></div>
+    <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">30</span></div>
+    <div class="badge b-problem" onclick="dashSetFilter('problem')">Problem: <span id="s-problem">4</span></div>
+    <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">5</span></div>
+    <div class="badge b-nodm" onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">91</span></div>
 
   </div>
 
-
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
-    <input type="search" id="dash-search" placeholder="Search by restaurant name..." autocomplete="off" spellcheck="false" style="flex:1;">
+    <input type="text" id="dash-search" placeholder="Search by restaurant name..." autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="none" style="flex:1;">
     <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
   </div>
   <div id="search-result-bar" style="display:none;padding:6px 16px 2px;font-size:12px;font-weight:700;color:#1565C0;background:#E3F2FD;border-bottom:1px solid #BBDEFB;">
@@ -279,68 +234,32 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <span onclick="clearDashSearch()" style="float:right;cursor:pointer;color:#C62828;font-size:13px;">✕ Clear</span>
   </div>
 
-
-
-  <div id="list"></div>
-  <div id="no-results"></div>
+  <div id="list"><div style="height:0px"></div><div class="card bounced" id="dc2"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(2)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(2)">Email Sent</button><button class="btn btn-dm" onclick="openDM(2)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(2)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-26</span><button class="btn btn-bounce-on" onclick="unmarkBounced(2)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(2)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(2)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(2)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(2)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(2)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Italian</div><div class="rname">Carbone Riviera <button onclick="openNameModal(2)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Mario Carbone &nbsp;|&nbsp; <span class="ig">@carboneriviera</span> <button onclick="toggleBadIG(2)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(2)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(2)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(2)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(2)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7026938865" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 693-8865</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">reservations@carboneriviera.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3600 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc3"><div class="card-top"><span class="card-num">#2</span><button class="btn btn-email" onclick="openEmail(3)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(3)">Sent</button><button class="btn btn-dm" onclick="openDM(3)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(3)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(3)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(3)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(3)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(3)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(3)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(3)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Indian</div><div class="rname">Gymkhana <button onclick="openNameModal(3)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Karam Sethi &nbsp;|&nbsp; <span class="ig">@gymkhanalasvegas</span> <button onclick="toggleBadIG(3)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(3)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(3)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(3)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(3)" class="btn btn-followup flagged">Follow Up - 2026-03-25</button></div><div class="info"><a href="tel:7025909600" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 590-9600</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">lasvegas@gymkhanarestaurants.com</span> <span class="attempt-status s-sent">SENT</span></div></div><div class="addr-line">📍 3730 S Las Vegas Blvd, Las Vegas, NV 89158</div><div class="note-preview">📝 Dear Shane,</div></div><div class="card bounced" id="dc4"><div class="card-top"><span class="card-num">#3</span><button class="btn btn-email" onclick="openEmail(4)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(4)">Email Sent</button><button class="btn btn-dm" onclick="openDM(4)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(4)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(4)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(4)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(4)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(4)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(4)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(4)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Pizza</div><div class="rname">How Ya Doughn <button onclick="openNameModal(4)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">How Ya Doughn Inc. &nbsp;|&nbsp; <span class="ig">@howyadoughn</span> <button onclick="toggleBadIG(4)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(4)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(4)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(4)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(4)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:5619001234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (561) 900-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">hello@howyadoughn.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 3200 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc5"><div class="card-top"><span class="card-num">#4</span><button class="btn btn-email" onclick="openEmail(5)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(5)">Email Sent</button><button class="btn btn-dm" onclick="openDM(5)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(5)">Copy DM</button><button class="btn btn-bounce-on" onclick="unmarkBounced(5)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(5)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(5)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(5)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(5)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(5)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">BBQ</div><div class="rname">Virgil's Real BBQ Las Vegas <button onclick="openNameModal(5)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Kevin Sugarman &nbsp;|&nbsp; <span class="ig bad-ig">@virgilsrealbbq (bad IG)</span> <button onclick="toggleBadIG(5)" class="btn btn-bad-ig flagged" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(5)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(5)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(5)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(5)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7023892400" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 389-2400</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">catering@virgilsbbq.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3545 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc7"><div class="card-top"><span class="card-num">#5</span><button class="btn btn-email" onclick="openEmail(7)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(7)">Email Sent</button><button class="btn btn-dm" onclick="openDM(7)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(7)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(7)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(7)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(7)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(7)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(7)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(7)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Detroit Pizza</div><div class="rname">Guerrilla Pizza <button onclick="openNameModal(7)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Guerrilla Pizza LV &nbsp;|&nbsp; <span class="ig">@guerrillapizzaco</span> <button onclick="toggleBadIG(7)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(7)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(7)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(7)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(7)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7252151234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (725) 215-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">info@guerrillapizzaco.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 900 Las Vegas Blvd S Suite 120, Las Vegas, NV 89101</div></div><div class="card bounced" id="dc8"><div class="card-top"><span class="card-num">#6</span><button class="btn btn-email" onclick="openEmail(8)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(8)">Email Sent</button><button class="btn btn-dm" onclick="openDM(8)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(8)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(8)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(8)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(8)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(8)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(8)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(8)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">Peter Luger Steakhouse <button onclick="openNameModal(8)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Marilyn Spiera &nbsp;|&nbsp; <span class="ig">@peterlugersteakhouse</span> <button onclick="toggleBadIG(8)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(8)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(8)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(8)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(8)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027317110" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 731-7110</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">lasvegas@peterluger.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3570 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc9"><div class="card-top"><span class="card-num">#7</span><button class="btn btn-email" onclick="openEmail(9)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(9)">Sent</button><button class="btn btn-dm" onclick="openDM(9)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(9)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(9)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(9)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(9)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(9)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(9)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(9)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Southern</div><div class="rname">Jason Aldeans Kitchen &amp; Bar <button onclick="openNameModal(9)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Jason Aldean &nbsp;|&nbsp; <span class="ig">@jasonaldean</span> <button onclick="toggleBadIG(9)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(9)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(9)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(9)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(9)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7025901234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 590-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">info@jasonaldeankitchenbar.com</span> <span class="attempt-status s-sent">SENT</span></div></div><div class="addr-line">📍 3535 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc10"><div class="card-top"><span class="card-num">#8</span><button class="btn btn-email" onclick="openEmail(10)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(10)">Sent</button><button class="btn btn-dm" onclick="openDM(10)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(10)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(10)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(10)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(10)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(10)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(10)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(10)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Latin Fusion</div><div class="rname">Amador Cocina Fina <button onclick="openNameModal(10)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Oscar Amador &nbsp;|&nbsp; <span class="ig">@amadorcocinafina</span> <button onclick="toggleBadIG(10)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(10)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(10)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(10)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(10)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7026601234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 660-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">info@amadorcocinafina.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3220 S Jones Blvd, Las Vegas, NV 89146</div></div><div class="card pending" id="dc11"><div class="card-top"><span class="card-num">#9</span><button class="btn btn-email" onclick="openEmail(11)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(11)">Email Sent</button><button class="btn btn-dm" onclick="openDM(11)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(11)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(11)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(11)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(11)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(11)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(11)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(11)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Korean Steakhouse</div><div class="rname">Cote Korean Steakhouse <button onclick="openNameModal(11)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Simon Kim &nbsp;|&nbsp; <span class="ig">@cotekoreansteakhouse</span> <button onclick="toggleBadIG(11)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(11)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(11)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(11)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(11)" class="btn btn-followup flagged">Follow Up - 2026-03-25</button></div><div class="info"><a href="tel:7024141234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 414-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">reservations@cotekoreansteakhouse.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3355 S Las Vegas Blvd, Las Vegas, NV 89109</div><div class="note-preview">📝 Hi Shane,</div></div><div class="card pending" id="dc12"><div class="card-top"><span class="card-num">#10</span><button class="btn btn-email" onclick="openEmail(12)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(12)">Email Sent</button><button class="btn btn-dm" onclick="openDM(12)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(12)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(12)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(12)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(12)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(12)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(12)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(12)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Sports Bar</div><div class="rname">F1 Arcade <button onclick="openNameModal(12)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">F1 Arcade Ltd. &nbsp;|&nbsp; <span class="ig">@f1arcade</span> <button onclick="toggleBadIG(12)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(12)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(12)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(12)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(12)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7029001234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 900-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">lasvegas@f1arcade.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3708 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc13"><div class="card-top"><span class="card-num">#11</span><button class="btn btn-email" onclick="openEmail(13)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(13)">Email Sent</button><button class="btn btn-dm" onclick="openDM(13)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(13)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(13)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(13)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(13)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(13)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(13)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(13)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Japanese-American</div><div class="rname">GastroPUB Nisei <button onclick="openNameModal(13)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Chef Winston Matsuuchi &nbsp;|&nbsp; <span class="ig">@gastropub_nisei</span> <button onclick="toggleBadIG(13)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(13)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(13)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(13)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(13)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027781234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 778-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">info@gastropubnisei.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 4785 Spring Mountain Rd, Las Vegas, NV 89102</div></div><div class="card bounced" id="dc14"><div class="card-top"><span class="card-num">#12</span><button class="btn btn-email" onclick="openEmail(14)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(14)">Email Sent</button><button class="btn btn-dm" onclick="openDM(14)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(14)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(14)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(14)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(14)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(14)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(14)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(14)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">High Steaks <button onclick="openNameModal(14)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Chef James Trees &nbsp;|&nbsp; <span class="ig">@highsteaksvegas</span> <button onclick="toggleBadIG(14)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(14)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(14)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(14)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(14)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027777923" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 777-7923</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">reservations@highsteaks.vegas</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 2000 Fashion Show Dr, Las Vegas, NV 89109</div></div><div class="card pending" id="dc15"><div class="card-top"><span class="card-num">#13</span><button class="btn btn-email" onclick="openEmail(15)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(15)">Email Sent</button><button class="btn btn-dm" onclick="openDM(15)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(15)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(15)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(15)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(15)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(15)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(15)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(15)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Japanese Bar</div><div class="rname">Pachi-Pachi <button onclick="openNameModal(15)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Pachi-Pachi LV &nbsp;|&nbsp; <span class="ig">@ilovepachipachi</span> <button onclick="toggleBadIG(15)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(15)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(15)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(15)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(15)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7023851234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 385-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">hello@ilovepachipachi.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 525 E Fremont St, Las Vegas, NV 89101</div></div><div class="card bounced" id="dc17"><div class="card-top"><span class="card-num">#14</span><button class="btn btn-email" onclick="openEmail(17)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(17)">Email Sent</button><button class="btn btn-dm" onclick="openDM(17)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(17)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(17)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(17)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(17)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(17)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(17)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(17)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Chinese</div><div class="rname">Bowl of Fortune <button onclick="openNameModal(17)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Bowl of Fortune LV &nbsp;|&nbsp; <span class="ig">@bowloffortune</span> <button onclick="toggleBadIG(17)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(17)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(17)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(17)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(17)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027761234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 776-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">contact@bowloffortune.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 4215 Spring Mountain Rd, Las Vegas, NV 89102</div></div><div class="card bounced" id="dc18"><div class="card-top"><span class="card-num">#15</span><button class="btn btn-email" onclick="openEmail(18)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(18)">Email Sent</button><button class="btn btn-dm" onclick="openDM(18)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(18)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(18)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(18)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(18)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(18)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(18)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(18)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Spanish</div><div class="rname">Bazaar Meat by Jose Andres <button onclick="openNameModal(18)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Jose Andres &nbsp;|&nbsp; <span class="ig">@bazaarbyjose</span> <button onclick="toggleBadIG(18)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(18)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(18)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(18)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(18)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7024141234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 414-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">bazaarmeat@thebazaar.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3708 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc19"><div class="card-top"><span class="card-num">#16</span><button class="btn btn-email" onclick="openEmail(19)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(19)">Email Sent</button><button class="btn btn-dm" onclick="openDM(19)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(19)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(19)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(19)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(19)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(19)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(19)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(19)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Italian</div><div class="rname">ai Pazzi <button onclick="openNameModal(19)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Fabio Viviani &nbsp;|&nbsp; <span class="ig">@aipazzi</span> <button onclick="toggleBadIG(19)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(19)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(19)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(19)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(19)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7025075012" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 507-5012</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">info@aipazzi.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 221 N Rampart Blvd, Las Vegas, NV 89145</div></div><div style="height:556640px"></div></div>
+  <div id="no-results" style="display: none;"></div>
 
   <div class="scroller" id="dash-scroller">
     <div class="sc-arrow" id="dash-scUp">▲</div>
-    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb"></div></div>
+    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb" style="height: 40px; top: 0px;"></div></div>
     <div class="sc-arrow" id="dash-scDown">▼</div>
     <div class="sc-pct" id="dash-scPct">0%</div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════ BATCH QUEUE VIEW ═══════════════════════════════ -->
-<div class="view" id="view-batch">
+<div id="dm-toast">DM copied!</div>
 
-  <div class="hdr">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="switchView('dashboard')" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Back</button>
-      <h1 style="font-size:16px;color:#fff;font-weight:800;">Batch Queue</h1>
+<div class="modal-backdrop" id="token-modal-backdrop">
+  <div class="modal">
+    <h2>GitHub Token</h2>
+    <p class="modal-sub">Needs <b>repo</b> scope. Saved to this device only.</p>
+    <label for="token-modal-input">Personal Access Token *</label>
+    <input type="password" id="token-modal-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" style="font-family:monospace;font-size:12px;">
+    <p style="font-size:11px;color:#888;margin-top:8px;">Get one at github.com → Settings → Developer settings → Personal access tokens</p>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeTokenModal()">Cancel</button>
+      <button class="btn btn-save" onclick="saveTokenAndPush()">Save &amp; Push</button>
     </div>
-    <div class="sub">@lasvegas_restaurants &nbsp;|&nbsp; Max 2000 per 24 hours</div>
-  </div>
-
-  <div class="pace-wrap">
-    <div class="pace-row">
-      <div class="pace-stat green"><div class="val" id="stat-sent-today">0</div><div class="lbl">Sent Today</div></div>
-      <div class="pace-stat yellow"><div class="val" id="stat-remaining-today">2000</div><div class="lbl">Left Today</div></div>
-      <div class="pace-stat"><div class="val" id="stat-batch-done">0</div><div class="lbl">This Batch</div></div>
-      <div class="pace-stat"><div class="val" id="stat-total-pending">0</div><div class="lbl">Total Pending</div></div>
-    </div>
-    <div class="limit-bar"><div class="limit-fill" id="limit-fill" style="width:0%"></div></div>
-    <div class="limit-label"><span>0</span><span>Daily Gmail: 2000</span><span>2000</span></div>
-  </div>
-
-  <div class="notice info" id="bq-notice">Tap <b>Email</b> to compose, then tap <b>Sent ✓</b> ONLY after it goes out in Gmail.</div>
-
-  <div class="batch-ctrl">
-    <div class="batch-info">Batch <b id="batch-label">1</b> &nbsp;|&nbsp; <span id="batch-range">—</span></div>
-    <button class="btn-batch btn-prev" onclick="prevBatch()">Prev</button>
-    <button class="btn-batch btn-next" onclick="nextBatch()">Next</button>
-    <button class="btn-batch btn-newday" onclick="resetDay()">New Day</button>
-
-  </div>
-
-  <div class="search-wrap">
-    <input type="search" id="bq-search" placeholder="Search by name in this batch..." autocomplete="off" spellcheck="false">
-  </div>
-
-  <div id="bq-list"></div>
-  <div id="bq-no-results"></div>
-
-  <div class="scroller" id="bq-scroller">
-    <div class="sc-arrow" id="bq-scUp">▲</div>
-    <div class="sc-track" id="bq-scTrack"><div class="sc-thumb" id="bq-scThumb"></div></div>
-    <div class="sc-arrow" id="bq-scDown">▼</div>
-    <div class="sc-pct" id="bq-scPct">0%</div>
   </div>
 </div>
-
-
-<div id="dm-toast">DM copied!</div>
 
 <!-- ADD NEW RECORD MODAL -->
 <div class="modal-backdrop" id="add-record-backdrop">
@@ -348,42 +267,41 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <h2>Add New Restaurant</h2>
     <div class="modal-sub">Saved to this device — appears in your backup file</div>
     <label>Restaurant Name *</label>
-    <input type="text" id="ar-name" placeholder="e.g. Joe's Seafood">
+    <input type="text" id="ar-name" placeholder="e.g. Joe's Seafood" autocapitalize="words">
     <label>Owner / Contact Name</label>
     <input type="text" id="ar-owner" placeholder="e.g. Joe Smith">
     <label>Instagram Handle</label>
-    <input type="text" id="ar-instagram" placeholder="e.g. @joesseafoodlv">
+    <input type="text" id="ar-instagram" placeholder="e.g. @joesseafoodlv" autocapitalize="none" autocorrect="off">
     <label>Phone</label>
     <input type="tel" id="ar-phone" placeholder="e.g. (702) 555-1234">
     <label>Email</label>
-    <input type="email" id="ar-email" placeholder="e.g. info@joesseafood.com" autocomplete="off">
+    <input type="text" id="ar-email" placeholder="e.g. info@joesseafood.com" autocomplete="off" autocapitalize="none" inputmode="email">
     <label>Cuisine Type</label>
     <input type="text" id="ar-cuisine" placeholder="e.g. Seafood, American">
     <label>Address</label>
     <input type="text" id="ar-address" placeholder="e.g. 123 Main St, Las Vegas, NV">
     <label>Notes</label>
-    <textarea id="ar-notes" placeholder="Optional notes" maxlength="1000" style="height:60px;"></textarea>
+    <textarea id="ar-notes" placeholder="Optional notes" maxlength="1000" style="height:100px;"></textarea>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeAddRecord()">Cancel</button>
       <button class="btn btn-save" onclick="saveNewRecord()">Add Restaurant</button>
     </div>
   </div>
 </div>
-<div id="delete-confirm" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#B71C1C;color:#fff;padding:12px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:99999;align-items:center;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.4);"></div>
+<div id="delete-confirm" style="display:none;position:fixed;bottom:90px;left:16px;right:16px;transform:none;background:#B71C1C;color:#fff;padding:14px 20px;border-radius:16px;font-size:14px;font-weight:700;z-index:99999;align-items:center;justify-content:center;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);"></div>
 
 <div class="modal-backdrop" id="name-modal-backdrop">
   <div class="modal">
     <h2 id="name-modal-title">Edit Name</h2>
     <p class="modal-sub" id="name-modal-sub"></p>
     <label for="name-modal-input">Restaurant Name *</label>
-    <input type="text" id="name-modal-input" placeholder="e.g. Butcher & Thief" autocomplete="off" spellcheck="false">
+    <input type="text" id="name-modal-input" placeholder="e.g. Butcher &amp; Thief" autocapitalize="words" autocomplete="off" spellcheck="false">
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeNameModal()">Cancel</button>
       <button class="btn btn-save" onclick="saveName()">Save</button>
     </div>
   </div>
 </div>
-
 
 <div class="modal-backdrop" id="note-modal-backdrop">
   <div class="modal">
@@ -404,31 +322,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   </div>
 </div>
 
-
   <div class="modal-backdrop" id="ig-modal-backdrop">
   <div class="modal">
     <h2 id="ig-modal-title">Edit Instagram</h2>
     <p class="modal-sub" id="ig-modal-sub"></p>
     <label for="ig-modal-input">Instagram Handle *</label>
-    <input type="text" id="ig-modal-input" placeholder="e.g. @restaurantname" autocomplete="off" spellcheck="false">
+    <input type="text" id="ig-modal-input" placeholder="e.g. @restaurantname" autocomplete="off" spellcheck="false" autocapitalize="none" autocorrect="off">
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeIGModal()">Cancel</button>
       <button class="btn btn-save" onclick="saveIG()">Save</button>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal-backdrop" id="token-modal-backdrop">
-  <div class="modal">
-    <h2>GitHub Token</h2>
-    <p class="modal-sub">Needs <b>repo</b> or <b>contents:write</b> scope. Saved to this device only.</p>
-    <label for="token-modal-input">Personal Access Token *</label>
-    <input type="password" id="token-modal-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" spellcheck="false" style="font-family:monospace;font-size:12px;">
-    <p style="font-size:11px;color:#888;margin-top:8px;">Get one at github.com → Settings → Developer settings → Personal access tokens</p>
-    <div class="modal-actions">
-      <button class="btn btn-cancel" onclick="closeTokenModal()">Cancel</button>
-      <button class="btn btn-save" onclick="saveTokenAndPush()">Save &amp; Push</button>
     </div>
   </div>
 </div>
@@ -439,7 +341,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <p class="modal-sub" id="modal-sub"></p>
     <div id="modal-history"></div>
     <label for="modal-email-input" id="modal-email-label">Email Address *</label>
-    <input type="email" id="modal-email-input" placeholder="e.g. manager@restaurant.com" autocomplete="off" spellcheck="false">
+    <input type="text" id="modal-email-input" placeholder="e.g. manager@restaurant.com" autocomplete="off" spellcheck="false" autocapitalize="none" inputmode="email">
     <label for="modal-note-input">Note (optional)</label>
     <textarea id="modal-note-input" placeholder="e.g. Found on their Instagram bio / from bounce-back email"></textarea>
     <div class="modal-actions">
@@ -448,7 +350,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     </div>
   </div>
 </div>
-
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -1612,9 +1513,6 @@ var RESTAURANTS_BASE = [
 // STORAGE
 // ══════════════════════════════════════════════════════
 var LS_STATUS    = 'lv_outreach_status_v4';
-var LS_USER_ATTEMPTS = 'lv_user_attempts_v1'; // tracks records where user manually edited email
-var LS_BATCH     = 'lv_outreach_batch_v4';
-var LS_TODAY     = 'lv_outreach_today_v5';
 var LS_ATTEMPTS  = 'lv_outreach_attempts_v5';
 var LS_DM        = 'lv_outreach_dm_v1';
 var LS_BAD_IG    = 'lv_outreach_bad_ig_v1';
@@ -1628,22 +1526,22 @@ var LS_DELETED        = 'lv_outreach_deleted_v1';
 var LS_PROBLEM        = 'lv_outreach_problem_v1';
 var LS_CUSTOM_RECORDS = 'lv_outreach_custom_records_v1';
 var LS_FOODTRADE      = 'lv_outreach_foodtrade_v1';
-var DAILY_LIMIT  = 2000;
-
+var LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
 
 function loadStatuses()  { try { return JSON.parse(localStorage.getItem(LS_STATUS))   || {}; } catch(e) { return {}; } }
 function loadAttempts()  { try { return JSON.parse(localStorage.getItem(LS_ATTEMPTS)) || {}; } catch(e) { return {}; } }
 function loadDMDates()   { try { return JSON.parse(localStorage.getItem(LS_DM))       || {}; } catch(e) { return {}; } }
 function saveStatuses()  { try { localStorage.setItem(LS_STATUS, JSON.stringify(statusMap)); } catch(e) {} lsSaved(); }
+function saveAttemptsAndStatuses() {
+  try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); localStorage.setItem(LS_STATUS, JSON.stringify(statusMap)); } catch(e) {}
+  lsSaved();
+}
 function saveDMDates()   { try { localStorage.setItem(LS_DM, JSON.stringify(dmMap));  } catch(e) {} lsSaved(); }
 function loadBadIG()       { try { return JSON.parse(localStorage.getItem(LS_BAD_IG))       || {}; } catch(e) { return {}; } }
 function saveBadIG()       { try { localStorage.setItem(LS_BAD_IG, JSON.stringify(badIGMap)); } catch(e) {} lsSaved(); }
 function loadIGOverride()  { try { return JSON.parse(localStorage.getItem(LS_IG_OVERRIDE))  || {}; } catch(e) { return {}; } }
-function saveIGOverride()  { try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {} lsSaved(); }
 function loadUserNotes()   { try { return JSON.parse(localStorage.getItem(LS_USER_NOTES))   || {}; } catch(e) { return {}; } }
-function saveUserNotes()   { try { localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap)); } catch(e) {} lsSaved(); }
 function loadNameOverride() { try { return JSON.parse(localStorage.getItem(LS_NAME_OVERRIDE)) || {}; } catch(e) { return {}; } }
-function saveNameOverride() { try { localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); } catch(e) {} lsSaved(); }
 function loadFollowup()     { try { return JSON.parse(localStorage.getItem(LS_FOLLOWUP))      || {}; } catch(e) { return {}; } }
 function saveFollowup()     { try { localStorage.setItem(LS_FOLLOWUP, JSON.stringify(followupMap)); } catch(e) {} lsSaved(); }
 function loadInterested()     { try { return JSON.parse(localStorage.getItem(LS_INTERESTED))     || {}; } catch(e) { return {}; } }
@@ -1651,56 +1549,15 @@ function saveInterested()     { try { localStorage.setItem(LS_INTERESTED,     JS
 function loadNotInterested()  { try { return JSON.parse(localStorage.getItem(LS_NOT_INTERESTED)) || {}; } catch(e) { return {}; } }
 function saveNotInterested()  { try { localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); } catch(e) {} lsSaved(); }
 function loadDeleted()        { try { return JSON.parse(localStorage.getItem(LS_DELETED))        || {}; } catch(e) { return {}; } }
-function saveDeleted()        { try { localStorage.setItem(LS_DELETED, JSON.stringify(deletedMap)); } catch(e) {} lsSaved(); }
-function saveAll() {
-  try {
-    localStorage.setItem(LS_STATUS,       JSON.stringify(statusMap));
-    localStorage.setItem(LS_ATTEMPTS,     JSON.stringify(attemptsMap));
-    localStorage.setItem(LS_DM,           JSON.stringify(dmMap));
-    localStorage.setItem(LS_BAD_IG,       JSON.stringify(badIGMap));
-    localStorage.setItem(LS_INTERESTED,   JSON.stringify(interestedMap));
-    localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap));
-    localStorage.setItem(LS_IG_OVERRIDE,  JSON.stringify(igOverrideMap));
-    localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap));
-    localStorage.setItem(LS_USER_NOTES,   JSON.stringify(userNotesMap));
-    localStorage.setItem(LS_PROBLEM,      JSON.stringify(problemMap));
-    localStorage.setItem(LS_FOLLOWUP,     JSON.stringify(followupMap));
-    localStorage.setItem(LS_DELETED,      JSON.stringify(deletedMap));
-    localStorage.setItem(LS_FOODTRADE,    JSON.stringify(foodTradeMap));
-    localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords));
-    localStorage.setItem(LS_TODAY,        JSON.stringify({stamps: _todayStamps}));
-    localStorage.setItem(LS_USER_ATTEMPTS, JSON.stringify(userAttemptsMap));
-  } catch(e) {}
-  lsSaved();
-}
+
 function loadProblem()        { try { return JSON.parse(localStorage.getItem(LS_PROBLEM))        || {}; } catch(e) { return {}; } }
 function saveProblem()        { try { localStorage.setItem(LS_PROBLEM, JSON.stringify(problemMap)); } catch(e) {} lsSaved(); }
 function loadCustomRecords()  { try { return JSON.parse(localStorage.getItem(LS_CUSTOM_RECORDS))  || []; } catch(e) { return []; } }
 function loadFoodTrade()       { try { return JSON.parse(localStorage.getItem(LS_FOODTRADE))       || {}; } catch(e) { return {}; } }
 function saveFoodTrade()       { try { localStorage.setItem(LS_FOODTRADE, JSON.stringify(foodTradeMap)); } catch(e) {} lsSaved(); }
 function saveCustomRecords()  { try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} lsSaved(); }
-function loadBD() {
-  try {
-    var d = JSON.parse(localStorage.getItem(LS_BATCH));
-    if (!d || d.date !== todayStr()) return {date:todayStr(),sentSet:[],batchIndex:0};
-    return d;
-  } catch(e) { return {date:todayStr(),sentSet:[],batchIndex:0}; }
-}
-function loadToday() {
-  // Returns a Set of nums sent within the last 24 hours
-  try {
-    var d = JSON.parse(localStorage.getItem(LS_TODAY));
-    if (!d || !d.stamps) return new Set();
-    var now = Date.now(), cutoff = now - 86400000; // 24 hours
-    var result = new Set();
-    Object.keys(d.stamps).forEach(function(num) {
-      if (d.stamps[num] > cutoff) result.add(parseInt(num));
-    });
-    return result;
-  } catch(e) { return new Set(); }
-}
 // ══════════════════════════════════════════════════════
-// LOCAL SAVE STATUS (Firebase removed — localStorage only)
+// LOCAL SAVE STATUS
 // ══════════════════════════════════════════════════════
 function lsStatus(color, msg) {
   var dot = document.getElementById('fb-dot');
@@ -1717,6 +1574,14 @@ function lsSaved() {
   lsStatus('#4CAF50', 'Saved ' + lsTs());
 }
 
+function saveAttempts() { try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); } catch(e) {} lsSaved(); }
+
+function fbLoad() {
+  _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
+  dashSetFilter('all'); dashUpdateStats();
+  lsStatus('#4CAF50', '✓ Data loaded — ' + lsTs());
+}
+
 // ══════════════════════════════════════════════════════
 // EXPORT / IMPORT BACKUP
 // ══════════════════════════════════════════════════════
@@ -1724,7 +1589,6 @@ function exportBackup() {
   var payload = {
     _backupVersion: 1,
     _exportedAt: new Date().toISOString(),
-    _note: 'LV Dashboard backup — import this file to restore all data',
     status:        statusMap,
     attempts:      attemptsMap,
     dm:            dmMap,
@@ -1739,32 +1603,21 @@ function exportBackup() {
     problem:       problemMap,
     customrecords: customRecords,
     foodtrade:     foodTradeMap,
-    userattempts:  userAttemptsMap,
-    batch: BD ? { date: BD.date, sentSet: Array.from(BD.sentSet), batchIndex: BD.batchIndex } : null,
-    today: { stamps: _todayStamps }
+    userattempts:  userAttemptsMap
   };
   var json = JSON.stringify(payload, null, 2);
   var ts = new Date().toISOString().slice(0,10);
   var filename = 'lv-dashboard-backup-' + ts + '.json';
   var blob = new Blob([json], { type: 'application/json' });
-
-  // On iPhone: use Web Share API to open native share sheet (includes Google Drive, Files, etc.)
   if (navigator.share && navigator.canShare) {
-    var file = new File([blob], filename, { type: 'application/json' });
-    if (navigator.canShare({ files: [file] })) {
-      navigator.share({
-        files: [file],
-        title: 'LV Dashboard Backup',
-        text: 'Backup from ' + ts
-      }).then(function() {
-        lsStatus('#4CAF50', 'Backup shared!');
-      }).catch(function(e) {
-        if (e.name !== 'AbortError') _exportFallback(blob, filename);
-      });
+    var shareFile = new File([blob], filename, { type: 'application/json' });
+    if (navigator.canShare({ files: [shareFile] })) {
+      navigator.share({ files: [shareFile], title: 'LV Dashboard Backup', text: 'Backup ' + ts })
+        .then(function() { lsStatus('#4CAF50', 'Backup saved!'); })
+        .catch(function(e) { if (e.name !== 'AbortError') _exportFallback(blob, filename); });
       return;
     }
   }
-  // Fallback for desktop/Android
   _exportFallback(blob, filename);
 }
 
@@ -1779,43 +1632,117 @@ function _exportFallback(blob, filename) {
   setTimeout(function(){ lsStatus('#4CAF50', 'Synced ' + lsTs()); }, 3000);
 }
 
+function exportCSV() {
+  // Build CSV with all restaurant data — opens directly in Excel/Numbers
+  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Sent Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Bad IG'];
+  var rows = [headers];
+
+  for (var i = 0; i < RESTAURANTS.length; i++) {
+    var r = RESTAURANTS[i];
+    var s = statusMap[r.num] || r.defaultStatus;
+    var attempts = attemptsMap[r.num] || [];
+    // Get best email and its status
+    var bestEmail = '', emailStatus = '';
+    for (var j = 0; j < attempts.length; j++) {
+      if (attempts[j].status === 'sent' && attempts[j].email) { bestEmail = attempts[j].email; emailStatus = 'Sent'; break; }
+    }
+    if (!bestEmail) {
+      for (var k = 0; k < attempts.length; k++) {
+        if (attempts[k].status === 'pending' && attempts[k].email) { bestEmail = attempts[k].email; emailStatus = 'Pending'; break; }
+      }
+    }
+    if (!bestEmail) {
+      for (var m = 0; m < attempts.length; m++) {
+        if (attempts[m].status === 'bounced' && attempts[m].email) { bestEmail = attempts[m].email; emailStatus = 'Bounced'; break; }
+      }
+    }
+
+    var dmDate = dmMap[r.num] || '';
+    var note = userNotesMap[r.num] || '';
+    var followup = followupMap[r.num] ? followupMap[r.num].slice(0,10) : '';
+    var sentDate = getSentDate(r.num) ? getSentDate(r.num).slice(0,10) : '';
+
+    rows.push([
+      r.num,
+      nameOverrideMap[r.num] || r.name,
+      s.charAt(0).toUpperCase() + s.slice(1),
+      bestEmail,
+      emailStatus,
+      igOverrideMap[r.num] || r.instagram,
+      dmDate ? dmDate.slice(0,10) : '',
+      r.cuisine,
+      r.owner,
+      r.phone,
+      r.address,
+      r.notes,
+      note,
+      interestedMap[r.num] ? 'Yes' : '',
+      notInterestedMap[r.num] ? 'Yes' : '',
+      followup,
+      problemMap[r.num] ? 'Yes' : '',
+      foodTradeMap[r.num] ? 'Yes' : '',
+      badIGMap[r.num] ? 'Yes' : '',
+      sentDate
+    ]);
+  }
+
+  // Convert to CSV string — wrap fields in quotes, escape internal quotes
+  var csv = rows.map(function(row) {
+    return row.map(function(cell) {
+      var s = String(cell == null ? '' : cell);
+      // Escape quotes and wrap in quotes if contains comma, quote, or newline
+      if (s.indexOf(',') !== -1 || s.indexOf('"') !== -1 || s.indexOf('\n') !== -1) {
+        s = '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    }).join(',');
+  }).join('\n');
+
+  // Add BOM for Excel to recognize UTF-8
+  var bom = '\uFEFF';
+  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  var ts = new Date().toISOString().slice(0,10);
+  var filename = 'lv-restaurants-' + ts + '.csv';
+
+  // Use share sheet so Google Drive appears as a save option
+  if (navigator.share && navigator.canShare) {
+    var shareFile = new File([blob], filename, { type: 'text/csv' });
+    if (navigator.canShare({ files: [shareFile] })) {
+      navigator.share({ files: [shareFile], title: 'LV Restaurants Excel Export', text: 'Restaurant data ' + ts })
+        .then(function() { lsStatus('#4CAF50', 'Excel exported to Google Drive!'); })
+        .catch(function(e) { if (e.name !== 'AbortError') _exportFallback(blob, filename); });
+      return;
+    }
+  }
+  // Fallback for desktop
+  _exportFallback(blob, filename);
+}
 
 function importBackup(event) {
   var file = event.target.files[0];
   if (!file) return;
   event.target.value = '';
-  if (!confirm('Restore from backup?\n\nThis will REPLACE all current data with the backup file.\n\nMake sure you want to do this.')) return;
+  if (!confirm('Restore from backup?\n\nThis will REPLACE all current data.\n\nMake sure you want to do this.')) return;
   var reader = new FileReader();
   reader.onload = function(e) {
     var rec;
     try { rec = JSON.parse(e.target.result); } catch(err) { alert('Could not read file. Make sure it is a valid .json backup.'); return; }
-    if (!rec || rec._backupVersion !== 1) { alert('This does not look like a valid LV Dashboard backup file.'); return; }
-    if (rec.status)        { statusMap        = rec.status;        localStorage.setItem(LS_STATUS,         JSON.stringify(statusMap)); }
-    if (rec.attempts)      { attemptsMap      = rec.attempts;      localStorage.setItem(LS_ATTEMPTS,       JSON.stringify(attemptsMap)); }
-    if (rec.dm)            { dmMap            = rec.dm;            localStorage.setItem(LS_DM,             JSON.stringify(dmMap)); }
-    if (rec.badig)         { badIGMap         = rec.badig;         localStorage.setItem(LS_BAD_IG,         JSON.stringify(badIGMap)); }
-    if (rec.igovr)         { igOverrideMap    = rec.igovr;         localStorage.setItem(LS_IG_OVERRIDE,    JSON.stringify(igOverrideMap)); }
-    if (rec.usernotes)     { userNotesMap     = rec.usernotes;     localStorage.setItem(LS_USER_NOTES,     JSON.stringify(userNotesMap)); }
-    if (rec.nameoverride)  { nameOverrideMap  = rec.nameoverride;  localStorage.setItem(LS_NAME_OVERRIDE,  JSON.stringify(nameOverrideMap)); }
-    if (rec.followup)      { followupMap      = rec.followup;      localStorage.setItem(LS_FOLLOWUP,       JSON.stringify(followupMap)); }
-    if (rec.interested)    { interestedMap    = rec.interested;    localStorage.setItem(LS_INTERESTED,     JSON.stringify(interestedMap)); }
-    if (rec.notinterested) { notInterestedMap = rec.notinterested; localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); }
-    if (rec.deleted)       { deletedMap       = rec.deleted;       localStorage.setItem(LS_DELETED,        JSON.stringify(deletedMap)); }
-    if (rec.problem)       { problemMap       = rec.problem;       localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); }
-    if (rec.customrecords) { customRecords    = rec.customrecords; localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); }
-    if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); }
-    if (rec.userattempts) { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS, JSON.stringify(userAttemptsMap)); } catch(e) {} }
-    if (rec.batch) {
-      BD = { date: rec.batch.date, sentSet: new Set(rec.batch.sentSet || []), batchIndex: rec.batch.batchIndex || 0 };
-      localStorage.setItem(LS_BATCH, JSON.stringify({ date: BD.date, sentSet: Array.from(BD.sentSet), batchIndex: BD.batchIndex }));
-    }
-    if (rec.today && rec.today.stamps) {
-      var _rt = rec.today.stamps, _rNow = Date.now(), _rCut = _rNow - 86400000;
-      _todayStamps = {};
-      sentToday = new Set();
-      Object.keys(_rt).forEach(function(k){ if(_rt[k]>_rCut){ var n=parseInt(k); _todayStamps[n]=_rt[k]; sentToday.add(n); } });
-      try { localStorage.setItem(LS_TODAY, JSON.stringify({stamps:_todayStamps})); } catch(e) {}
-    }
+    if (!rec || !rec._backupVersion) { alert('This does not look like a valid LV Dashboard backup file.'); return; }
+    if (rec.status)        { statusMap        = rec.status;        try { localStorage.setItem(LS_STATUS,         JSON.stringify(statusMap)); } catch(e) {} }
+    if (rec.attempts)      { attemptsMap      = rec.attempts;      try { localStorage.setItem(LS_ATTEMPTS,       JSON.stringify(attemptsMap)); } catch(e) {} }
+    if (rec.dm)            { dmMap            = rec.dm;            try { localStorage.setItem(LS_DM,             JSON.stringify(dmMap)); } catch(e) {} }
+    if (rec.badig)         { badIGMap         = rec.badig;         try { localStorage.setItem(LS_BAD_IG,         JSON.stringify(badIGMap)); } catch(e) {} }
+    if (rec.igovr)         { igOverrideMap    = rec.igovr;         try { localStorage.setItem(LS_IG_OVERRIDE,    JSON.stringify(igOverrideMap)); } catch(e) {} }
+    if (rec.usernotes)     { userNotesMap     = rec.usernotes;     try { localStorage.setItem(LS_USER_NOTES,     JSON.stringify(userNotesMap)); } catch(e) {} }
+    if (rec.nameoverride)  { nameOverrideMap  = rec.nameoverride;  try { localStorage.setItem(LS_NAME_OVERRIDE,  JSON.stringify(nameOverrideMap)); } catch(e) {} }
+    if (rec.followup)      { followupMap      = rec.followup;      try { localStorage.setItem(LS_FOLLOWUP,       JSON.stringify(followupMap)); } catch(e) {} }
+    if (rec.interested)    { interestedMap    = rec.interested;    try { localStorage.setItem(LS_INTERESTED,     JSON.stringify(interestedMap)); } catch(e) {} }
+    if (rec.notinterested) { notInterestedMap = rec.notinterested; try { localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); } catch(e) {} }
+    if (rec.deleted)       { deletedMap       = rec.deleted;       try { localStorage.setItem(LS_DELETED,        JSON.stringify(deletedMap)); } catch(e) {} }
+    if (rec.problem)       { problemMap       = rec.problem;       try { localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); } catch(e) {} }
+    if (rec.customrecords) { customRecords    = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
+    if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     try { localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); } catch(e) {} }
+    if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
     _numToIdx = Object.create(null);
     RESTAURANTS = RESTAURANTS_BASE.filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
       _numToIdx[r.num] = i;
@@ -1854,223 +1781,15 @@ function importBackup(event) {
       });
       _numToIdx[_cr.num] = RESTAURANTS.length - 1;
     }
-    _invalidatePending();
-    _cachedMaxNum = 0;
-    _statEls = null;
-    _dashDirty = true;
-    dashSetFilter('all'); // always reset to all after restore
-    dashUpdateStats();
-    // allow save after restore
-    alert('Backup restored! ✓\n\nAll your data is loaded and saved on this device.');
+    _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
+    dashSetFilter('all'); dashUpdateStats();
+    lsSaved();
+    alert('Backup restored! ✓\n\nAll your data is loaded.');
     lsStatus('#4CAF50', 'Restored ✓ — ' + lsTs());
   };
   reader.readAsText(file);
 }
 
-function fbLoad() {
-  // Data loaded from localStorage at boot — just refresh UI
-  _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
-  dashSetFilter('all'); dashUpdateStats();
-  lsStatus('#4CAF50', '✓ Data loaded — ' + lsTs());
-}
-
-
-// ══════════════════════════════════════════════════════
-// PUSH TO GITHUB
-// ══════════════════════════════════════════════════════
-var GH_REPO = 'lasvegasrestaurants/lv-dashboard';
-var GH_FILE = 'index.html';
-var GH_API  = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE;
-var LS_GH_TOKEN = 'lv_gh_token';
-
-function getGHToken() { try { return localStorage.getItem(LS_GH_TOKEN) || ''; } catch(e) { return ''; } }
-
-function resetGHToken() {
-  try { localStorage.removeItem(LS_GH_TOKEN); } catch(e) {}
-  var btn = document.getElementById('gh-push-btn');
-  btn.textContent = 'Token cleared';
-  setTimeout(function(){ btn.textContent = '⬆ GitHub'; }, 2000);
-}
-
-function pushToGitHub() {
-  var token = getGHToken();
-  if (!token) {
-    document.getElementById('token-modal-input').value = '';
-    document.getElementById('token-modal-backdrop').classList.add('open');
-    setTimeout(function(){ document.getElementById('token-modal-input').focus(); }, 200);
-    return;
-  }
-  _doPush(token);
-}
-
-function closeTokenModal() {
-  document.getElementById('token-modal-backdrop').classList.remove('open');
-}
-
-function saveTokenAndPush() {
-  var token = document.getElementById('token-modal-input').value.trim();
-  if (!token) return;
-  try { localStorage.setItem(LS_GH_TOKEN, token); } catch(e) {}
-  closeTokenModal();
-  _doPush(token);
-}
-
-function _doPush(token) {
-  var btn = document.getElementById('gh-push-btn');
-  btn.disabled = true;
-
-  function _reset(msg) {
-    btn.disabled = false;
-    btn.textContent = msg || '⬆ GitHub';
-    if (msg && msg !== '⬆ GitHub') {
-      setTimeout(function(){ btn.textContent = '⬆ GitHub'; }, 5000);
-    }
-  }
-
-  function _badToken() {
-    localStorage.removeItem(LS_GH_TOKEN);
-    _reset('⬆ GitHub');
-    document.getElementById('token-modal-input').value = '';
-    document.getElementById('token-modal-backdrop').classList.add('open');
-    setTimeout(function(){ document.getElementById('token-modal-input').focus(); }, 200);
-  }
-
-  function _encode(html) {
-    return new Promise(function(resolve, reject) {
-      try {
-        // Convert to UTF-8 bytes
-        var bytes = new TextEncoder().encode(html);
-        var len = bytes.length;
-        var CHUNK = 3000; // must be multiple of 3 for clean base64
-        var parts = [];
-        var pos = 0;
-
-        function processChunk() {
-          try {
-            var end = Math.min(pos + CHUNK, len);
-            var slice = bytes.subarray(pos, end);
-            var binary = '';
-            for (var i = 0; i < slice.length; i++) {
-              binary += String.fromCharCode(slice[i]);
-            }
-            parts.push(btoa(binary));
-            pos = end;
-            if (pos < len) {
-              // Yield to browser between chunks so iOS doesn't kill it
-              setTimeout(processChunk, 0);
-            } else {
-              resolve(parts.join(''));
-            }
-          } catch(e) { reject('chunk error: ' + e.message); }
-        }
-
-        processChunk();
-      } catch(e) {
-        reject('encode error: ' + e.message);
-      }
-    });
-  }
-
-  // Step 1: Get SHA
-  btn.textContent = 'Connecting...';
-  fetch(GH_API, {
-    method: 'GET',
-    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
-  })
-  .then(function(r) {
-    if (r.status === 401) { _badToken(); return Promise.reject('done'); }
-    if (r.status === 404) { _reset('File not found on GitHub'); return Promise.reject('done'); }
-    if (!r.ok) { _reset('GitHub error ' + r.status); return Promise.reject('done'); }
-    return r.json();
-  })
-  .then(function(data) {
-    if (!data || !data.sha) { _reset('No SHA — check repo'); return Promise.reject('done'); }
-    // Step 2: Encode
-    btn.textContent = 'Encoding...';
-    var html = document.documentElement.outerHTML;
-    // 45 second timeout for encoding on slow devices
-    var encodeTimeout = setTimeout(function() {
-      btn.textContent = 'Encoding slow...';
-    }, 10000);
-    return _encode(html).then(function(encoded) {
-      clearTimeout(encodeTimeout);
-      return {sha: data.sha, encoded: encoded};
-    }).catch(function(err) {
-      clearTimeout(encodeTimeout);
-      return Promise.reject(err);
-    });
-  })
-  .then(function(obj) {
-    if (!obj || !obj.encoded) { _reset('Encode failed'); return Promise.reject('done'); }
-    // Step 3: Push
-    btn.textContent = 'Uploading...';
-    return fetch(GH_API, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: 'Dashboard update ' + new Date().toISOString().slice(0,16).replace('T',' '),
-        content: obj.encoded,
-        sha: obj.sha
-      })
-    });
-  })
-  .then(function(r) {
-    if (!r) return;
-    if (r.status === 401) { _badToken(); return; }
-    if (r.ok) {
-      _reset('Pushed! Reload in 1-2 min');
-      setTimeout(function(){ btn.textContent = 'Push to GitHub'; }, 5000);
-    } else {
-      return r.json().then(function(d) {
-        _reset((d && d.message) ? d.message.slice(0,40) : 'Push failed ' + r.status);
-      }).catch(function(){ _reset('Push failed ' + r.status); });
-    }
-  })
-  .catch(function(err) {
-    if (err === 'done') return;
-    console.error('GitHub push error:', err);
-    if (String(err).indexOf('encode') >= 0) { _reset('Encoding failed — retry'); return; }
-    _reset('Failed — check connection');
-  });
-}
-
-
-
-function saveAttempts()  { try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap));} catch(e) {} lsSaved(); }
-function saveBD()        { try { localStorage.setItem(LS_BATCH, JSON.stringify({date:BD.date,sentSet:Array.from(BD.sentSet),batchIndex:BD.batchIndex})); } catch(e) {} lsSaved(); }
-
-var _todayStamps = {}; // track original timestamps
-// Pre-populate from stored stamps
-(function() {
-  try {
-    var d = JSON.parse(localStorage.getItem(LS_TODAY));
-    if (d && d.stamps) {
-      var now = Date.now(), cutoff = now - 86400000;
-      Object.keys(d.stamps).forEach(function(k) {
-        if (d.stamps[k] > cutoff) _todayStamps[parseInt(k)] = d.stamps[k];
-      });
-    }
-  } catch(e) {}
-})();
-function saveToday() {
-  try {
-    var now = Date.now();
-    sentToday.forEach(function(num) {
-      if (!_todayStamps[num]) _todayStamps[num] = now;
-    });
-    if (sentToday.size > 0) {
-      Object.keys(_todayStamps).forEach(function(k) {
-        if (!sentToday.has(parseInt(k))) delete _todayStamps[k];
-      });
-    }
-    localStorage.setItem(LS_TODAY, JSON.stringify({stamps: _todayStamps}));
-    // today stamps saved to localStorage above
-  } catch(e) {}
-}
 function _localDate(d) {
   // Use local time, not UTC
   var y = d.getFullYear();
@@ -2078,7 +1797,6 @@ function _localDate(d) {
   var day = d.getDate();
   return y + '-' + (mo<10?'0'+mo:mo) + '-' + (day<10?'0'+day:day);
 }
-function todayStr() { return _localDate(new Date()); }
 function nowStr() {
   var d = new Date();
   var date = _localDate(d);
@@ -2109,9 +1827,7 @@ var userAttemptsMap  = (function(){ try { return JSON.parse(localStorage.getItem
 // Pre-flag known bad IG accounts — use localStorage only, no Firebase trigger on every load
 if (!badIGMap[5]) { badIGMap[5] = true; try { localStorage.setItem(LS_BAD_IG, JSON.stringify(badIGMap)); } catch(e) {} }
 if (dmMap[5]) { delete dmMap[5]; try { localStorage.setItem(LS_DM, JSON.stringify(dmMap)); } catch(e) {} }
-var _bd         = loadBD();
-var BD          = {date:_bd.date, sentSet:new Set(_bd.sentSet||[]), batchIndex:_bd.batchIndex||0};
-var sentToday   = loadToday();
+function _invalidatePending() {} // no-op — batch queue removed
 
 // Build restaurant index + precompute fields
 var _numToIdx = Object.create(null);
@@ -2149,10 +1865,10 @@ var RESTAURANTS = RESTAURANTS_BASE.filter(function(r){ return !deletedMap[r.num]
     defaultStatus: r.defaultStatus,
     status:    statusMap[r.num] || r.defaultStatus,
     attempts:  attemptsMap[r.num] || [],
-    _search:  ((nameOverrideMap[r.num]||r.name)+r.owner+r.cuisine+(igOverrideMap[r.num]||r.instagram)+r.email+(r.newEmail||'')+(r.address||'')+(r.notes||'')+r.phone+(userNotesMap[r.num]||'')).toLowerCase()
+    _search:  (nameOverrideMap[r.num]||r.name).toLowerCase()
   };
 });
-// Save seeded attempts to localStorage only — don't trigger Firebase on every page load
+// Save seeded attempts
 try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); } catch(e) {}
 
 // Merge custom records into RESTAURANTS
@@ -2164,7 +1880,7 @@ for (var _ci = 0; _ci < customRecords.length; _ci++) {
   }
   RESTAURANTS.push({
     num: _cr.num, name: nameOverrideMap[_cr.num] || _cr.name, owner: _cr.owner || '',
-    instagram: igOverrideMap[_cr.num] || _cr.instagram || '', igHandle: (_cr.instagram || '').replace(/^@/,''),
+    instagram: igOverrideMap[_cr.num] || _cr.instagram || '', igHandle: (igOverrideMap[_cr.num] || _cr.instagram || '').replace(/^@/,''),
     phone: _cr.phone || '', phoneLink: (_cr.phone||'').replace(/\D/g,''),
     cuisine: _cr.cuisine || '', notes: _cr.notes || '', address: _cr.address || '',
     defaultStatus: 'pending', status: statusMap[_cr.num] || 'pending',
@@ -2174,10 +1890,6 @@ for (var _ci = 0; _ci < customRecords.length; _ci++) {
   _numToIdx[_cr.num] = RESTAURANTS.length - 1;
 }
 
-// Index already built correctly above — just ensure consistency
-_numToIdx = Object.create(null);
-for (var _di = 0; _di < RESTAURANTS.length; _di++) { _numToIdx[RESTAURANTS[_di].num] = _di; }
-
 function _rIdx(num) { return _numToIdx[num]; }
 function getR(num)  { return RESTAURANTS[_rIdx(num)]; }
 function _esc(s) {
@@ -2186,18 +1898,16 @@ function _esc(s) {
 
 function toggleFoodTrade(num) {
   if (foodTradeMap[num]) { delete foodTradeMap[num]; } else { foodTradeMap[num] = true; }
-  saveFoodTrade(); lsSaved();
+  saveFoodTrade();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 function toggleProblem(num) {
   if (problemMap[num]) { delete problemMap[num]; } else { problemMap[num] = true; }
-  saveProblem(); lsSaved();
+  saveProblem();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 // Cached max record number for fast new record creation
@@ -2237,7 +1947,7 @@ function saveNewRecord() {
   }
   // Use cached max num (updated when records added)
   var newNum = _getNextNum();
-  var emailVal = document.getElementById('ar-email').value.trim();
+  var emailVal = document.getElementById('ar-email').value.trim().toLowerCase();
   if (emailVal && (emailVal.indexOf('@') < 0 || emailVal.indexOf('.') < 0)) {
     var eEl = document.getElementById('ar-email');
     eEl.style.borderColor = '#C62828';
@@ -2256,10 +1966,10 @@ function saveNewRecord() {
     notes:     document.getElementById('ar-notes').value.trim() || 'Manually added'
   };
   customRecords.push(rec);
-  saveCustomRecords();
+  try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {}
   attemptsMap[newNum] = [{email: rec.email, status: 'pending', date: null, note: ''}];
-  saveAttempts();
-  lsSaved();
+  statusMap[newNum] = 'pending';
+  saveAttemptsAndStatuses();
   RESTAURANTS.push({
     num: newNum, name: rec.name, owner: rec.owner,
     instagram: rec.instagram, igHandle: rec.instagram.replace(/^@/,''),
@@ -2333,9 +2043,6 @@ function confirmDelete(num) {
     localStorage.setItem(LS_FOLLOWUP,     JSON.stringify(followupMap));
     localStorage.setItem(LS_DELETED,      JSON.stringify(deletedMap));
     localStorage.setItem(LS_FOODTRADE,    JSON.stringify(foodTradeMap));
-    localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords));
-    localStorage.setItem(LS_TODAY,        JSON.stringify({stamps: _todayStamps}));
-    localStorage.setItem(LS_USER_ATTEMPTS, JSON.stringify(userAttemptsMap));
   } catch(e) {}
   
   lsSaved();
@@ -2344,8 +2051,6 @@ function confirmDelete(num) {
     if (customRecords[_cdi].num === num) { customRecords.splice(_cdi,1); saveCustomRecords(); break; }
   }
   // Remove from sent tracking so daily count is accurate
-  if (sentToday.has(num)) { sentToday.delete(num); saveToday(); }
-  if (BD.sentSet.has(num)) { BD.sentSet.delete(num); saveBD(); }
   var idx = _numToIdx[num];
   if (idx !== undefined) {
     RESTAURANTS.splice(idx, 1);
@@ -2355,9 +2060,7 @@ function confirmDelete(num) {
   _statEls = null; // invalidate stat DOM cache
   _invalidatePending(); _dashDirty = true;
   dashRender(); dashUpdateStats();
-  if (currentView === 'batch') bqRender();
 }
-
 
 // Always returns the best available email — pending first, then sent, then bounced, then any
 function getBestEmail(num) {
@@ -2368,16 +2071,16 @@ function getBestEmail(num) {
     if (attempts[i].status === 'pending' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
   }
   // 2nd choice: most recent sent email (so we can re-send)
-  for (var i=attempts.length-1; i>=0; i--) {
-    if (attempts[i].status === 'sent' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var j=attempts.length-1; j>=0; j--) {
+    if (attempts[j].status === 'sent' && attempts[j].email && attempts[j].email !== BAD) return attempts[j].email;
   }
   // 3rd choice: last bounced
-  for (var i=attempts.length-1; i>=0; i--) {
-    if (attempts[i].status === 'bounced' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var k=attempts.length-1; k>=0; k--) {
+    if (attempts[k].status === 'bounced' && attempts[k].email && attempts[k].email !== BAD) return attempts[k].email;
   }
   // 4th choice: any non-empty email at all
-  for (var i=0; i<attempts.length; i++) {
-    if (attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var m=0; m<attempts.length; m++) {
+    if (attempts[m].email && attempts[m].email !== BAD) return attempts[m].email;
   }
   return null;
 }
@@ -2429,6 +2132,7 @@ function _buildOutreachMsg(name) {
 function copyDM(num) {
   var r = getR(num);
   if (!r) return;
+  if (badIGMap[num]) { showDMToast('Bad IG flagged — fix handle before DMing'); return; }
   var n = r.name;
   var msg = _buildOutreachMsg(n);
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2452,20 +2156,18 @@ function showDMToast(msg) {
   _toastTimer = setTimeout(function(){ t.style.opacity = '0'; }, 2000);
 }
 
-
 function openDM(num) {
   var r = getR(num);
   if (!r) return;
+  if (badIGMap[num]) { showDMToast('Bad IG flagged — fix the handle first'); return; }
   if (!r.igHandle) { showDMToast('No Instagram handle — use Edit IG to add one'); return; }
   // Only stamp if not already stamped — preserve original DM date
   if (!dmMap[num] || dmMap[num] === 'pending') {
     dmMap[num] = nowStr();
     saveDMDates();
   }
-  lsSaved();
   _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
   setTimeout(function() { window.location.href = 'https://ig.me/m/' + r.igHandle; }, 50);
 }
 
@@ -2478,21 +2180,17 @@ function openEmail(num) {
     var input = prompt('Enter email address for ' + r.name + ':');
     if (!input) return; // cancelled
     input = input.trim();
+    input = input.toLowerCase();
     if (input.indexOf('@') < 0 || input.indexOf('.') < 0) { showDMToast('Invalid email address'); return; }
     // Save it so it's there next time
     if (!attemptsMap[num]) attemptsMap[num] = [];
     attemptsMap[num].push({email: input, status: 'pending', date: null, note: ''});
-    userAttemptsMap[num] = true;
-    try { localStorage.setItem(LS_USER_ATTEMPTS, JSON.stringify(userAttemptsMap)); } catch(e) {}
-    saveAttempts();
-    lsSaved();
+    saveAttempts(); // calls lsSaved()
     _dashDirty = true;
     dashRefreshCard(num);
     addr = input;
   }
   var link = buildMailtoLink(addr, r.name);
-  // save before navigating away
-  lsSaved();
   setTimeout(function() { window.location.href = link; }, 50);
 }
 
@@ -2524,8 +2222,8 @@ function openEditEmail(num) {
     if (attempts[i].status === 'pending') { bestIdx = i; break; }
   }
   if (bestIdx < 0) {
-    for (var i=attempts.length-1; i>=0; i--) {
-      if (attempts[i].status === 'bounced') { bestIdx = i; break; }
+    for (var j2=attempts.length-1; j2>=0; j2--) {
+      if (attempts[j2].status === 'bounced') { bestIdx = j2; break; }
     }
   }
   if (bestIdx < 0 && attempts.length > 0) bestIdx = 0;
@@ -2587,7 +2285,8 @@ function selectEmailToEdit(idx) {
 }
 
 function saveEmail() {
-  var emailVal = document.getElementById('modal-email-input').value.trim();
+  if (!_modalNum) return; // guard against null if modal was closed
+  var emailVal = document.getElementById('modal-email-input').value.trim().toLowerCase();
   var noteVal  = document.getElementById('modal-note-input').value.trim();
   if (!emailVal || emailVal.indexOf('@') < 0) {
     document.getElementById('modal-email-input').style.borderColor='#C62828';
@@ -2598,36 +2297,21 @@ function saveEmail() {
   if (!attemptsMap[num]) attemptsMap[num] = [];
 
   if (_editAttemptIdx >= 0) {
-    // Editing existing
     attemptsMap[num][_editAttemptIdx].email = emailVal;
     attemptsMap[num][_editAttemptIdx].note  = noteVal;
-    // If editing a bounced attempt, reset it to pending
     if (attemptsMap[num][_editAttemptIdx].status === 'bounced') {
       attemptsMap[num][_editAttemptIdx].status = 'pending';
       attemptsMap[num][_editAttemptIdx].date = null;
-      // Reset overall status to pending since we now have a pending attempt
-      if (statusMap[num] === 'bounced') { statusMap[num] = 'pending'; saveStatuses(); }
+      if (statusMap[num] === 'bounced') statusMap[num] = 'pending';
     }
   } else {
-    // Adding new email — set to pending, don't override status
     attemptsMap[num].push({email: emailVal, status: 'pending', date: null, note: noteVal});
-    // Only reset to pending if currently bounced with no pending emails
-    if (statusMap[num] === 'bounced') {
-      statusMap[num] = 'pending';
-      saveStatuses();
-    }
+    if (statusMap[num] === 'bounced') statusMap[num] = 'pending';
   }
-  userAttemptsMap[num] = true; // mark that user has manually edited email for this record
-  try { localStorage.setItem(LS_USER_ATTEMPTS, JSON.stringify(userAttemptsMap)); } catch(e) {}
-  saveAttempts();
-  // Clear timers AFTER all saves so any lsSaved() calls above can't re-arm
-  lsSaved();
+  saveAttemptsAndStatuses();
   // Update live restaurant object's _search so search finds the new email
-  var _r17 = getR(num);
-  if (_r17) {
-    var _em17 = (attemptsMap[num]||[]).map(function(a){return a.email||'';}).join(' ');
-    _r17._search = (_r17.name+(_r17.owner||'')+(_r17.cuisine||'')+(igOverrideMap[num]||_r17.instagram||'')+_em17+(_r17.address||'')+(_r17.notes||'')+_r17.phone+(userNotesMap[num]||'')).toLowerCase();
-  }
+  var rLive = getR(num);
+  if (rLive) rLive._search = (nameOverrideMap[num]||rLive.name).toLowerCase();
   _invalidatePending(); _dashDirty=true;
   // Reset to add-new mode and re-render history
   _editAttemptIdx = -1;
@@ -2638,7 +2322,6 @@ function saveEmail() {
   _renderModalHistory(num);
   document.getElementById('modal-sub').textContent = 'Saved! Add another email below or tap Cancel to close.';
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView==='batch') bqRender();
   // Keep modal open so user can see updated history
 }
 
@@ -2662,15 +2345,11 @@ function markAttemptBounced(num) {
     last.date   = last.date || nowStr();
   }
   statusMap[num] = 'bounced';
-  var _r15=getR(num); if(_r15) _r15.status='bounced'; // update live object
+  var r2=getR(num); if(r2) r2.status='bounced';
   // Remove from sent-today count since it bounced
-  if (sentToday.has(num)) { sentToday.delete(num); _todayStamps[num] && delete _todayStamps[num]; saveToday(); }
-  if (BD.sentSet.has(num)) { BD.sentSet.delete(num); saveBD(); }
-  saveAttempts(); saveStatuses();
-  lsSaved();
+  saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView==='batch') { bqRefreshCard(num); bqUpdatePaceBar(); }
 }
 
 // Un-bounce (toggle back to pending on current or last attempt)
@@ -2684,12 +2363,10 @@ function unmarkBounced(num) {
   // Only move to pending if there are no more bounced attempts
   var stillBounced = attempts.some(function(a){ return a.status==='bounced'; });
   statusMap[num] = stillBounced ? 'bounced' : 'pending';
-  var _r16=getR(num); if(_r16) _r16.status=statusMap[num]; // update live object
-  saveAttempts(); saveStatuses();
-  lsSaved();
+  var r3=getR(num); if(r3) r3.status=statusMap[num];
+  saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView==='batch') { bqRefreshCard(num); bqUpdatePaceBar(); }
 }
 
 // Mark current active attempt as sent
@@ -2702,16 +2379,15 @@ function markAttemptSent(num, fromEmail) {
   if (idx<0) idx = getActiveAttemptIdx(num);
   // If no pending attempt found, stamp the last sent one instead
   if (idx<0) {
-    for (var i=attempts.length-1; i>=0; i--) {
-      if (attempts[i].status==='sent') { idx=i; break; }
+    for (var j3=attempts.length-1; j3>=0; j3--) {
+      if (attempts[j3].status==='sent') { idx=j3; break; }
     }
   }
-  // If still nothing, stamp the first attempt
   if (idx<0 && attempts.length>0) idx=0;
 
   if (idx>=0) { attempts[idx].status='sent'; attempts[idx].date=nowStr(); }
   statusMap[num]='sent';
-  saveAttempts(); saveStatuses();
+  saveAttemptsAndStatuses();
   _invalidatePending();
 }
 
@@ -2742,20 +2418,12 @@ function saveName() {
   var num = _nameModalNum;
   nameOverrideMap[num] = val;
   try { localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); } catch(e) {}
-   // mark local has changes not yet in Firebase
   lsSaved();
   var r = getR(num);
-  if (r) {
-    r.name = val;
-    var _attempts2 = attemptsMap[r.num] || [];
-    var _emails2 = _attempts2.map(function(a){ return a.email||''; }).join(' ');
-    r._search = val.toLowerCase();
-  }
+  if (r) { r.name = val; r._search = val.toLowerCase(); }
   closeNameModal();
-  _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
+  _invalidatePending(); _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
 }
-
 
 var _noteModalNum = null;
 
@@ -2763,7 +2431,11 @@ function openNoteModal(num) {
   _noteModalNum = num;
   var r = getR(num);
   if (!r) return;
-  closeModal(); closeIGModal(); closeNameModal(); closeAddRecord(); closeTokenModal();
+  // Close any other open modals cleanly
+  if (document.getElementById('modal-backdrop').classList.contains('open')) closeModal();
+  if (document.getElementById('ig-modal-backdrop').classList.contains('open')) closeIGModal();
+  if (document.getElementById('name-modal-backdrop').classList.contains('open')) closeNameModal();
+  if (document.getElementById('add-record-backdrop').classList.contains('open')) closeAddRecord();
   document.getElementById('note-modal-title').textContent = r.name;
   document.getElementById('note-modal-sub').textContent = 'Your private note for this restaurant.';
   document.getElementById('note-modal-input').value = userNotesMap[num] || '';
@@ -2872,16 +2544,10 @@ function saveNote() {
   
   lsSaved();
   var r = getR(num);
-  if (r) {
-    var _att = attemptsMap[num] || [];
-    var _em = _att.map(function(a){return a.email||'';}).join(' ');
-    r._search = r.name.toLowerCase();
-  }
+  if (r) { r._search = r.name.toLowerCase(); }
   closeNoteModal();
   _invalidatePending(); _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
-
 
 var _igModalNum = null;
 
@@ -2922,24 +2588,7 @@ function saveIG() {
     r._search = (nameOverrideMap[r.num]||r.name).toLowerCase();
   }
   closeIGModal();
-  _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
-}
-
-
-var currentView='dashboard';
-var _vDash  = document.getElementById('view-dashboard') || {classList:{toggle:function(){},add:function(){},remove:function(){}}};
-var _vBatch = document.getElementById('view-batch') || {classList:{toggle:function(){},add:function(){},remove:function(){}}};
-
-function switchView(v) {
-  currentView=v;
-  cancelDelete();
-  var d=(v==='dashboard');
-  _vDash.classList.toggle('active',d);
-  _vBatch.classList.toggle('active',!d);
-  // Always clear batch search when switching views
-  bqSearch=''; document.getElementById('bq-search').value='';
-  d ? dashRender() : bqRender();
+  _dashDirty = true; _invalidatePending(); dashRefreshCard(num); dashUpdateStats();
 }
 
 // ══════════════════════════════════════════════════════
@@ -2952,53 +2601,37 @@ function toggleBadIG(num) {
     badIGMap[num] = true;
     if (dmMap[num]) { delete dmMap[num]; saveDMDates(); }
   }
-  saveBadIG(); lsSaved();
+  saveBadIG();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 function toggleInterested(num) {
   if (interestedMap[num]) { delete interestedMap[num]; }
   else { interestedMap[num] = true; delete notInterestedMap[num]; try { localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); } catch(e) {} }
-  saveInterested(); lsSaved();
+  saveInterested();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 function toggleNotInterested(num) {
   if (notInterestedMap[num]) { delete notInterestedMap[num]; }
   else { notInterestedMap[num] = true; delete interestedMap[num]; try { localStorage.setItem(LS_INTERESTED, JSON.stringify(interestedMap)); } catch(e) {} }
-  saveNotInterested(); lsSaved();
+  saveNotInterested();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 function toggleFollowup(num) {
   if (followupMap[num]) { delete followupMap[num]; }
   else { followupMap[num] = nowStr(); }
-  saveFollowup(); lsSaved();
+  saveFollowup();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
-}
-
-function recordDM(num) {
-  if (badIGMap[num]) return;
-  if (dmMap[num] && dmMap[num] !== 'pending') return;
-  // Save immediately — no delay
-  dmMap[num] = nowStr();
-  saveDMDates();
-  lsSaved();
-  _dashDirty = true;
-  dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') bqRefreshCard(num);
 }
 
 // ══════════════════════════════════════════════════════
-// CARD BUILDER — shared between dash + batch
+// CARD BUILDER — dashboard
 // ══════════════════════════════════════════════════════
 function _buildAttemptHistory(num) {
   var attempts = attemptsMap[num] || [];
@@ -3006,8 +2639,8 @@ function _buildAttemptHistory(num) {
   // Show the most relevant email: sent first (for sent restaurants), then pending, then bounced, then any
   var best = null;
   for (var i=0; i<attempts.length; i++) { if (attempts[i].status==='sent'&&attempts[i].email) { best=attempts[i]; } } // last sent
-  if (!best) { for (var i=0; i<attempts.length; i++) { if (attempts[i].status==='pending'&&attempts[i].email) { best=attempts[i]; break; } } }
-  if (!best) { for (var i=attempts.length-1; i>=0; i--) { if (attempts[i].email) { best=attempts[i]; break; } } }
+  if (!best) { for (var i2=0; i2<attempts.length; i2++) { if (attempts[i2].status==='pending'&&attempts[i2].email) { best=attempts[i2]; break; } } }
+  if (!best) { for (var i3=attempts.length-1; i3>=0; i3--) { if (attempts[i3].email) { best=attempts[i3]; break; } } }
   if (!best || !best.email) return '';
   var sc = best.status==='bounced'?'s-bounced':best.status==='sent'?'s-sent':'s-pending';
   var ec = best.status==='bounced'?'bounced-em':best.status==='sent'?'sent-em':'pending-em';
@@ -3024,7 +2657,7 @@ function _buildAttemptHistory(num) {
   return html;
 }
 
-function _buildCard(r, bqMode, displayNum) {
+function _buildCard(r, displayNum) {
   var s = statusMap[r.num] || r.defaultStatus;
   var isSent    = s==='sent';
   var isBounced = s==='bounced';
@@ -3034,8 +2667,6 @@ function _buildCard(r, bqMode, displayNum) {
   var isInterested    = !!interestedMap[r.num];
   var isNotInterested = !!notInterestedMap[r.num];
   var cls = isSent?'sent':isBounced?'bounced':'pending';
-  var idPfx = bqMode?'bqc':'dc';
-
 
   var phoneLine = r.phoneLink
     ?'<div class="info"><a href="tel:'+r.phoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 '+_esc(r.phone)+'</a></div>'
@@ -3046,35 +2677,19 @@ function _buildCard(r, bqMode, displayNum) {
 
   btns += '<button class="btn btn-email" onclick="openEmail('+r.num+')">✉️ Email</button>';
 
-  if (!bqMode) {
-    // Dashboard — Email Sent button on EVERY card
-    btns += '<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="manualMarkSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
-    btns += '<button class="btn btn-dm" onclick="openDM('+r.num+')">DM</button>';
-    btns += '<button class="btn btn-copy-dm" onclick="copyDM('+r.num+')">Copy DM</button>';
-    if (dmDate && dmDate !== 'pending') btns += '<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
-    else if (!isBadIG) btns += '<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
-    btns += '<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'unmarkBounced':'markAttemptBounced')+'('+r.num+')">Bounced</button>';
-    btns += '<button class="btn btn-note'+(userNotesMap[r.num]?' has-note':'')+'" onclick="openNoteModal('+r.num+')">Note</button>';
-    btns += '<button class="btn btn-foodtrade'+(foodTradeMap[r.num]?' flagged':'')+'" onclick="toggleFoodTrade('+r.num+')">Food Trade</button>';
-    btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
-    btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
-    btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
-  } else {
-    // Batch queue
-    btns += '<button class="btn btn-done'+(isSent?' marked':'')+'" onclick="bqManualSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
-    btns += '<button class="btn btn-dm" onclick="openDM('+r.num+')">DM</button>';
-    btns += '<button class="btn btn-copy-dm" onclick="copyDM('+r.num+')">Copy DM</button>';
-    if (dmDate && dmDate !== 'pending') btns += '<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
-    else if (!isBadIG) btns += '<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
-    btns += '<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'unmarkBounced':'markAttemptBounced')+'('+r.num+')">Bounce</button>';
-    btns += '<button class="btn btn-note'+(userNotesMap[r.num]?' has-note':'')+'" onclick="openNoteModal('+r.num+')">Note</button>';
-    btns += '<button class="btn btn-foodtrade'+(foodTradeMap[r.num]?' flagged':'')+'" onclick="toggleFoodTrade('+r.num+')">Food Trade</button>';
-    btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
-    btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
-    btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
-  }
+  btns += '<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="manualMarkSent('+r.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
+  btns += '<button class="btn btn-dm" onclick="openDM('+r.num+')">DM</button>';
+  btns += '<button class="btn btn-copy-dm" onclick="copyDM('+r.num+')">Copy DM</button>';
+  if (dmDate && dmDate !== 'pending') btns += '<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
+  else if (!isBadIG) btns += '<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
+  btns += '<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'unmarkBounced':'markAttemptBounced')+'('+r.num+')">Bounced</button>';
+  btns += '<button class="btn btn-note'+(userNotesMap[r.num]?' has-note':'')+'" onclick="openNoteModal('+r.num+')">Note</button>';
+  btns += '<button class="btn btn-foodtrade'+(foodTradeMap[r.num]?' flagged':'')+'" onclick="toggleFoodTrade('+r.num+')">Food Trade</button>';
+  btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
+  btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
+  btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
 
-  var html = '<div class="card '+cls+'" id="'+idPfx+r.num+'">'
+  var html = '<div class="card '+cls+'" id="dc'+r.num+'">'
     +'<div class="card-top">'+btns+'</div>'
     +'<div class="ctag">'+_esc(r.cuisine)+'</div>'
     +'<div class="rname">'+_esc(nameOverrideMap[r.num]||r.name)+' <button onclick="openNameModal('+r.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div>'
@@ -3099,7 +2714,7 @@ function _buildCard(r, bqMode, displayNum) {
 // DASHBOARD
 // ══════════════════════════════════════════════════════
 var dashFilter='all', dashSearch='', _dashFiltered=[], _dashDirty=true, _dashRafPending=false;
-var CARD_EST_H=520, RENDER_BUFFER=12, _dashRenderedRange=[-1,-1]; // increased: buttons are now larger
+var CARD_EST_H=560, RENDER_BUFFER=14, _dashRenderedRange=[-1,-1]; // generous estimate prevents gaps
 var _dashList=document.getElementById('list')||{}, _dashNR=document.getElementById('no-results')||{};
 var _dashViewEl=document.getElementById('view-dashboard')||{};
 
@@ -3127,8 +2742,8 @@ function _doSearch(val){
   if(dashFilter!=='all'){
     dashFilter='all';
     document.querySelectorAll('.stats .badge').forEach(function(b){b.classList.remove('active-badge');});
-    var el=document.querySelector('.b-total');if(el)el.classList.add('active-badge');
   }
+  var _tb=document.querySelector('.b-total');if(_tb)_tb.classList.add('active-badge');
   _dashViewEl.scrollTop=0;
   _dashRenderedRange=[-1,-1];
   _dashDirty=true;
@@ -3141,10 +2756,9 @@ try{
   });
   _si.addEventListener('input',function(){ clearTimeout(_dsTimer); var v=this.value.toLowerCase().trim(); _dsTimer=setTimeout(function(){_doSearch(v);},80); });
   // Note: keyup removed — 'input' already fires on every keystroke including delete/paste
-  // Handle the X clear button on iOS search input
-  _si.addEventListener('search',function(){ _doSearch(''); });
 }catch(e){}
 
+function dashUpdateSlider(){var v=document.getElementById('view-dashboard');if(v&&v._updateSlider)v._updateSlider();}
 function dashScheduleRender(){
   if(_dashRafPending)return; _dashRafPending=true;
   requestAnimationFrame(function(){_dashRafPending=false;dashRender();});
@@ -3166,7 +2780,7 @@ function _refilter(){
     if(f==='problem'       &&!problemMap[r.num])           continue;
     if(f==='foodtrade'     &&!foodTradeMap[r.num])         continue;
     if(f==='nodm'          &&(dmMap[r.num]||badIGMap[r.num]||s!=='pending'))  continue;
-    if(q&&(nameOverrideMap[r.num]||r.name).toLowerCase().indexOf(q)!==0) continue;
+    if(q&&(nameOverrideMap[r.num]||r.name).toLowerCase().indexOf(q)===-1) continue;
     _dashFiltered.push(i);
   }
 }
@@ -3191,14 +2805,17 @@ function dashRender(){
   } else if(srBar){
     srBar.style.display='none';
   }
+  var _scroller = document.getElementById('dash-scroller');
   if(total===0){
     _dashList.innerHTML=''; _dashNR.style.display='block';
-    _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'Everyone has been emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
+    _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'No restaurants waiting to be emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
+    if(_scroller) _scroller.style.display='none';
     dashUpdateStats();dashUpdateSlider();return;
   }
+  if(_scroller) _scroller.style.display='';
   _dashNR.style.display='none';
   if(total<=60){
-    var html='';for(var i=0;i<total;i++)html+=_buildCard(RESTAURANTS[_dashFiltered[i]],false,i+1);
+    var html='';for(var i=0;i<total;i++)html+=_buildCard(RESTAURANTS[_dashFiltered[i]],i+1);
     _dashList.innerHTML=html;_dashRenderedRange=[0,total-1];
   } else { _dashVirtualRender(); }
   dashUpdateStats();dashUpdateSlider();
@@ -3211,7 +2828,7 @@ function _dashVirtualRender(){
   if(_dashRenderedRange[0]===first&&_dashRenderedRange[1]===last)return;
   _dashRenderedRange=[first,last];
   var html='<div style="height:'+(first*CARD_EST_H)+'px"></div>';
-  for(var i=first;i<=last;i++)html+=_buildCard(RESTAURANTS[_dashFiltered[i]],false,i+1);
+  for(var i=first;i<=last;i++)html+=_buildCard(RESTAURANTS[_dashFiltered[i]],i+1);
   html+='<div style="height:'+((total-1-last)*CARD_EST_H)+'px"></div>';
   _dashList.innerHTML=html;
 }
@@ -3227,11 +2844,9 @@ function dashRefreshCard(num){
   var el=document.getElementById('dc'+num);if(!el)return;
   var idx=_rIdx(num),pos=-1;
   for(var i=0;i<_dashFiltered.length;i++){if(_dashFiltered[i]===idx){pos=i;break;}}
-  var tmp=document.createElement('div');tmp.innerHTML=_buildCard(getR(num),false,pos>=0?pos+1:null);
+  var tmp=document.createElement('div');tmp.innerHTML=_buildCard(getR(num),pos>=0?pos+1:null);
   el.parentNode.replaceChild(tmp.firstElementChild,el);
 }
-
-
 
 // Manual Sent toggle
 function manualMarkSent(num){
@@ -3242,19 +2857,14 @@ function manualMarkSent(num){
     for(var i=attempts.length-1;i>=0;i--){if(attempts[i].status==='sent'){attempts[i].status='pending';attempts[i].date=null;break;}}
     var hasBounced=attempts.some(function(a){return a.status==='bounced';});
     statusMap[num]=hasBounced?'bounced':'pending';
-    var _r14=getR(num); if(_r14) _r14.status=statusMap[num]; // update live object
-    saveAttempts();saveStatuses();
-    sentToday.delete(num);saveToday();BD.sentSet.delete(num);saveBD();
-    lsSaved();
+    var _rlive=getR(num); if(_rlive) _rlive.status=statusMap[num];
+    saveAttemptsAndStatuses();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
-    if (currentView === 'batch') { bqUpdatePaceBar(); }
   } else {
     markAttemptSent(num,null);
-    var _r14b=getR(num); if(_r14b) _r14b.status='sent'; // update live object
-    sentToday.add(num);saveToday();BD.sentSet.add(num);saveBD();
-    lsSaved();
+    var _rlive2=getR(num); if(_rlive2) _rlive2.status='sent';
+    saveAttemptsAndStatuses();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
-    if (currentView === 'batch') { bqUpdatePaceBar(); }
   }
 }
 
@@ -3304,214 +2914,6 @@ function dashUpdateStats(){
   if(el.foodtrade)el.foodtrade.textContent=foodtrade;
 }
 
-// ══════════════════════════════════════════════════════
-// BATCH QUEUE
-// ══════════════════════════════════════════════════════
-var BATCH_SIZE=50,bqSearch='',_bqPending=null;
-
-function _getPending(){
-  if(_bqPending)return _bqPending;
-  _bqPending=RESTAURANTS.filter(function(r){var s=statusMap[r.num]||r.defaultStatus;return s==='pending';});
-  return _bqPending;
-}
-function _invalidatePending(){_bqPending=null;}
-function getTotalBatches(){return Math.max(1,Math.ceil(_getPending().length/BATCH_SIZE));}
-function getBatchItems(){
-  var p=_getPending(),start=BD.batchIndex*BATCH_SIZE,items=p.slice(start,start+BATCH_SIZE);
-  if(bqSearch){var q=bqSearch;items=items.filter(function(r){return (nameOverrideMap[r.num]||r.name).toLowerCase().indexOf(q)===0;});}
-  return items;
-}
-function nextBatch(){BD.batchIndex=Math.min(BD.batchIndex+1,getTotalBatches()-1);saveBD();bqSearch='';document.getElementById('bq-search').value='';bqRender();}
-function prevBatch(){BD.batchIndex=Math.max(0,BD.batchIndex-1);saveBD();bqSearch='';document.getElementById('bq-search').value='';bqRender();}
-function resetDay() {
-  if (!confirm('Start a new day? This resets today\'s sent count.')) return;
-  BD={date:todayStr(),sentSet:new Set(),batchIndex:0};
-  sentToday=new Set();
-  _todayStamps={};
-  saveBD(); saveToday();
-  lsSaved();
-  _invalidatePending();
-  _dashDirty=true;
-  dashUpdateStats();
-  bqRender();
-}
-
-function bqManualSent(num){
-  var s = statusMap[num] || (getR(num) ? getR(num).defaultStatus : 'pending');
-  if(s === 'sent'){
-    var attempts=attemptsMap[num]||[];
-    for(var i=attempts.length-1;i>=0;i--){if(attempts[i].status==='sent'){attempts[i].status='pending';attempts[i].date=null;break;}}
-    var hasBounced=attempts.some(function(a){return a.status==='bounced';});
-    statusMap[num]=hasBounced?'bounced':'pending';
-    var _rb=getR(num); if(_rb) _rb.status=statusMap[num];
-    saveAttempts();saveStatuses();
-    BD.sentSet.delete(num);saveBD();sentToday.delete(num);saveToday();
-    lsSaved();
-    _invalidatePending();_dashDirty=true;dashUpdateStats();dashRefreshCard(num);bqRefreshCard(num);bqUpdatePaceBar();
-  } else {
-    if(sentToday.size>=DAILY_LIMIT){alert('Daily limit of '+DAILY_LIMIT+' reached!');return;}
-    markAttemptSent(num,null);
-    var _rs=getR(num); if(_rs) _rs.status='sent';
-    BD.sentSet.add(num);saveBD();sentToday.add(num);saveToday();
-    lsSaved();
-    _invalidatePending();_dashDirty=true;dashUpdateStats();dashRefreshCard(num);bqRefreshCard(num);bqUpdatePaceBar();
-  }
-}
-
-function bqRefreshCard(num){
-  var el=document.getElementById('bqc'+num);if(!el)return;
-  // Try to find position in current batch items first
-  var items=getBatchItems();
-  var pos=0;for(var i=0;i<items.length;i++){if(items[i].num===num){pos=i+1;break;}}
-  // If not found (e.g. just marked sent), find position in full pending list
-  if(!pos){var p=_getPending();for(var j=0;j<p.length;j++){if(p[j].num===num){pos=j+1;break;}}}
-  var tmp=document.createElement('div');tmp.innerHTML=_buildCard(getR(num),true,pos||null);
-  el.parentNode.replaceChild(tmp.firstElementChild,el);
-}
-
-function bqUpdatePaceBar(){
-  var sentCt=sentToday.size,left=Math.max(0,DAILY_LIMIT-sentCt),pending=_getPending().length;
-  var pct=Math.min(100,(sentCt/DAILY_LIMIT)*100);
-  var batchItems=_getPending().slice(BD.batchIndex*BATCH_SIZE,(BD.batchIndex+1)*BATCH_SIZE),bDone=0;
-  for(var i=0;i<batchItems.length;i++)if(BD.sentSet.has(batchItems[i].num))bDone++;
-  var items=getBatchItems();
-  document.getElementById('stat-sent-today').textContent     =sentCt;
-  document.getElementById('stat-remaining-today').textContent=left;
-  document.getElementById('stat-total-pending').textContent  =pending;
-  document.getElementById('stat-batch-done').textContent     =bDone;
-  document.getElementById('limit-fill').style.width=pct+'%';
-  var remEl=document.getElementById('stat-remaining-today').parentElement;
-  remEl.className='pace-stat'+(left===0?' red':left<400?' yellow':' green');
-  var nb=document.getElementById('bq-notice');
-  if(left===0){nb.className='notice stop';nb.innerHTML='<b>Daily limit reached!</b> Come back tomorrow or tap New Day.';}
-  else if(sentCt===0){nb.className='notice info';nb.innerHTML='Tap <b>Email</b> — it auto-marks sent when you return. Tap Bounce if it bounces.';}
-  else if(left<=200){nb.className='notice warn';nb.innerHTML='<b>Almost at limit!</b> '+left+' emails left today.';}
-  else{nb.className='notice good';nb.innerHTML='<b>'+sentCt+' sent today</b> &nbsp;·&nbsp; <b>'+left+' remaining</b> &nbsp;·&nbsp; <b>'+pending+' total pending</b>';}
-}
-
-var _bqSrTimer=0;
-try{document.getElementById('bq-search').addEventListener('input',function(){
-  clearTimeout(_bqSrTimer);var val=this.value.toLowerCase().trim();
-  _bqSrTimer=setTimeout(function(){bqSearch=val;bqRender();},160);
-});}catch(e){}
-
-function bqRender(){
-  var pending=_getPending(),totalBatches=getTotalBatches();
-  if(BD.batchIndex>=totalBatches){BD.batchIndex=Math.max(0,totalBatches-1);saveBD();}
-  var start=BD.batchIndex*BATCH_SIZE+1,end=Math.min((BD.batchIndex+1)*BATCH_SIZE,pending.length);
-  document.getElementById('batch-label').textContent=(BD.batchIndex+1)+' of '+totalBatches;
-  document.getElementById('batch-range').textContent=pending.length?'Restaurants '+start+'–'+end+' of '+pending.length+' pending':'No pending restaurants';
-  var items=getBatchItems(),list=document.getElementById('bq-list'),nr=document.getElementById('bq-no-results');
-  if(!items.length){list.innerHTML='';nr.style.display='block';nr.innerHTML=bqSearch?'No results in this batch for "'+_esc(bqSearch)+'".':'All done in this batch!';}
-  else{nr.style.display='none';var html='';for(var i=0;i<items.length;i++)html+=_buildCard(items[i],true,i+1);list.innerHTML=html;}
-  bqUpdatePaceBar();bqUpdateSlider();
-}
-
-
-// ══════════════════════════════════════════════════════
-// SCROLLERS
-// ══════════════════════════════════════════════════════
-function setupScroller(viewId,upId,downId,trackId,thumbId,pctId,updateFn){
-  var scUp=document.getElementById(upId),scDown=document.getElementById(downId);
-  var scTrack=document.getElementById(trackId),scThumb=document.getElementById(thumbId);
-  var scPct=document.getElementById(pctId),viewEl=document.getElementById(viewId);
-  if(!scTrack||!scThumb||!viewEl)return;
-  scUp.addEventListener('click',  function(){viewEl.scrollBy({top:-400,behavior:'smooth'});});
-  scDown.addEventListener('click',function(){viewEl.scrollBy({top:400, behavior:'smooth'});});
-  scTrack.addEventListener('click',function(e){
-    if(e.target===scThumb)return;
-    var rect=scTrack.getBoundingClientRect();
-    viewEl.scrollTop=((e.clientY-rect.top)/scTrack.clientHeight)*(viewEl.scrollHeight-viewEl.clientHeight);
-  });
-  var dragging=false,dragY=0,dragScroll=0;
-  function sd(y){dragging=true;dragY=y;dragScroll=viewEl.scrollTop;}
-  function dd(y){if(!dragging)return;var th=scTrack.clientHeight-scThumb.clientHeight,ms=viewEl.scrollHeight-viewEl.clientHeight;if(th>0)viewEl.scrollTop=dragScroll+((y-dragY)/th)*ms;}
-  function ed(){dragging=false;}
-  scThumb.addEventListener('mousedown', function(e){sd(e.clientY);e.preventDefault();});
-  scThumb.addEventListener('touchstart',function(e){sd(e.touches[0].clientY);e.preventDefault();},{passive:false});
-  document.addEventListener('mousemove', function(e){dd(e.clientY);});
-  document.addEventListener('touchmove', function(e){if(dragging){dd(e.touches[0].clientY);e.preventDefault();}},{passive:false});
-  document.addEventListener('mouseup',  ed);document.addEventListener('touchend', ed);
-  viewEl.addEventListener('scroll',updateFn,{passive:true});
-  function update(){var ms=viewEl.scrollHeight-viewEl.clientHeight;if(ms<=0)return;var pct=viewEl.scrollTop/ms;scThumb.style.top=Math.round(pct*(scTrack.clientHeight-scThumb.clientHeight))+'px';if(scPct)scPct.textContent=Math.round(pct*100)+'%';}
-  viewEl._updateSlider=update;return update;
-}
-function dashUpdateSlider(){if(_dashViewEl._updateSlider)_dashViewEl._updateSlider();}
-function bqUpdateSlider(){var v=document.getElementById('view-batch');if(v&&v._updateSlider)v._updateSlider();}
-
-// ══════════════════════════════════════════════════════
-// EMAIL TAP — stamp immediately on send
-// ══════════════════════════════════════════════════════
-function stampEmail(num) {
-  var r = getR(num);
-  if (!r) return;
-  if (BD.sentSet.has(num) || statusMap[num]==='sent') return; // already sent — ignore double-tap
-  if (sentToday.size >= DAILY_LIMIT) { alert('Daily limit of ' + DAILY_LIMIT + ' reached!'); return; }
-  markAttemptSent(num, null);
-  sentToday.add(num); saveToday();
-  BD.sentSet.add(num); saveBD();
-  lsSaved();
-  _invalidatePending(); _dashDirty = true;
-  dashRefreshCard(num); dashUpdateStats();
-  if (currentView === 'batch') { bqRefreshCard(num); bqUpdatePaceBar(); }
-}
-
-// ══════════════════════════════════════════════════════
-// GUEST ACCESS (4-hour demo PIN)
-// ══════════════════════════════════════════════════════
-var _guestMode = false;
-try { _guestMode = sessionStorage.getItem('lv_guest_mode') === '1'; } catch(e) {}
-
-function _applyGuestMode() {
-  _guestMode = true;
-  if (document.getElementById('guest-mode-style')) return; // already applied
-  var style = document.createElement('style');
-  style.id = 'guest-mode-style';
-  style.textContent = [
-    '.btn-delete { display:none !important; }',
-    '.btn-add-email { display:none !important; }',
-    '.btn-bad-ig { display:none !important; }',
-    'button[onclick*="openNameModal"] { display:none !important; }',
-    'button[onclick*="openEditIG"] { display:none !important; }',
-    'button[onclick*="toggleFoodTrade"] { display:none !important; }',
-    'button[onclick*="toggleProblem"] { display:none !important; }',
-    'button[onclick*="deleteRestaurant"] { display:none !important; }',
-    'button[onclick*="exportBackup"] { display:none !important; }',
-    'button[onclick*="importBackup"] { display:none !important; }',
-    '#import-file-input { display:none !important; }',
-    '#guest-btn { background:#4CAF50 !important; }',
-    '#gh-push-btn { display:none !important; }'
-  ].join('\n');
-  document.head.appendChild(style);
-  // Show guest banner
-  lsStatus('#E65100', '👁 Demo mode — read only');
-}
-
-function toggleGuestAccess() {
-  var expiry = null;
-  try { expiry = parseInt(localStorage.getItem('lv_guest_expiry') || '0'); } catch(e) {}
-  var isActive = expiry && Date.now() < expiry;
-  var btn = document.getElementById('guest-btn');
-  if (isActive) {
-    // Deactivate
-    try { localStorage.removeItem('lv_guest_expiry'); } catch(e) {}
-    if (btn) { btn.style.background = '#E65100'; btn.textContent = 'Guest'; }
-    showDMToast('Guest access deactivated');
-  } else {
-    // Activate for 4 hours
-    var fourHours = Date.now() + (4 * 60 * 60 * 1000);
-    try { localStorage.setItem('lv_guest_expiry', String(fourHours)); } catch(e) {}
-    if (btn) { btn.style.background = '#4CAF50'; btn.textContent = '✅ Guest ON'; }
-    var expires = new Date(fourHours);
-    var h = expires.getHours() % 12 || 12;
-    var m = expires.getMinutes();
-    var ap = expires.getHours() >= 12 ? 'PM' : 'AM';
-    showDMToast('Guest PIN 7070 active until ' + h + ':' + (m<10?'0'+m:m) + ' ' + ap);
-  }
-}
-
-// If already in guest mode from a previous session restore, apply it
-if (_guestMode) { window.addEventListener('load', function(){ setTimeout(_applyGuestMode, 500); }); }
 
 // ══════════════════════════════════════════════════════
 // PIN LOCK
@@ -3547,38 +2949,38 @@ function pinDel() {
   _pinUpdateDots(false);
 }
 
+// iOS PWA needs explicit touchstart on PIN buttons to fire reliably
+function _initPinTouchHandlers() {
+  var grid = document.querySelector('.pin-grid');
+  if (!grid) return;
+  grid.addEventListener('touchstart', function(e) {
+    var btn = e.target.closest('.pin-key');
+    if (!btn || btn.classList.contains('empty')) return;
+    e.preventDefault();
+    btn.classList.add('pressed');
+    var digit = btn.textContent.trim();
+    if (digit === 'Del') pinDel();
+    else if (digit.length === 1 && digit >= '0' && digit <= '9') pinKey(digit);
+  }, {passive: false});
+  grid.addEventListener('touchend', function(e) {
+    var btn = e.target.closest('.pin-key');
+    if (btn) btn.classList.remove('pressed');
+  }, {passive: true});
+}
+
 function _pinCheck() {
   if (_pinLocked) {
     document.getElementById('pin-msg').textContent = 'Too many attempts. Wait 30s.';
     _pinEntry = ''; _pinUpdateDots(false);
     return;
   }
-  // Check guest PIN
-  var isGuest = false;
-  if (_pinEntry === '7070') {
-    var guestExpiry = null;
-    try { guestExpiry = parseInt(localStorage.getItem('lv_guest_expiry') || '0'); } catch(e) {}
-    if (guestExpiry && Date.now() < guestExpiry) {
-      isGuest = true;
-    } else {
-      _pinEntry = ''; _pinUpdateDots(true);
-      document.getElementById('pin-msg').textContent = 'Guest access not active or expired.';
-      setTimeout(function(){ document.getElementById('pin-msg').textContent = ''; _pinUpdateDots(false); }, 2000);
-      return;
-    }
-  }
-  if (_pinEntry === _pinCorrect || isGuest) {
+  if (_pinEntry === _pinCorrect) {
     // Correct — save session and unlock
     _pinAttempts = 0;
-    try {
-      sessionStorage.setItem('lv_pin_ok', '1');
-      if (isGuest) sessionStorage.setItem('lv_guest_mode', '1');
-    } catch(e) {}
+    try { sessionStorage.setItem('lv_pin_ok', '1'); sessionStorage.removeItem('lv_guest_mode'); } catch(e) {}
     document.getElementById('pin-screen').classList.add('hidden');
     document.getElementById('view-dashboard').classList.add('active');
-    fbLoad(); // sets status to 'Saved' + refreshes UI
-    if (isGuest) { lsStatus('#E65100', '👁 Demo mode — read only'); }
-    if (isGuest) _applyGuestMode();
+    fbLoad();
   } else {
     // Wrong — increment attempts
     _pinAttempts++;
@@ -3608,6 +3010,7 @@ function _pinInit() {
   // Already unlocked this session?
   try {
     if (sessionStorage.getItem('lv_pin_ok') === '1') {
+      sessionStorage.removeItem('lv_guest_mode'); // clear any stale guest flag
       document.getElementById('pin-screen').classList.add('hidden');
       document.getElementById('view-dashboard').classList.add('active');
       fbLoad();
@@ -3618,11 +3021,183 @@ function _pinInit() {
   // PIN is hardcoded — no network call needed
 }
 
+// ══════════════════════════════════════════════════════
+// PUSH TO GITHUB
+// ══════════════════════════════════════════════════════
+var GH_REPO = 'lasvegasrestaurants/lv-dashboard';
+var GH_FILE = 'index.html';
+var GH_API  = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE;
+var LS_GH_TOKEN = 'lv_gh_token';
+
+function getGHToken() { try { return localStorage.getItem(LS_GH_TOKEN) || ''; } catch(e) { return ''; } }
+var _ghLongPressTimer = null;
+function _ghTouchStart() { _ghLongPressTimer = setTimeout(function(){ resetGHToken(); showDMToast('Token cleared — tap again to enter new one'); }, 800); }
+function _ghTouchEnd() { clearTimeout(_ghLongPressTimer); }
+
+function resetGHToken() {
+  try { localStorage.removeItem(LS_GH_TOKEN); } catch(e) {}
+  var btn = document.getElementById('gh-push-btn');
+  if (btn) { btn.textContent = 'Token cleared'; setTimeout(function(){ btn.textContent = '⬆ GitHub'; }, 2000); }
+}
+
+function pushToGitHub() {
+  var token = getGHToken();
+  if (!token) {
+    document.getElementById('token-modal-backdrop').classList.add('open');
+    setTimeout(function(){ document.getElementById('token-modal-input').focus(); }, 200);
+    return;
+  }
+  _doPush(token);
+}
+
+function closeTokenModal() {
+  document.getElementById('token-modal-backdrop').classList.remove('open');
+}
+
+function saveTokenAndPush() {
+  var token = document.getElementById('token-modal-input').value.trim();
+  if (!token) return;
+  try { localStorage.setItem(LS_GH_TOKEN, token); } catch(e) {}
+  closeTokenModal();
+  _doPush(token);
+}
+
+function _doPush(token) {
+  var btn = document.getElementById('gh-push-btn');
+  btn.disabled = true;
+  function _reset(msg) {
+    btn.disabled = false;
+    btn.textContent = msg || '⬆ GitHub';
+    if (msg && msg !== '⬆ GitHub') setTimeout(function(){ btn.textContent = '⬆ GitHub'; }, 5000);
+  }
+  function _badToken() {
+    localStorage.removeItem(LS_GH_TOKEN);
+    _reset('⬆ GitHub');
+    document.getElementById('token-modal-input').value = '';
+    document.getElementById('token-modal-backdrop').classList.add('open');
+    setTimeout(function(){ document.getElementById('token-modal-input').focus(); }, 200);
+  }
+  function _encode(html) {
+    // Use FileReader — iOS handles this natively, much faster than manual chunking
+    return new Promise(function(resolve, reject) {
+      try {
+        var blob = new Blob([html], { type: 'text/plain' });
+        var reader = new FileReader();
+        reader.onload = function() {
+          // result is "data:text/plain;base64,XXXXX" — strip the prefix
+          var b64 = reader.result.split(',')[1];
+          resolve(b64);
+        };
+        reader.onerror = function() { reject('FileReader error'); };
+        reader.readAsDataURL(blob);
+      } catch(e) { reject('encode error: ' + e.message); }
+    });
+  }
+  btn.textContent = 'Connecting...';
+  fetch(GH_API, { method: 'GET', headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' } })
+  .then(function(r) {
+    if (r.status === 401) { _badToken(); return Promise.reject('done'); }
+    if (!r.ok) { _reset('GitHub error ' + r.status); return Promise.reject('done'); }
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data || !data.sha) { _reset('No SHA'); return Promise.reject('done'); }
+    btn.textContent = 'Encoding...';
+    var html = document.documentElement.outerHTML;
+    return _encode(html).then(function(encoded) { return {sha: data.sha, encoded: encoded}; });
+  })
+  .then(function(obj) {
+    btn.textContent = 'Uploading...';
+    return fetch(GH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Dashboard update ' + new Date().toISOString().slice(0,16).replace('T',' '), content: obj.encoded, sha: obj.sha })
+    });
+  })
+  .then(function(r) {
+    if (!r) return;
+    if (r.status === 401) { _badToken(); return; }
+    if (r.ok) { _reset('Pushed! ✓ Re-add icon in 2 min'); }
+    else { r.json().then(function(d){ _reset((d && d.message) ? d.message.slice(0,40) : 'Push failed'); }).catch(function(){ _reset('Push failed'); }); }
+  })
+  .catch(function(err) {
+    if (err === 'done') return;
+    _reset('Failed — check connection');
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// SCROLLER WIDGET
+// ══════════════════════════════════════════════════════
+function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) {
+  var view  = document.getElementById(viewId);
+  var up    = document.getElementById(upId);
+  var down  = document.getElementById(downId);
+  var track = document.getElementById(trackId);
+  var thumb = document.getElementById(thumbId);
+  var pct   = document.getElementById(pctId);
+  if (!view || !thumb || !track) return;
+
+  function getScrollPct() {
+    var max = view.scrollHeight - view.clientHeight;
+    return max > 0 ? view.scrollTop / max : 0;
+  }
+  function setThumb() {
+    var ratio = view.clientHeight / Math.max(1, view.scrollHeight);
+    var tH = track.clientHeight;
+    var thumbH = Math.max(40, Math.round(ratio * tH));
+    thumb.style.height = thumbH + 'px';
+    var pVal = getScrollPct();
+    thumb.style.top = Math.round(pVal * (tH - thumbH)) + 'px';
+    if (pct) pct.textContent = Math.round(pVal * 100) + '%';
+  }
+  // Store update fn on view so dashUpdateSlider can call it
+  view._updateSlider = setThumb;
+
+  view.addEventListener('scroll', setThumb, {passive: true});
+
+  // Arrow buttons
+  up.addEventListener('click',   function(){ view.scrollBy({top: -300, behavior:'smooth'}); });
+  down.addEventListener('click', function(){ view.scrollBy({top:  300, behavior:'smooth'}); });
+
+  // Drag thumb
+  var dragging = false, startY = 0, startTop = 0;
+  function onDragStart(clientY) { dragging = true; startY = clientY; startTop = thumb.offsetTop; }
+  function onDragMove(clientY) {
+    if (!dragging) return;
+    var dragH = track.clientHeight - thumb.clientHeight;
+    var newTop = Math.max(0, Math.min(dragH, startTop + (clientY - startY)));
+    var pDrag = dragH > 0 ? newTop / dragH : 0;
+    view.scrollTop = pDrag * (view.scrollHeight - view.clientHeight);
+    setThumb();
+  }
+  thumb.addEventListener('mousedown',  function(e){ onDragStart(e.clientY); e.preventDefault(); });
+  thumb.addEventListener('touchstart', function(e){ onDragStart(e.touches[0].clientY); e.preventDefault(); }, {passive:false});
+  document.addEventListener('mousemove',  function(e){ if(dragging) onDragMove(e.clientY); });
+  document.addEventListener('touchmove',  function(e){ if(dragging){ onDragMove(e.touches[0].clientY); e.preventDefault(); } }, {passive:false});
+  document.addEventListener('mouseup',  function(){ dragging=false; });
+  document.addEventListener('touchend', function(){ dragging=false; });
+
+  // Click on track to jump
+  track.addEventListener('click', function(e) {
+    if (e.target === thumb) return;
+    var rect = track.getBoundingClientRect();
+    var pClick = Math.max(0, Math.min(1, (e.clientY - rect.top) / track.clientHeight));
+    view.scrollTop = pClick * (view.scrollHeight - view.clientHeight);
+    setThumb();
+  });
+
+  setThumb();
+}
+
 // Data is stored in localStorage — no save needed on page close
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') {
-    // Refresh status dot when app comes back to foreground
-    lsStatus('#4CAF50', '✓ Ready — ' + lsTs());
+    try {
+      if (sessionStorage.getItem('lv_pin_ok') === '1' && typeof lsStatus === 'function') {
+        lsStatus('#4CAF50', '✓ Ready — ' + lsTs());
+      }
+    } catch(e) {}
   }
 });
 
@@ -3632,7 +3207,9 @@ document.addEventListener('visibilitychange', function() {
 window.addEventListener('load',function(){
   // Block bounce on body (non-scrollable areas)
   document.body.addEventListener('touchmove', function(e){
-    if (e.target.closest('.view')) return; // let view handle it
+    if (e.target.closest('.view')) return;
+    if (e.target.closest('#pin-screen')) return;
+    if (e.target.closest('.modal')) return; // let modals scroll on iOS
     e.preventDefault();
   }, {passive: false});
 
@@ -3655,19 +3232,18 @@ window.addEventListener('load',function(){
   }
 
   setupScroller('view-dashboard','dash-scUp','dash-scDown','dash-scTrack','dash-scThumb','dash-scPct',dashUpdateSlider);
-  setupScroller('view-batch','bq-scUp','bq-scDown','bq-scTrack','bq-scThumb','bq-scPct',bqUpdateSlider);
   document.getElementById('modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeModal();});
+  document.getElementById('token-modal-backdrop').addEventListener('click',function(e){if(e.target===this){ document.getElementById('token-modal-input').value=''; closeTokenModal(); }});
   document.getElementById('ig-modal-backdrop').addEventListener('click',function(e){ if(e.target!==this) return; var v=document.getElementById('ig-modal-input').value.trim(); if(v && v!=='@') saveIG(); else closeIGModal(); });
   document.getElementById('note-modal-backdrop').addEventListener('click',function(e){if(e.target===this) saveNote(); });
   document.getElementById('name-modal-backdrop').addEventListener('click',function(e){ if(e.target!==this) return; var v=document.getElementById('name-modal-input').value.trim(); if(v) saveName(); else closeNameModal(); });
-  document.getElementById('token-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeTokenModal();});
   document.getElementById('add-record-backdrop').addEventListener('click',function(e){if(e.target===this)closeAddRecord();});
 
   // Enter key support for all modals
   document.getElementById('name-modal-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveName();});
   document.getElementById('ig-modal-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveIG();});
-  document.getElementById('token-modal-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveTokenAndPush();});
   document.getElementById('modal-email-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveEmail();});
+  document.getElementById('token-modal-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveTokenAndPush();});
   document.getElementById('ar-name').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('ar-owner').focus();});
   document.getElementById('ar-owner').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('ar-instagram').focus();});
   document.getElementById('ar-instagram').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('ar-phone').focus();});
@@ -3680,15 +3256,16 @@ window.addEventListener('load',function(){
     if(e.key!=='Escape')return;
     if(document.getElementById('modal-backdrop').classList.contains('open'))closeModal();
     else if(document.getElementById('ig-modal-backdrop').classList.contains('open')){ var _igv=document.getElementById('ig-modal-input').value.trim(); if(_igv&&_igv!=='@') saveIG(); else closeIGModal(); }
-    else if(document.getElementById('note-modal-backdrop').classList.contains('open')) saveNote();
+    else if(document.getElementById('note-modal-backdrop').classList.contains('open')) closeNoteModal(); // Escape cancels note edit
     else if(document.getElementById('name-modal-backdrop').classList.contains('open')){ var _nmv=document.getElementById('name-modal-input').value.trim(); if(_nmv) saveName(); else closeNameModal(); }
-    else if(document.getElementById('token-modal-backdrop').classList.contains('open'))closeTokenModal();
-    else if(document.getElementById('add-record-backdrop').classList.contains('open'))closeAddRecord();
+      else if(document.getElementById('add-record-backdrop').classList.contains('open'))closeAddRecord();
   });
   dashSetFilter('all');
+  _initPinTouchHandlers(); // fix iOS PWA PIN tap delay
   // Show PIN screen first, then load
   _pinInit();
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
