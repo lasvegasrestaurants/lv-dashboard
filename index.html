@@ -6,7 +6,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>LV Master Dashboard</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; max-width: 100%; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+*:not(.scroller):not(.sc-track):not(.sc-thumb):not(.sc-arrow) { max-width: 100%; }
 html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; max-width: 100vw; overflow-x: hidden; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #eef0f3; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .view { position: fixed; inset: 0; bottom: 0; overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior: none; display: none; }
@@ -29,7 +30,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; }
+.hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -70,9 +71,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-email   { background: #1565C0; }
 .btn-dm      { background: #2E7D32; }
 .btn-dm.marked { background: #1B5E20; }
-.btn-verify  { background: #fff; color: #1B5E20; border: 2px solid #1B5E20 !important; }
+.btn-verify  { background: #fff; color: #1B5E20; border: 2px solid #1B5E20; }
 .btn-verify.marked { background: #1B5E20; color: #fff; }
-.btn-bounce-off { background: #fff; color: #C62828; border: 2px solid #C62828 !important; }
+.btn-bounce-off { background: #fff; color: #C62828; border: 2px solid #C62828; }
 .btn-bounce-on  { background: #C62828; color: #fff; }
 
 /* ── CARD CONTENT ── */
@@ -85,10 +86,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .info { font-size: 14px; color: #444; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
 .ig { color: #1565C0; }
 .ig.bad-ig { color: #7B1FA2; font-weight: 800; }
-.btn-bad-ig { background: #fff; color: #7B1FA2; border: 2px solid #7B1FA2 !important; font-size: 13px; padding: 8px 13px; }
+.btn-bad-ig { background: #fff; color: #7B1FA2; border: 2px solid #7B1FA2; font-size: 13px; padding: 8px 13px; }
 .btn-bad-ig.flagged { background: #7B1FA2; color: #fff; }
 .addr-line { font-size: 13px; color: #666; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; }
-.notes-line { font-size: 11px; color: #888; margin-top: 3px; font-style: italic; }
 
 /* ── SCROLLER ── */
 .scroller { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; background: rgba(27,46,74,0.88); border-radius: 16px 0 0 16px; box-shadow: -2px 0 12px rgba(0,0,0,0.25); }
@@ -115,30 +115,29 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .attempt-date  { font-size: 10px; color: #999; }
 .attempt-note  { font-size: 10px; color: #888; font-style: italic; width: 100%; padding-left: 2px; }
 .attempts-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; }
-.attempts-label { font-size: 10px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
 
 /* ── ADD EMAIL BUTTON ── */
 .b-notes   { background: #F57F17; }
 .b-followup { background: #00695C; }
-.btn-followup { background: #fff; color: #00695C; border: 2px solid #00695C !important; font-size: 13px; padding: 8px 13px; }
+.btn-followup { background: #fff; color: #00695C; border: 2px solid #00695C; font-size: 13px; padding: 8px 13px; }
 .btn-followup.flagged { background: #00695C; color: #fff; }
-.btn-note { background: #fff; color: #F57F17; border: 2px solid #F57F17 !important; font-size: 13px; padding: 8px 13px; }
+.btn-note { background: #fff; color: #F57F17; border: 2px solid #F57F17; font-size: 13px; padding: 8px 13px; }
 .btn-note.has-note { background: #F57F17; color: #fff; }
 .note-preview { font-size: 11px; color: #F57F17; font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .btn-delete { background: #B71C1C; color: #fff; border: none !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem { background: #fff; color: #F9A825; border: 2px solid #F9A825 !important; font-size: 13px; padding: 8px 13px; }
+.btn-problem { background: #fff; color: #F9A825; border: 2px solid #F9A825; font-size: 13px; padding: 8px 13px; }
 .btn-problem.flagged { background: #F9A825; color: #fff; }
 .b-problem { background: #F9A825; }
 .b-foodtrade  { background: #2E7D32; }
-.btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32 !important; font-size: 13px; padding: 8px 13px; }
+.btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 13px; padding: 8px 13px; }
 .btn-foodtrade.flagged { background: #2E7D32; color: #fff; }
 .b-nodm    { background: #004D40; }
 .btn-add-record { background: #4527A0; color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn-add-record:active { filter: brightness(.85); }
 .btn-delete:active { background: #7F0000; }
-.btn-add-email { background: #0277BD; color: #fff; border: 1.5px solid #0277BD !important; font-size: 14px; padding: 9px 14px; }
+.btn-add-email { background: #0277BD; color: #fff; border: none; font-size: 14px; padding: 9px 14px; }
 .btn-add-email:active { background: #01579B; }
-.btn-copy-dm { background: #fff; color: #2E7D32; border: 2px solid #2E7D32 !important; font-size: 14px; padding: 9px 13px; }
+.btn-copy-dm { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 14px; padding: 9px 13px; }
 .btn-copy-dm:active { background: #DCEDC8; }
 /* Toast */
 #dm-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1B2E4A; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 99999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
@@ -198,12 +197,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 11:36 PM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 7:23 AM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
         <button onclick="exportCSV()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Excel</button>
-        <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now()" ontouchend="if(Date.now()-this._t&lt;500)document.getElementById('import-file-input').click()" onclick="document.getElementById('import-file-input').click()">⬆ Restore</button>
+        <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&amp;&amp;Date.now()-this._t&lt;500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
         <button onclick="pushToGitHub()" id="gh-push-btn" oncontextmenu="resetGHToken();return false;" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       </div>
@@ -227,7 +226,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   </div>
 
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
-    <input type="search" id="dash-search" placeholder="Search by restaurant name..." autocomplete="off" spellcheck="false" style="flex:1;">
+    <input type="text" id="dash-search" placeholder="Search by restaurant name..." autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="none" style="flex:1;">
     <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
   </div>
   <div id="search-result-bar" style="display:none;padding:6px 16px 2px;font-size:12px;font-weight:700;color:#1565C0;background:#E3F2FD;border-bottom:1px solid #BBDEFB;">
@@ -1635,7 +1634,7 @@ function _exportFallback(blob, filename) {
 
 function exportCSV() {
   // Build CSV with all restaurant data — opens directly in Excel/Numbers
-  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Bounced'];
+  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Sent Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Bad IG'];
   var rows = [headers];
 
   for (var i = 0; i < RESTAURANTS.length; i++) {
@@ -1661,6 +1660,7 @@ function exportCSV() {
     var dmDate = dmMap[r.num] || '';
     var note = userNotesMap[r.num] || '';
     var followup = followupMap[r.num] ? followupMap[r.num].slice(0,10) : '';
+    var sentDate = getSentDate(r.num) ? getSentDate(r.num).slice(0,10) : '';
 
     rows.push([
       r.num,
@@ -1681,7 +1681,8 @@ function exportCSV() {
       followup,
       problemMap[r.num] ? 'Yes' : '',
       foodTradeMap[r.num] ? 'Yes' : '',
-      s === 'bounced' ? 'Yes' : ''
+      badIGMap[r.num] ? 'Yes' : '',
+      sentDate
     ]);
   }
 
@@ -1780,6 +1781,7 @@ function importBackup(event) {
     }
     _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
     dashSetFilter('all'); dashUpdateStats();
+    lsSaved();
     alert('Backup restored! ✓\n\nAll your data is loaded.');
     lsStatus('#4CAF50', 'Restored ✓ — ' + lsTs());
   };
@@ -1864,7 +1866,7 @@ var RESTAURANTS = RESTAURANTS_BASE.filter(function(r){ return !deletedMap[r.num]
     _search:  (nameOverrideMap[r.num]||r.name).toLowerCase()
   };
 });
-// Save seeded attempts to localStorage
+// Save seeded attempts
 try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); } catch(e) {}
 
 // Merge custom records into RESTAURANTS
@@ -1964,7 +1966,8 @@ function saveNewRecord() {
   customRecords.push(rec);
   try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {}
   attemptsMap[newNum] = [{email: rec.email, status: 'pending', date: null, note: ''}];
-  saveAttempts(); // calls lsSaved()
+  statusMap[newNum] = 'pending';
+  saveAttemptsAndStatuses();
   RESTAURANTS.push({
     num: newNum, name: rec.name, owner: rec.owner,
     instagram: rec.instagram, igHandle: rec.instagram.replace(/^@/,''),
@@ -2127,6 +2130,7 @@ function _buildOutreachMsg(name) {
 function copyDM(num) {
   var r = getR(num);
   if (!r) return;
+  if (badIGMap[num]) { showDMToast('Bad IG flagged — fix handle before DMing'); return; }
   var n = r.name;
   var msg = _buildOutreachMsg(n);
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2153,6 +2157,7 @@ function showDMToast(msg) {
 function openDM(num) {
   var r = getR(num);
   if (!r) return;
+  if (badIGMap[num]) { showDMToast('Bad IG flagged — fix the handle first'); return; }
   if (!r.igHandle) { showDMToast('No Instagram handle — use Edit IG to add one'); return; }
   // Only stamp if not already stamped — preserve original DM date
   if (!dmMap[num] || dmMap[num] === 'pending') {
@@ -2290,31 +2295,21 @@ function saveEmail() {
   if (!attemptsMap[num]) attemptsMap[num] = [];
 
   if (_editAttemptIdx >= 0) {
-    // Editing existing
     attemptsMap[num][_editAttemptIdx].email = emailVal;
     attemptsMap[num][_editAttemptIdx].note  = noteVal;
-    // If editing a bounced attempt, reset it to pending
     if (attemptsMap[num][_editAttemptIdx].status === 'bounced') {
       attemptsMap[num][_editAttemptIdx].status = 'pending';
       attemptsMap[num][_editAttemptIdx].date = null;
-      // Reset overall status to pending since we now have a pending attempt
-      if (statusMap[num] === 'bounced') { statusMap[num] = 'pending'; saveStatuses(); }
+      if (statusMap[num] === 'bounced') statusMap[num] = 'pending';
     }
   } else {
-    // Adding new email — set to pending, don't override status
     attemptsMap[num].push({email: emailVal, status: 'pending', date: null, note: noteVal});
-    // Only reset to pending if currently bounced with no pending emails
-    if (statusMap[num] === 'bounced') {
-      statusMap[num] = 'pending';
-      saveStatuses();
-    }
+    if (statusMap[num] === 'bounced') statusMap[num] = 'pending';
   }
-  saveAttempts(); // calls lsSaved()
+  saveAttemptsAndStatuses();
   // Update live restaurant object's _search so search finds the new email
-  var _r17 = getR(num);
-  if (_r17) {
-    _r17._search = (nameOverrideMap[num]||_r17.name).toLowerCase();
-  }
+  var rLive = getR(num);
+  if (rLive) rLive._search = (nameOverrideMap[num]||rLive.name).toLowerCase();
   _invalidatePending(); _dashDirty=true;
   // Reset to add-new mode and re-render history
   _editAttemptIdx = -1;
@@ -2348,7 +2343,7 @@ function markAttemptBounced(num) {
     last.date   = last.date || nowStr();
   }
   statusMap[num] = 'bounced';
-  var _r15=getR(num); if(_r15) _r15.status='bounced'; // update live object
+  var r2=getR(num); if(r2) r2.status='bounced';
   // Remove from sent-today count since it bounced
   saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
@@ -2366,7 +2361,7 @@ function unmarkBounced(num) {
   // Only move to pending if there are no more bounced attempts
   var stillBounced = attempts.some(function(a){ return a.status==='bounced'; });
   statusMap[num] = stillBounced ? 'bounced' : 'pending';
-  var _r16=getR(num); if(_r16) _r16.status=statusMap[num]; // update live object
+  var r3=getR(num); if(r3) r3.status=statusMap[num];
   saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
   dashRefreshCard(num); dashUpdateStats();
@@ -2759,8 +2754,6 @@ try{
   });
   _si.addEventListener('input',function(){ clearTimeout(_dsTimer); var v=this.value.toLowerCase().trim(); _dsTimer=setTimeout(function(){_doSearch(v);},80); });
   // Note: keyup removed — 'input' already fires on every keystroke including delete/paste
-  // Handle the X clear button on iOS search input
-  _si.addEventListener('search',function(){ _doSearch(''); });
 }catch(e){}
 
 function dashUpdateSlider(){var v=document.getElementById('view-dashboard');if(v&&v._updateSlider)v._updateSlider();}
@@ -2813,7 +2806,7 @@ function dashRender(){
   var _scroller = document.getElementById('dash-scroller');
   if(total===0){
     _dashList.innerHTML=''; _dashNR.style.display='block';
-    _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'Everyone has been emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
+    _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'No restaurants waiting to be emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
     if(_scroller) _scroller.style.display='none';
     dashUpdateStats();dashUpdateSlider();return;
   }
@@ -2862,12 +2855,12 @@ function manualMarkSent(num){
     for(var i=attempts.length-1;i>=0;i--){if(attempts[i].status==='sent'){attempts[i].status='pending';attempts[i].date=null;break;}}
     var hasBounced=attempts.some(function(a){return a.status==='bounced';});
     statusMap[num]=hasBounced?'bounced':'pending';
-    var _r14=getR(num); if(_r14) _r14.status=statusMap[num]; // update live object
-    saveAttemptsAndStatuses(); // single save call
+    var _rlive=getR(num); if(_rlive) _rlive.status=statusMap[num];
+    saveAttemptsAndStatuses();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
   } else {
     markAttemptSent(num,null);
-    var _r14b=getR(num); if(_r14b) _r14b.status='sent';
+    var _rlive2=getR(num); if(_rlive2) _rlive2.status='sent';
     saveAttemptsAndStatuses();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
   }
@@ -3091,9 +3084,7 @@ function _doPush(token) {
           try {
             var end = Math.min(pos + CHUNK, len);
             var slice = bytes.subarray(pos, end);
-            var binary = '';
-            for (var i = 0; i < slice.length; i++) binary += String.fromCharCode(slice[i]);
-            parts.push(btoa(binary));
+            parts.push(btoa(String.fromCharCode.apply(null, slice)));
             pos = end;
             if (pos < len) setTimeout(processChunk, 1);
             else resolve(parts.join(''));
@@ -3127,7 +3118,7 @@ function _doPush(token) {
   .then(function(r) {
     if (!r) return;
     if (r.status === 401) { _badToken(); return; }
-    if (r.ok) { _reset('Pushed! Reload in 1-2 min'); }
+    if (r.ok) { _reset('Pushed! ✓ Re-add icon in 2 min'); }
     else { r.json().then(function(d){ _reset((d && d.message) ? d.message.slice(0,40) : 'Push failed'); }).catch(function(){ _reset('Push failed'); }); }
   })
   .catch(function(err) {
@@ -3154,12 +3145,12 @@ function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) 
   }
   function setThumb() {
     var ratio = view.clientHeight / Math.max(1, view.scrollHeight);
-    var trackH = track.clientHeight;
-    var thumbH = Math.max(40, Math.round(ratio * trackH));
+    var tH = track.clientHeight;
+    var thumbH = Math.max(40, Math.round(ratio * tH));
     thumb.style.height = thumbH + 'px';
-    var p = getScrollPct();
-    thumb.style.top = Math.round(p * (trackH - thumbH)) + 'px';
-    if (pct) pct.textContent = Math.round(p * 100) + '%';
+    var pVal = getScrollPct();
+    thumb.style.top = Math.round(pVal * (tH - thumbH)) + 'px';
+    if (pct) pct.textContent = Math.round(pVal * 100) + '%';
   }
   // Store update fn on view so dashUpdateSlider can call it
   view._updateSlider = setThumb;
@@ -3175,10 +3166,10 @@ function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) 
   function onDragStart(clientY) { dragging = true; startY = clientY; startTop = thumb.offsetTop; }
   function onDragMove(clientY) {
     if (!dragging) return;
-    var trackH = track.clientHeight - thumb.clientHeight;
-    var newTop = Math.max(0, Math.min(trackH, startTop + (clientY - startY)));
-    var p = trackH > 0 ? newTop / trackH : 0;
-    view.scrollTop = p * (view.scrollHeight - view.clientHeight);
+    var dragH = track.clientHeight - thumb.clientHeight;
+    var newTop = Math.max(0, Math.min(dragH, startTop + (clientY - startY)));
+    var pDrag = dragH > 0 ? newTop / dragH : 0;
+    view.scrollTop = pDrag * (view.scrollHeight - view.clientHeight);
     setThumb();
   }
   thumb.addEventListener('mousedown',  function(e){ onDragStart(e.clientY); e.preventDefault(); });
@@ -3192,8 +3183,8 @@ function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) 
   track.addEventListener('click', function(e) {
     if (e.target === thumb) return;
     var rect = track.getBoundingClientRect();
-    var p = Math.max(0, Math.min(1, (e.clientY - rect.top) / track.clientHeight));
-    view.scrollTop = p * (view.scrollHeight - view.clientHeight);
+    var pClick = Math.max(0, Math.min(1, (e.clientY - rect.top) / track.clientHeight));
+    view.scrollTop = pClick * (view.scrollHeight - view.clientHeight);
     setThumb();
   });
 
@@ -3203,8 +3194,11 @@ function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) 
 // Data is stored in localStorage — no save needed on page close
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') {
-    // Only refresh status if already past the PIN screen
-    try { if (sessionStorage.getItem('lv_pin_ok') === '1') lsStatus('#4CAF50', '✓ Ready — ' + lsTs()); } catch(e) {}
+    try {
+      if (sessionStorage.getItem('lv_pin_ok') === '1' && typeof lsStatus === 'function') {
+        lsStatus('#4CAF50', '✓ Ready — ' + lsTs());
+      }
+    } catch(e) {}
   }
 });
 
@@ -3240,7 +3234,7 @@ window.addEventListener('load',function(){
 
   setupScroller('view-dashboard','dash-scUp','dash-scDown','dash-scTrack','dash-scThumb','dash-scPct',dashUpdateSlider);
   document.getElementById('modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeModal();});
-  document.getElementById('token-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeTokenModal();});
+  document.getElementById('token-modal-backdrop').addEventListener('click',function(e){if(e.target===this){ document.getElementById('token-modal-input').value=''; closeTokenModal(); }});
   document.getElementById('ig-modal-backdrop').addEventListener('click',function(e){ if(e.target!==this) return; var v=document.getElementById('ig-modal-input').value.trim(); if(v && v!=='@') saveIG(); else closeIGModal(); });
   document.getElementById('note-modal-backdrop').addEventListener('click',function(e){if(e.target===this) saveNote(); });
   document.getElementById('name-modal-backdrop').addEventListener('click',function(e){ if(e.target!==this) return; var v=document.getElementById('name-modal-input').value.trim(); if(v) saveName(); else closeNameModal(); });
