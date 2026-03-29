@@ -211,7 +211,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">Ready</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Ready — 10:25 PM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
@@ -2984,6 +2984,26 @@ function pinDel() {
   _pinUpdateDots(false);
 }
 
+// iOS PWA needs explicit touchstart on PIN buttons to fire reliably
+function _initPinTouchHandlers() {
+  var keys = document.querySelectorAll('.pin-key');
+  for (var i = 0; i < keys.length; i++) {
+    (function(btn) {
+      btn.addEventListener('touchstart', function(e) {
+        e.preventDefault(); // prevent 300ms delay
+        btn.classList.add('pressed');
+        var oc = btn.getAttribute('onclick');
+        if (oc) {
+          try { eval(oc); } catch(ex) {}
+        }
+      }, {passive: false});
+      btn.addEventListener('touchend', function() {
+        btn.classList.remove('pressed');
+      }, {passive: true});
+    })(keys[i]);
+  }
+}
+
 function _pinCheck() {
   if (_pinLocked) {
     document.getElementById('pin-msg').textContent = 'Too many attempts. Wait 30s.';
@@ -3176,7 +3196,8 @@ document.addEventListener('visibilitychange', function() {
 window.addEventListener('load',function(){
   // Block bounce on body (non-scrollable areas)
   document.body.addEventListener('touchmove', function(e){
-    if (e.target.closest('.view')) return; // let view handle it
+    if (e.target.closest('.view')) return;
+    if (e.target.closest('#pin-screen')) return; // let pin screen handle touches
     e.preventDefault();
   }, {passive: false});
 
@@ -3228,6 +3249,7 @@ window.addEventListener('load',function(){
       else if(document.getElementById('add-record-backdrop').classList.contains('open'))closeAddRecord();
   });
   dashSetFilter('all');
+  _initPinTouchHandlers(); // fix iOS PWA PIN tap delay
   // Show PIN screen first, then load
   _pinInit();
 });
