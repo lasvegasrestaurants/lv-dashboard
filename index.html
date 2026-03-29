@@ -198,14 +198,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Ready — 11:18 PM</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 11:22 PM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
-        <div style="position:relative;display:inline-block;">
-          <div style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;white-space:nowrap;pointer-events:none;">⬆ Restore</div>
-          <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0;">
-        </div>
+        <button onclick="exportCSV()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Excel</button>
+        <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now()" ontouchend="if(Date.now()-this._t&lt;500)document.getElementById('import-file-input').click()" onclick="document.getElementById('import-file-input').click()">⬆ Restore</button>
+        <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
         <button onclick="pushToGitHub()" id="gh-push-btn" oncontextmenu="resetGHToken();return false;" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       </div>
     </div>
@@ -1632,6 +1631,88 @@ function _exportFallback(blob, filename) {
   URL.revokeObjectURL(url);
   lsStatus('#4CAF50', 'Backup downloaded!');
   setTimeout(function(){ lsStatus('#4CAF50', 'Synced ' + lsTs()); }, 3000);
+}
+
+function exportCSV() {
+  // Build CSV with all restaurant data — opens directly in Excel/Numbers
+  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Bounced'];
+  var rows = [headers];
+
+  for (var i = 0; i < RESTAURANTS.length; i++) {
+    var r = RESTAURANTS[i];
+    var s = statusMap[r.num] || r.defaultStatus;
+    var attempts = attemptsMap[r.num] || [];
+    // Get best email and its status
+    var bestEmail = '', emailStatus = '';
+    for (var j = 0; j < attempts.length; j++) {
+      if (attempts[j].status === 'sent' && attempts[j].email) { bestEmail = attempts[j].email; emailStatus = 'Sent'; break; }
+    }
+    if (!bestEmail) {
+      for (var k = 0; k < attempts.length; k++) {
+        if (attempts[k].status === 'pending' && attempts[k].email) { bestEmail = attempts[k].email; emailStatus = 'Pending'; break; }
+      }
+    }
+    if (!bestEmail) {
+      for (var m = 0; m < attempts.length; m++) {
+        if (attempts[m].status === 'bounced' && attempts[m].email) { bestEmail = attempts[m].email; emailStatus = 'Bounced'; break; }
+      }
+    }
+
+    var dmDate = dmMap[r.num] || '';
+    var note = userNotesMap[r.num] || '';
+    var followup = followupMap[r.num] ? followupMap[r.num].slice(0,10) : '';
+
+    rows.push([
+      r.num,
+      nameOverrideMap[r.num] || r.name,
+      s.charAt(0).toUpperCase() + s.slice(1),
+      bestEmail,
+      emailStatus,
+      igOverrideMap[r.num] || r.instagram,
+      dmDate ? dmDate.slice(0,10) : '',
+      r.cuisine,
+      r.owner,
+      r.phone,
+      r.address,
+      r.notes,
+      note,
+      interestedMap[r.num] ? 'Yes' : '',
+      notInterestedMap[r.num] ? 'Yes' : '',
+      followup,
+      problemMap[r.num] ? 'Yes' : '',
+      foodTradeMap[r.num] ? 'Yes' : '',
+      s === 'bounced' ? 'Yes' : ''
+    ]);
+  }
+
+  // Convert to CSV string — wrap fields in quotes, escape internal quotes
+  var csv = rows.map(function(row) {
+    return row.map(function(cell) {
+      var s = String(cell == null ? '' : cell);
+      // Escape quotes and wrap in quotes if contains comma, quote, or newline
+      if (s.indexOf(',') !== -1 || s.indexOf('"') !== -1 || s.indexOf('\n') !== -1) {
+        s = '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    }).join(',');
+  }).join('\n');
+
+  // Add BOM for Excel to recognize UTF-8
+  var bom = '\uFEFF';
+  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  var ts = new Date().toISOString().slice(0,10);
+  var filename = 'lv-restaurants-' + ts + '.csv';
+
+  if (navigator.share && navigator.canShare) {
+    var shareFile = new File([blob], filename, { type: 'text/csv' });
+    if (navigator.canShare({ files: [shareFile] })) {
+      navigator.share({ files: [shareFile], title: 'LV Restaurants Export', text: 'Restaurant data ' + ts })
+        .then(function() { lsStatus('#4CAF50', 'CSV exported!'); })
+        .catch(function(e) { if (e.name !== 'AbortError') _exportFallback(blob, filename); });
+      return;
+    }
+  }
+  _exportFallback(blob, filename);
 }
 
 function importBackup(event) {
