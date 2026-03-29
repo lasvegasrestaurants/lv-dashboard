@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1B2E4A">
@@ -32,11 +30,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
 /* ── HEADER ── */
 .hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; }
-.notice { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 0; }
-.notice.info { background: #E3F2FD; color: #1565C0; }
-.notice.good { background: #E8F5E9; color: #2E7D32; }
-.notice.warn { background: #FFF3E0; color: #E65100; }
-.notice.stop { background: #FFEBEE; color: #C62828; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -98,7 +91,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .notes-line { font-size: 11px; color: #888; margin-top: 3px; font-style: italic; }
 
 /* ── SCROLLER ── */
-.scroller { position: fixed; right: 0; top: 62%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; background: rgba(27,46,74,0.88); border-radius: 16px 0 0 16px; box-shadow: -2px 0 12px rgba(0,0,0,0.25); }
+.scroller { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; background: rgba(27,46,74,0.88); border-radius: 16px 0 0 16px; box-shadow: -2px 0 12px rgba(0,0,0,0.25); }
 .sc-arrow { width: 42px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 16px; user-select: none; -webkit-user-select: none; }
 .sc-arrow:active { background: rgba(255,255,255,0.35); }
 .sc-track { width: 42px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 18px; position: relative; cursor: pointer; touch-action: none; }
@@ -108,8 +101,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
 /* ── NO RESULTS ── */
 #no-results { text-align: center; color: #aaa; padding: 60px 20px; display: none; font-size: 15px; line-height: 1.6; }
-
-/* ── TODAY BADGE ── */
 
 /* ── ATTEMPT LOG ── */
 .attempt-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
@@ -135,9 +126,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-note.has-note { background: #F57F17; color: #fff; }
 .note-preview { font-size: 11px; color: #F57F17; font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .btn-delete { background: #B71C1C; color: #fff; border: none !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem { background: #fff; color: #BF360C; border: 2px solid #BF360C !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem.flagged { background: #BF360C; color: #fff; }
-.b-problem { background: #BF360C; }
+.btn-problem { background: #fff; color: #F9A825; border: 2px solid #F9A825 !important; font-size: 13px; padding: 8px 13px; }
+.btn-problem.flagged { background: #F9A825; color: #fff; }
+.b-problem { background: #F9A825; }
 .b-foodtrade  { background: #2E7D32; }
 .btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32 !important; font-size: 13px; padding: 8px 13px; }
 .btn-foodtrade.flagged { background: #2E7D32; color: #fff; }
@@ -170,19 +161,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-cancel { background: #CFD8DC; color: #37474F; }
 .btn-save   { background: #1A237E; }
 </style>
-<!-- SheetJS removed — Excel export not used -->
 </head>
 <body>
 
 <!-- PIN LOCK SCREEN -->
-<div id="pin-screen">
+<div id="pin-screen" class="hidden">
   <div class="pin-logo">LV Master Dashboard</div>
   <div class="pin-sub">Enter your PIN to continue</div>
   <div class="pin-dots">
-    <div class="pin-dot" id="pd0"></div>
-    <div class="pin-dot" id="pd1"></div>
-    <div class="pin-dot" id="pd2"></div>
-    <div class="pin-dot" id="pd3"></div>
+    <div class="pin-dot filled" id="pd0"></div>
+    <div class="pin-dot filled" id="pd1"></div>
+    <div class="pin-dot filled" id="pd2"></div>
+    <div class="pin-dot filled" id="pd3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-key" onclick="pinKey('1')">1</button>
@@ -202,13 +192,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 </div>
 
 <!-- ═══════════════════════════════ DASHBOARD VIEW ═══════════════════════════════ -->
-<div class="view" id="view-dashboard">
+<div class="view active" id="view-dashboard">
 
   <div class="hdr">
     <div id="fb-bar" style="padding:4px 0 0;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">Ready</span>
+        <span id="fb-msg" style="color:#90CAF9;font-size:13px;font-weight:700;flex:1;min-width:0;">✓ Data loaded — 11:01 PM</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="exportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
@@ -216,26 +206,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
           <div style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;white-space:nowrap;pointer-events:none;">⬆ Restore</div>
           <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0;">
         </div>
-        <button onclick="pushToGitHub()" id="gh-push-btn" oncontextmenu="resetGHToken();return false;" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ GitHub</button>
-        <button onclick="resetGHToken();pushToGitHub();" style="background:transparent;color:#90CAF9;border:none;font-size:11px;cursor:pointer;padding:7px 4px;white-space:nowrap;">Key</button>
-        <button onclick="toggleGuestAccess()" id="guest-btn" style="background:#E65100;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;">Guest</button>
+        <button onclick="pushToGitHub()" id="gh-push-btn" oncontextmenu="resetGHToken();return false;" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" disabled="">Encoding...</button>
       </div>
     </div>
   </div>
 
   <div class="stats">
-    <div class="badge b-total"          onclick="dashSetFilter('all')">Total: <span id="s-total">0</span></div>
-    <div class="badge b-verified"       onclick="dashSetFilter('sent')">Email Sent: <span id="s-done">0</span></div>
-    <div class="badge b-noemail"       onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">0</span></div>
-    <div class="badge b-bounced"        onclick="dashSetFilter('bounced')">Bounced: <span id="s-bounced">0</span></div>
-    <div class="badge b-bad-ig"         onclick="dashSetFilter('badig')">Bad IG: <span id="s-badig">0</span></div>
-    <div class="badge b-interested"     onclick="dashSetFilter('interested')">👍 <span id="s-interested">0</span></div>
+    <div class="badge b-total active-badge" onclick="dashSetFilter('all')">Total: <span id="s-total">1010</span></div>
+    <div class="badge b-verified" onclick="dashSetFilter('sent')">Email Sent: <span id="s-done">130</span></div>
+    <div class="badge b-noemail" onclick="dashSetFilter('noemail')">Waiting Email: <span id="s-noemail">431</span></div>
+    <div class="badge b-bounced" onclick="dashSetFilter('bounced')">Bounced: <span id="s-bounced">449</span></div>
+    <div class="badge b-bad-ig" onclick="dashSetFilter('badig')">Bad IG: <span id="s-badig">306</span></div>
+    <div class="badge b-interested" onclick="dashSetFilter('interested')">👍 <span id="s-interested">21</span></div>
     <div class="badge b-not-interested" onclick="dashSetFilter('notinterested')">👎 <span id="s-notinterested">0</span></div>
-    <div class="badge b-notes"    onclick="dashSetFilter('notes')">Notes: <span id="s-notes">0</span></div>
-    <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">0</span></div>
-    <div class="badge b-problem"  onclick="dashSetFilter('problem')">Problem: <span id="s-problem">0</span></div>
-    <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">0</span></div>
-    <div class="badge b-nodm"     onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">0</span></div>
+    <div class="badge b-notes" onclick="dashSetFilter('notes')">Notes: <span id="s-notes">31</span></div>
+    <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">30</span></div>
+    <div class="badge b-problem" onclick="dashSetFilter('problem')">Problem: <span id="s-problem">4</span></div>
+    <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">5</span></div>
+    <div class="badge b-nodm" onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">91</span></div>
 
   </div>
 
@@ -248,12 +236,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <span onclick="clearDashSearch()" style="float:right;cursor:pointer;color:#C62828;font-size:13px;">✕ Clear</span>
   </div>
 
-  <div id="list"></div>
-  <div id="no-results"></div>
+  <div id="list"><div style="height:0px"></div><div class="card bounced" id="dc2"><div class="card-top"><span class="card-num">#1</span><button class="btn btn-email" onclick="openEmail(2)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(2)">Email Sent</button><button class="btn btn-dm" onclick="openDM(2)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(2)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-26</span><button class="btn btn-bounce-on" onclick="unmarkBounced(2)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(2)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(2)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(2)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(2)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(2)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Italian</div><div class="rname">Carbone Riviera <button onclick="openNameModal(2)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Mario Carbone &nbsp;|&nbsp; <span class="ig">@carboneriviera</span> <button onclick="toggleBadIG(2)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(2)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(2)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(2)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(2)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7026938865" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 693-8865</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">reservations@carboneriviera.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3600 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc3"><div class="card-top"><span class="card-num">#2</span><button class="btn btn-email" onclick="openEmail(3)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(3)">Sent</button><button class="btn btn-dm" onclick="openDM(3)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(3)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(3)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(3)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(3)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(3)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(3)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(3)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Indian</div><div class="rname">Gymkhana <button onclick="openNameModal(3)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Karam Sethi &nbsp;|&nbsp; <span class="ig">@gymkhanalasvegas</span> <button onclick="toggleBadIG(3)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(3)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(3)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(3)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(3)" class="btn btn-followup flagged">Follow Up - 2026-03-25</button></div><div class="info"><a href="tel:7025909600" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 590-9600</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">lasvegas@gymkhanarestaurants.com</span> <span class="attempt-status s-sent">SENT</span></div></div><div class="addr-line">📍 3730 S Las Vegas Blvd, Las Vegas, NV 89158</div><div class="note-preview">📝 Dear Shane,</div></div><div class="card bounced" id="dc4"><div class="card-top"><span class="card-num">#3</span><button class="btn btn-email" onclick="openEmail(4)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(4)">Email Sent</button><button class="btn btn-dm" onclick="openDM(4)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(4)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(4)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(4)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(4)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(4)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(4)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(4)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Pizza</div><div class="rname">How Ya Doughn <button onclick="openNameModal(4)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">How Ya Doughn Inc. &nbsp;|&nbsp; <span class="ig">@howyadoughn</span> <button onclick="toggleBadIG(4)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(4)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(4)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(4)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(4)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:5619001234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (561) 900-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">hello@howyadoughn.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 3200 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc5"><div class="card-top"><span class="card-num">#4</span><button class="btn btn-email" onclick="openEmail(5)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(5)">Email Sent</button><button class="btn btn-dm" onclick="openDM(5)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(5)">Copy DM</button><button class="btn btn-bounce-on" onclick="unmarkBounced(5)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(5)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(5)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(5)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(5)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(5)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">BBQ</div><div class="rname">Virgil's Real BBQ Las Vegas <button onclick="openNameModal(5)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Kevin Sugarman &nbsp;|&nbsp; <span class="ig bad-ig">@virgilsrealbbq (bad IG)</span> <button onclick="toggleBadIG(5)" class="btn btn-bad-ig flagged" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(5)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(5)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(5)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(5)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7023892400" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 389-2400</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">catering@virgilsbbq.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3545 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc7"><div class="card-top"><span class="card-num">#5</span><button class="btn btn-email" onclick="openEmail(7)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(7)">Email Sent</button><button class="btn btn-dm" onclick="openDM(7)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(7)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(7)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(7)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(7)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(7)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(7)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(7)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Detroit Pizza</div><div class="rname">Guerrilla Pizza <button onclick="openNameModal(7)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Guerrilla Pizza LV &nbsp;|&nbsp; <span class="ig">@guerrillapizzaco</span> <button onclick="toggleBadIG(7)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(7)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(7)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(7)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(7)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7252151234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (725) 215-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">info@guerrillapizzaco.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 900 Las Vegas Blvd S Suite 120, Las Vegas, NV 89101</div></div><div class="card bounced" id="dc8"><div class="card-top"><span class="card-num">#6</span><button class="btn btn-email" onclick="openEmail(8)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(8)">Email Sent</button><button class="btn btn-dm" onclick="openDM(8)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(8)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(8)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(8)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(8)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(8)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(8)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(8)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">Peter Luger Steakhouse <button onclick="openNameModal(8)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Marilyn Spiera &nbsp;|&nbsp; <span class="ig">@peterlugersteakhouse</span> <button onclick="toggleBadIG(8)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(8)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(8)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(8)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(8)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027317110" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 731-7110</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">lasvegas@peterluger.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3570 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc9"><div class="card-top"><span class="card-num">#7</span><button class="btn btn-email" onclick="openEmail(9)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(9)">Sent</button><button class="btn btn-dm" onclick="openDM(9)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(9)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-27</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(9)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(9)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(9)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(9)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(9)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(9)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Southern</div><div class="rname">Jason Aldeans Kitchen &amp; Bar <button onclick="openNameModal(9)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Jason Aldean &nbsp;|&nbsp; <span class="ig">@jasonaldean</span> <button onclick="toggleBadIG(9)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(9)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(9)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(9)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(9)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7025901234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 590-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Sent</span><span class="attempt-email sent-em">info@jasonaldeankitchenbar.com</span> <span class="attempt-status s-sent">SENT</span></div></div><div class="addr-line">📍 3535 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card sent" id="dc10"><div class="card-top"><span class="card-num">#8</span><button class="btn btn-email" onclick="openEmail(10)">✉️ Email</button><button class="btn btn-verify marked" onclick="manualMarkSent(10)">Sent</button><button class="btn btn-dm" onclick="openDM(10)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(10)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(10)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(10)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(10)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(10)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(10)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(10)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Latin Fusion</div><div class="rname">Amador Cocina Fina <button onclick="openNameModal(10)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Oscar Amador &nbsp;|&nbsp; <span class="ig">@amadorcocinafina</span> <button onclick="toggleBadIG(10)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(10)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(10)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(10)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(10)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7026601234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 660-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">info@amadorcocinafina.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3220 S Jones Blvd, Las Vegas, NV 89146</div></div><div class="card pending" id="dc11"><div class="card-top"><span class="card-num">#9</span><button class="btn btn-email" onclick="openEmail(11)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(11)">Email Sent</button><button class="btn btn-dm" onclick="openDM(11)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(11)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(11)">Bounced</button><button class="btn btn-note has-note" onclick="openNoteModal(11)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(11)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(11)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(11)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(11)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Korean Steakhouse</div><div class="rname">Cote Korean Steakhouse <button onclick="openNameModal(11)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Simon Kim &nbsp;|&nbsp; <span class="ig">@cotekoreansteakhouse</span> <button onclick="toggleBadIG(11)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(11)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(11)" class="btn btn-interested flagged">👍</button><button onclick="toggleNotInterested(11)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(11)" class="btn btn-followup flagged">Follow Up - 2026-03-25</button></div><div class="info"><a href="tel:7024141234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 414-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">reservations@cotekoreansteakhouse.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3355 S Las Vegas Blvd, Las Vegas, NV 89109</div><div class="note-preview">📝 Hi Shane,</div></div><div class="card pending" id="dc12"><div class="card-top"><span class="card-num">#10</span><button class="btn btn-email" onclick="openEmail(12)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(12)">Email Sent</button><button class="btn btn-dm" onclick="openDM(12)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(12)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(12)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(12)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(12)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(12)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(12)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(12)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Sports Bar</div><div class="rname">F1 Arcade <button onclick="openNameModal(12)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">F1 Arcade Ltd. &nbsp;|&nbsp; <span class="ig">@f1arcade</span> <button onclick="toggleBadIG(12)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(12)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(12)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(12)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(12)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7029001234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 900-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">lasvegas@f1arcade.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3708 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc13"><div class="card-top"><span class="card-num">#11</span><button class="btn btn-email" onclick="openEmail(13)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(13)">Email Sent</button><button class="btn btn-dm" onclick="openDM(13)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(13)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(13)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(13)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(13)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(13)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(13)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(13)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Japanese-American</div><div class="rname">GastroPUB Nisei <button onclick="openNameModal(13)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Chef Winston Matsuuchi &nbsp;|&nbsp; <span class="ig">@gastropub_nisei</span> <button onclick="toggleBadIG(13)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(13)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(13)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(13)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(13)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027781234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 778-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">info@gastropubnisei.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 4785 Spring Mountain Rd, Las Vegas, NV 89102</div></div><div class="card bounced" id="dc14"><div class="card-top"><span class="card-num">#12</span><button class="btn btn-email" onclick="openEmail(14)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(14)">Email Sent</button><button class="btn btn-dm" onclick="openDM(14)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(14)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(14)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(14)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(14)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(14)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(14)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(14)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Steakhouse</div><div class="rname">High Steaks <button onclick="openNameModal(14)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Chef James Trees &nbsp;|&nbsp; <span class="ig">@highsteaksvegas</span> <button onclick="toggleBadIG(14)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(14)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(14)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(14)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(14)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027777923" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 777-7923</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">reservations@highsteaks.vegas</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 2000 Fashion Show Dr, Las Vegas, NV 89109</div></div><div class="card pending" id="dc15"><div class="card-top"><span class="card-num">#13</span><button class="btn btn-email" onclick="openEmail(15)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(15)">Email Sent</button><button class="btn btn-dm" onclick="openDM(15)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(15)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-off" onclick="markAttemptBounced(15)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(15)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(15)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(15)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(15)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(15)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Japanese Bar</div><div class="rname">Pachi-Pachi <button onclick="openNameModal(15)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Pachi-Pachi LV &nbsp;|&nbsp; <span class="ig">@ilovepachipachi</span> <button onclick="toggleBadIG(15)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(15)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(15)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(15)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(15)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7023851234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 385-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">hello@ilovepachipachi.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 525 E Fremont St, Las Vegas, NV 89101</div></div><div class="card bounced" id="dc17"><div class="card-top"><span class="card-num">#14</span><button class="btn btn-email" onclick="openEmail(17)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(17)">Email Sent</button><button class="btn btn-dm" onclick="openDM(17)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(17)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(17)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(17)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(17)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(17)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(17)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(17)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Chinese</div><div class="rname">Bowl of Fortune <button onclick="openNameModal(17)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Bowl of Fortune LV &nbsp;|&nbsp; <span class="ig">@bowloffortune</span> <button onclick="toggleBadIG(17)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(17)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(17)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(17)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(17)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7027761234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 776-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">contact@bowloffortune.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 4215 Spring Mountain Rd, Las Vegas, NV 89102</div></div><div class="card bounced" id="dc18"><div class="card-top"><span class="card-num">#15</span><button class="btn btn-email" onclick="openEmail(18)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(18)">Email Sent</button><button class="btn btn-dm" onclick="openDM(18)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(18)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(18)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(18)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(18)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(18)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(18)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(18)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Spanish</div><div class="rname">Bazaar Meat by Jose Andres <button onclick="openNameModal(18)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Jose Andres &nbsp;|&nbsp; <span class="ig">@bazaarbyjose</span> <button onclick="toggleBadIG(18)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(18)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(18)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(18)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(18)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7024141234" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 414-1234</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Pending</span><span class="attempt-email pending-em">bazaarmeat@thebazaar.com</span> <span class="attempt-status s-pending">PENDING</span></div></div><div class="addr-line">📍 3708 S Las Vegas Blvd, Las Vegas, NV 89109</div></div><div class="card bounced" id="dc19"><div class="card-top"><span class="card-num">#16</span><button class="btn btn-email" onclick="openEmail(19)">✉️ Email</button><button class="btn btn-verify" onclick="manualMarkSent(19)">Email Sent</button><button class="btn btn-dm" onclick="openDM(19)">DM</button><button class="btn btn-copy-dm" onclick="copyDM(19)">Copy DM</button><span class="btn btn-dm marked" style="cursor:default;">DM'd 2026-03-25</span><button class="btn btn-bounce-on" onclick="unmarkBounced(19)">Bounced</button><button class="btn btn-note" onclick="openNoteModal(19)">Note</button><button class="btn btn-foodtrade" onclick="toggleFoodTrade(19)">Food Trade</button><button class="btn btn-problem" onclick="toggleProblem(19)">Problem</button><button class="btn btn-delete" onclick="deleteRestaurant(19)">Delete</button><button class="btn btn-add-email" onclick="openEditEmail(19)" style="background:#546E7A;">Edit Email</button></div><div class="ctag">Italian</div><div class="rname">ai Pazzi <button onclick="openNameModal(19)" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">Fabio Viviani &nbsp;|&nbsp; <span class="ig">@aipazzi</span> <button onclick="toggleBadIG(19)" class="btn btn-bad-ig" style="margin-left:4px;">Bad IG</button> <button onclick="openEditIG(19)" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;"><button onclick="toggleInterested(19)" class="btn btn-interested">👍</button><button onclick="toggleNotInterested(19)" class="btn btn-not-interested">👎</button><button onclick="toggleFollowup(19)" class="btn btn-followup">Follow Up</button></div><div class="info"><a href="tel:7025075012" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 (702) 507-5012</a></div><div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">Bounced</span><span class="attempt-email bounced-em">info@aipazzi.com</span> <span class="attempt-status s-bounced">BOUNCED</span></div></div><div class="addr-line">📍 221 N Rampart Blvd, Las Vegas, NV 89145</div></div><div style="height:556640px"></div></div>
+  <div id="no-results" style="display: none;"></div>
 
   <div class="scroller" id="dash-scroller">
     <div class="sc-arrow" id="dash-scUp">▲</div>
-    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb"></div></div>
+    <div class="sc-track" id="dash-scTrack"><div class="sc-thumb" id="dash-scThumb" style="height: 40px; top: 0px;"></div></div>
     <div class="sc-arrow" id="dash-scDown">▼</div>
     <div class="sc-pct" id="dash-scPct">0%</div>
   </div>
@@ -266,8 +254,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <h2>GitHub Token</h2>
     <p class="modal-sub">Needs <b>repo</b> scope. Saved to this device only.</p>
     <label for="token-modal-input">Personal Access Token *</label>
-    <input type="password" id="token-modal-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" spellcheck="false" style="font-family:monospace;font-size:12px;">
-    <p style="font-size:11px;color:#888;margin-top:8px;">Get one at github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens</p>
+    <input type="password" id="token-modal-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" style="font-family:monospace;font-size:12px;">
+    <p style="font-size:11px;color:#888;margin-top:8px;">Get one at github.com → Settings → Developer settings → Personal access tokens</p>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeTokenModal()">Cancel</button>
       <button class="btn btn-save" onclick="saveTokenAndPush()">Save &amp; Push</button>
@@ -281,35 +269,35 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <h2>Add New Restaurant</h2>
     <div class="modal-sub">Saved to this device — appears in your backup file</div>
     <label>Restaurant Name *</label>
-    <input type="text" id="ar-name" placeholder="e.g. Joe's Seafood">
+    <input type="text" id="ar-name" placeholder="e.g. Joe's Seafood" autocapitalize="words">
     <label>Owner / Contact Name</label>
     <input type="text" id="ar-owner" placeholder="e.g. Joe Smith">
     <label>Instagram Handle</label>
-    <input type="text" id="ar-instagram" placeholder="e.g. @joesseafoodlv">
+    <input type="text" id="ar-instagram" placeholder="e.g. @joesseafoodlv" autocapitalize="none" autocorrect="off">
     <label>Phone</label>
     <input type="tel" id="ar-phone" placeholder="e.g. (702) 555-1234">
     <label>Email</label>
-    <input type="email" id="ar-email" placeholder="e.g. info@joesseafood.com" autocomplete="off">
+    <input type="text" id="ar-email" placeholder="e.g. info@joesseafood.com" autocomplete="off" autocapitalize="none" inputmode="email">
     <label>Cuisine Type</label>
     <input type="text" id="ar-cuisine" placeholder="e.g. Seafood, American">
     <label>Address</label>
     <input type="text" id="ar-address" placeholder="e.g. 123 Main St, Las Vegas, NV">
     <label>Notes</label>
-    <textarea id="ar-notes" placeholder="Optional notes" maxlength="1000" style="height:60px;"></textarea>
+    <textarea id="ar-notes" placeholder="Optional notes" maxlength="1000" style="height:100px;"></textarea>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeAddRecord()">Cancel</button>
       <button class="btn btn-save" onclick="saveNewRecord()">Add Restaurant</button>
     </div>
   </div>
 </div>
-<div id="delete-confirm" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#B71C1C;color:#fff;padding:12px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:99999;align-items:center;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.4);"></div>
+<div id="delete-confirm" style="display:none;position:fixed;bottom:90px;left:16px;right:16px;transform:none;background:#B71C1C;color:#fff;padding:14px 20px;border-radius:16px;font-size:14px;font-weight:700;z-index:99999;align-items:center;justify-content:center;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);"></div>
 
 <div class="modal-backdrop" id="name-modal-backdrop">
   <div class="modal">
     <h2 id="name-modal-title">Edit Name</h2>
     <p class="modal-sub" id="name-modal-sub"></p>
     <label for="name-modal-input">Restaurant Name *</label>
-    <input type="text" id="name-modal-input" placeholder="e.g. Butcher & Thief" autocomplete="off" spellcheck="false">
+    <input type="text" id="name-modal-input" placeholder="e.g. Butcher &amp; Thief" autocapitalize="words" autocomplete="off" spellcheck="false">
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeNameModal()">Cancel</button>
       <button class="btn btn-save" onclick="saveName()">Save</button>
@@ -341,7 +329,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <h2 id="ig-modal-title">Edit Instagram</h2>
     <p class="modal-sub" id="ig-modal-sub"></p>
     <label for="ig-modal-input">Instagram Handle *</label>
-    <input type="text" id="ig-modal-input" placeholder="e.g. @restaurantname" autocomplete="off" spellcheck="false">
+    <input type="text" id="ig-modal-input" placeholder="e.g. @restaurantname" autocomplete="off" spellcheck="false" autocapitalize="none" autocorrect="off">
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeIGModal()">Cancel</button>
       <button class="btn btn-save" onclick="saveIG()">Save</button>
@@ -355,7 +343,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <p class="modal-sub" id="modal-sub"></p>
     <div id="modal-history"></div>
     <label for="modal-email-input" id="modal-email-label">Email Address *</label>
-    <input type="email" id="modal-email-input" placeholder="e.g. manager@restaurant.com" autocomplete="off" spellcheck="false">
+    <input type="text" id="modal-email-input" placeholder="e.g. manager@restaurant.com" autocomplete="off" spellcheck="false" autocapitalize="none" inputmode="email">
     <label for="modal-note-input">Note (optional)</label>
     <textarea id="modal-note-input" placeholder="e.g. Found on their Instagram bio / from bounce-back email"></textarea>
     <div class="modal-actions">
@@ -1546,15 +1534,16 @@ function loadStatuses()  { try { return JSON.parse(localStorage.getItem(LS_STATU
 function loadAttempts()  { try { return JSON.parse(localStorage.getItem(LS_ATTEMPTS)) || {}; } catch(e) { return {}; } }
 function loadDMDates()   { try { return JSON.parse(localStorage.getItem(LS_DM))       || {}; } catch(e) { return {}; } }
 function saveStatuses()  { try { localStorage.setItem(LS_STATUS, JSON.stringify(statusMap)); } catch(e) {} lsSaved(); }
+function saveAttemptsAndStatuses() {
+  try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify(attemptsMap)); localStorage.setItem(LS_STATUS, JSON.stringify(statusMap)); } catch(e) {}
+  lsSaved();
+}
 function saveDMDates()   { try { localStorage.setItem(LS_DM, JSON.stringify(dmMap));  } catch(e) {} lsSaved(); }
 function loadBadIG()       { try { return JSON.parse(localStorage.getItem(LS_BAD_IG))       || {}; } catch(e) { return {}; } }
 function saveBadIG()       { try { localStorage.setItem(LS_BAD_IG, JSON.stringify(badIGMap)); } catch(e) {} lsSaved(); }
 function loadIGOverride()  { try { return JSON.parse(localStorage.getItem(LS_IG_OVERRIDE))  || {}; } catch(e) { return {}; } }
-function saveIGOverride()  { try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {} lsSaved(); }
 function loadUserNotes()   { try { return JSON.parse(localStorage.getItem(LS_USER_NOTES))   || {}; } catch(e) { return {}; } }
-function saveUserNotes()   { try { localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap)); } catch(e) {} lsSaved(); }
 function loadNameOverride() { try { return JSON.parse(localStorage.getItem(LS_NAME_OVERRIDE)) || {}; } catch(e) { return {}; } }
-function saveNameOverride() { try { localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); } catch(e) {} lsSaved(); }
 function loadFollowup()     { try { return JSON.parse(localStorage.getItem(LS_FOLLOWUP))      || {}; } catch(e) { return {}; } }
 function saveFollowup()     { try { localStorage.setItem(LS_FOLLOWUP, JSON.stringify(followupMap)); } catch(e) {} lsSaved(); }
 function loadInterested()     { try { return JSON.parse(localStorage.getItem(LS_INTERESTED))     || {}; } catch(e) { return {}; } }
@@ -1562,25 +1551,7 @@ function saveInterested()     { try { localStorage.setItem(LS_INTERESTED,     JS
 function loadNotInterested()  { try { return JSON.parse(localStorage.getItem(LS_NOT_INTERESTED)) || {}; } catch(e) { return {}; } }
 function saveNotInterested()  { try { localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap)); } catch(e) {} lsSaved(); }
 function loadDeleted()        { try { return JSON.parse(localStorage.getItem(LS_DELETED))        || {}; } catch(e) { return {}; } }
-function saveDeleted()        { try { localStorage.setItem(LS_DELETED, JSON.stringify(deletedMap)); } catch(e) {} lsSaved(); }
-function saveAll() {
-  try {
-    localStorage.setItem(LS_STATUS,       JSON.stringify(statusMap));
-    localStorage.setItem(LS_ATTEMPTS,     JSON.stringify(attemptsMap));
-    localStorage.setItem(LS_DM,           JSON.stringify(dmMap));
-    localStorage.setItem(LS_BAD_IG,       JSON.stringify(badIGMap));
-    localStorage.setItem(LS_INTERESTED,   JSON.stringify(interestedMap));
-    localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap));
-    localStorage.setItem(LS_IG_OVERRIDE,  JSON.stringify(igOverrideMap));
-    localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap));
-    localStorage.setItem(LS_USER_NOTES,   JSON.stringify(userNotesMap));
-    localStorage.setItem(LS_PROBLEM,      JSON.stringify(problemMap));
-    localStorage.setItem(LS_FOLLOWUP,     JSON.stringify(followupMap));
-    localStorage.setItem(LS_DELETED,      JSON.stringify(deletedMap));
-    localStorage.setItem(LS_FOODTRADE,    JSON.stringify(foodTradeMap));
-  } catch(e) {}
-  lsSaved();
-}
+
 function loadProblem()        { try { return JSON.parse(localStorage.getItem(LS_PROBLEM))        || {}; } catch(e) { return {}; } }
 function saveProblem()        { try { localStorage.setItem(LS_PROBLEM, JSON.stringify(problemMap)); } catch(e) {} lsSaved(); }
 function loadCustomRecords()  { try { return JSON.parse(localStorage.getItem(LS_CUSTOM_RECORDS))  || []; } catch(e) { return []; } }
@@ -1672,7 +1643,7 @@ function importBackup(event) {
   reader.onload = function(e) {
     var rec;
     try { rec = JSON.parse(e.target.result); } catch(err) { alert('Could not read file. Make sure it is a valid .json backup.'); return; }
-    if (!rec || rec._backupVersion !== 1) { alert('This does not look like a valid LV Dashboard backup file.'); return; }
+    if (!rec || !rec._backupVersion) { alert('This does not look like a valid LV Dashboard backup file.'); return; }
     if (rec.status)        { statusMap        = rec.status;        try { localStorage.setItem(LS_STATUS,         JSON.stringify(statusMap)); } catch(e) {} }
     if (rec.attempts)      { attemptsMap      = rec.attempts;      try { localStorage.setItem(LS_ATTEMPTS,       JSON.stringify(attemptsMap)); } catch(e) {} }
     if (rec.dm)            { dmMap            = rec.dm;            try { localStorage.setItem(LS_DM,             JSON.stringify(dmMap)); } catch(e) {} }
@@ -1741,7 +1712,6 @@ function _localDate(d) {
   var day = d.getDate();
   return y + '-' + (mo<10?'0'+mo:mo) + '-' + (day<10?'0'+day:day);
 }
-function todayStr() { return _localDate(new Date()); }
 function nowStr() {
   var d = new Date();
   var date = _localDate(d);
@@ -1772,10 +1742,8 @@ var userAttemptsMap  = (function(){ try { return JSON.parse(localStorage.getItem
 // Pre-flag known bad IG accounts — use localStorage only, no Firebase trigger on every load
 if (!badIGMap[5]) { badIGMap[5] = true; try { localStorage.setItem(LS_BAD_IG, JSON.stringify(badIGMap)); } catch(e) {} }
 if (dmMap[5]) { delete dmMap[5]; try { localStorage.setItem(LS_DM, JSON.stringify(dmMap)); } catch(e) {} }
-// Batch queue removed — stubs kept so save functions don't crash
-function _invalidatePending() {}
-function saveBD() {}
-function saveToday() {}
+function _invalidatePending() {} // no-op — batch queue removed
+
 // Build restaurant index + precompute fields
 var _numToIdx = Object.create(null);
 var RESTAURANTS = RESTAURANTS_BASE.filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
@@ -1894,7 +1862,7 @@ function saveNewRecord() {
   }
   // Use cached max num (updated when records added)
   var newNum = _getNextNum();
-  var emailVal = document.getElementById('ar-email').value.trim();
+  var emailVal = document.getElementById('ar-email').value.trim().toLowerCase();
   if (emailVal && (emailVal.indexOf('@') < 0 || emailVal.indexOf('.') < 0)) {
     var eEl = document.getElementById('ar-email');
     eEl.style.borderColor = '#C62828';
@@ -2017,16 +1985,16 @@ function getBestEmail(num) {
     if (attempts[i].status === 'pending' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
   }
   // 2nd choice: most recent sent email (so we can re-send)
-  for (var i=attempts.length-1; i>=0; i--) {
-    if (attempts[i].status === 'sent' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var j=attempts.length-1; j>=0; j--) {
+    if (attempts[j].status === 'sent' && attempts[j].email && attempts[j].email !== BAD) return attempts[j].email;
   }
   // 3rd choice: last bounced
-  for (var i=attempts.length-1; i>=0; i--) {
-    if (attempts[i].status === 'bounced' && attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var k=attempts.length-1; k>=0; k--) {
+    if (attempts[k].status === 'bounced' && attempts[k].email && attempts[k].email !== BAD) return attempts[k].email;
   }
   // 4th choice: any non-empty email at all
-  for (var i=0; i<attempts.length; i++) {
-    if (attempts[i].email && attempts[i].email !== BAD) return attempts[i].email;
+  for (var m=0; m<attempts.length; m++) {
+    if (attempts[m].email && attempts[m].email !== BAD) return attempts[m].email;
   }
   return null;
 }
@@ -2124,6 +2092,7 @@ function openEmail(num) {
     var input = prompt('Enter email address for ' + r.name + ':');
     if (!input) return; // cancelled
     input = input.trim();
+    input = input.toLowerCase();
     if (input.indexOf('@') < 0 || input.indexOf('.') < 0) { showDMToast('Invalid email address'); return; }
     // Save it so it's there next time
     if (!attemptsMap[num]) attemptsMap[num] = [];
@@ -2165,8 +2134,8 @@ function openEditEmail(num) {
     if (attempts[i].status === 'pending') { bestIdx = i; break; }
   }
   if (bestIdx < 0) {
-    for (var i=attempts.length-1; i>=0; i--) {
-      if (attempts[i].status === 'bounced') { bestIdx = i; break; }
+    for (var j2=attempts.length-1; j2>=0; j2--) {
+      if (attempts[j2].status === 'bounced') { bestIdx = j2; break; }
     }
   }
   if (bestIdx < 0 && attempts.length > 0) bestIdx = 0;
@@ -2228,7 +2197,8 @@ function selectEmailToEdit(idx) {
 }
 
 function saveEmail() {
-  var emailVal = document.getElementById('modal-email-input').value.trim();
+  if (!_modalNum) return; // guard against null if modal was closed
+  var emailVal = document.getElementById('modal-email-input').value.trim().toLowerCase();
   var noteVal  = document.getElementById('modal-note-input').value.trim();
   if (!emailVal || emailVal.indexOf('@') < 0) {
     document.getElementById('modal-email-input').style.borderColor='#C62828';
@@ -2299,7 +2269,7 @@ function markAttemptBounced(num) {
   statusMap[num] = 'bounced';
   var _r15=getR(num); if(_r15) _r15.status='bounced'; // update live object
   // Remove from sent-today count since it bounced
-  saveAttempts(); saveStatuses(); // each calls lsSaved()
+  saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
   dashRefreshCard(num); dashUpdateStats();
 }
@@ -2316,7 +2286,7 @@ function unmarkBounced(num) {
   var stillBounced = attempts.some(function(a){ return a.status==='bounced'; });
   statusMap[num] = stillBounced ? 'bounced' : 'pending';
   var _r16=getR(num); if(_r16) _r16.status=statusMap[num]; // update live object
-  saveAttempts(); saveStatuses(); // each calls lsSaved()
+  saveAttemptsAndStatuses(); // single save call
   _invalidatePending(); _dashDirty=true;
   dashRefreshCard(num); dashUpdateStats();
 }
@@ -2331,16 +2301,15 @@ function markAttemptSent(num, fromEmail) {
   if (idx<0) idx = getActiveAttemptIdx(num);
   // If no pending attempt found, stamp the last sent one instead
   if (idx<0) {
-    for (var i=attempts.length-1; i>=0; i--) {
-      if (attempts[i].status==='sent') { idx=i; break; }
+    for (var j3=attempts.length-1; j3>=0; j3--) {
+      if (attempts[j3].status==='sent') { idx=j3; break; }
     }
   }
-  // If still nothing, stamp the first attempt
   if (idx<0 && attempts.length>0) idx=0;
 
   if (idx>=0) { attempts[idx].status='sent'; attempts[idx].date=nowStr(); }
   statusMap[num]='sent';
-  saveAttempts(); saveStatuses();
+  saveAttemptsAndStatuses();
   _invalidatePending();
 }
 
@@ -2375,7 +2344,7 @@ function saveName() {
   var r = getR(num);
   if (r) { r.name = val; r._search = val.toLowerCase(); }
   closeNameModal();
-  _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
+  _invalidatePending(); _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
 }
 
 var _noteModalNum = null;
@@ -2541,7 +2510,7 @@ function saveIG() {
     r._search = (nameOverrideMap[r.num]||r.name).toLowerCase();
   }
   closeIGModal();
-  _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
+  _dashDirty = true; _invalidatePending(); dashRefreshCard(num); dashUpdateStats();
 }
 
 // ══════════════════════════════════════════════════════
@@ -2584,7 +2553,7 @@ function toggleFollowup(num) {
 }
 
 // ══════════════════════════════════════════════════════
-// CARD BUILDER
+// CARD BUILDER — dashboard
 // ══════════════════════════════════════════════════════
 function _buildAttemptHistory(num) {
   var attempts = attemptsMap[num] || [];
@@ -2592,8 +2561,8 @@ function _buildAttemptHistory(num) {
   // Show the most relevant email: sent first (for sent restaurants), then pending, then bounced, then any
   var best = null;
   for (var i=0; i<attempts.length; i++) { if (attempts[i].status==='sent'&&attempts[i].email) { best=attempts[i]; } } // last sent
-  if (!best) { for (var i=0; i<attempts.length; i++) { if (attempts[i].status==='pending'&&attempts[i].email) { best=attempts[i]; break; } } }
-  if (!best) { for (var i=attempts.length-1; i>=0; i--) { if (attempts[i].email) { best=attempts[i]; break; } } }
+  if (!best) { for (var i2=0; i2<attempts.length; i2++) { if (attempts[i2].status==='pending'&&attempts[i2].email) { best=attempts[i2]; break; } } }
+  if (!best) { for (var i3=attempts.length-1; i3>=0; i3--) { if (attempts[i3].email) { best=attempts[i3]; break; } } }
   if (!best || !best.email) return '';
   var sc = best.status==='bounced'?'s-bounced':best.status==='sent'?'s-sent':'s-pending';
   var ec = best.status==='bounced'?'bounced-em':best.status==='sent'?'sent-em':'pending-em';
@@ -2667,7 +2636,7 @@ function _buildCard(r, displayNum) {
 // DASHBOARD
 // ══════════════════════════════════════════════════════
 var dashFilter='all', dashSearch='', _dashFiltered=[], _dashDirty=true, _dashRafPending=false;
-var CARD_EST_H=520, RENDER_BUFFER=12, _dashRenderedRange=[-1,-1]; // increased: buttons are now larger
+var CARD_EST_H=560, RENDER_BUFFER=14, _dashRenderedRange=[-1,-1]; // generous estimate prevents gaps
 var _dashList=document.getElementById('list')||{}, _dashNR=document.getElementById('no-results')||{};
 var _dashViewEl=document.getElementById('view-dashboard')||{};
 
@@ -2695,8 +2664,8 @@ function _doSearch(val){
   if(dashFilter!=='all'){
     dashFilter='all';
     document.querySelectorAll('.stats .badge').forEach(function(b){b.classList.remove('active-badge');});
-    var el=document.querySelector('.b-total');if(el)el.classList.add('active-badge');
   }
+  var _tb=document.querySelector('.b-total');if(_tb)_tb.classList.add('active-badge');
   _dashViewEl.scrollTop=0;
   _dashRenderedRange=[-1,-1];
   _dashDirty=true;
@@ -2713,6 +2682,7 @@ try{
   _si.addEventListener('search',function(){ _doSearch(''); });
 }catch(e){}
 
+function dashUpdateSlider(){var v=document.getElementById('view-dashboard');if(v&&v._updateSlider)v._updateSlider();}
 function dashScheduleRender(){
   if(_dashRafPending)return; _dashRafPending=true;
   requestAnimationFrame(function(){_dashRafPending=false;dashRender();});
@@ -2759,11 +2729,14 @@ function dashRender(){
   } else if(srBar){
     srBar.style.display='none';
   }
+  var _scroller = document.getElementById('dash-scroller');
   if(total===0){
     _dashList.innerHTML=''; _dashNR.style.display='block';
     _dashNR.innerHTML=dashSearch?('No results for "'+dashSearch+'".'):(({sent:'No verified sends yet.',bounced:'No bounced emails.',pending:'Nothing pending.',noemail:'Everyone has been emailed!',nodm:'Everyone has been DM\'d!',badig:'No bad IG accounts flagged.',interested:'No interested restaurants yet.',notinterested:'No not-interested restaurants yet.',notes:'No notes yet.',followup:'No follow-ups flagged.',problem:'No problems flagged.',foodtrade:'No food trade restaurants flagged.'})[dashFilter]||'No restaurants match.');
+    if(_scroller) _scroller.style.display='none';
     dashUpdateStats();dashUpdateSlider();return;
   }
+  if(_scroller) _scroller.style.display='';
   _dashNR.style.display='none';
   if(total<=60){
     var html='';for(var i=0;i<total;i++)html+=_buildCard(RESTAURANTS[_dashFiltered[i]],i+1);
@@ -2809,12 +2782,12 @@ function manualMarkSent(num){
     var hasBounced=attempts.some(function(a){return a.status==='bounced';});
     statusMap[num]=hasBounced?'bounced':'pending';
     var _r14=getR(num); if(_r14) _r14.status=statusMap[num]; // update live object
-    saveAttempts();saveStatuses(); // each calls lsSaved()
+    saveAttemptsAndStatuses(); // single save call
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
   } else {
     markAttemptSent(num,null);
     var _r14b=getR(num); if(_r14b) _r14b.status='sent';
-    saveAttempts(); saveStatuses();
+    saveAttemptsAndStatuses();
     _invalidatePending();_dashDirty=true;dashRefreshCard(num);dashUpdateStats();
   }
 }
@@ -2865,61 +2838,6 @@ function dashUpdateStats(){
   if(el.foodtrade)el.foodtrade.textContent=foodtrade;
 }
 
-// ══════════════════════════════════════════════════════
-// GUEST ACCESS (4-hour demo PIN)
-// ══════════════════════════════════════════════════════
-var _guestMode = false;
-try { _guestMode = sessionStorage.getItem('lv_guest_mode') === '1'; } catch(e) {}
-
-function _applyGuestMode() {
-  _guestMode = true;
-  if (document.getElementById('guest-mode-style')) return; // already applied
-  var style = document.createElement('style');
-  style.id = 'guest-mode-style';
-  style.textContent = [
-    '.btn-delete { display:none !important; }',
-    '.btn-add-email { display:none !important; }',
-    '.btn-bad-ig { display:none !important; }',
-    'button[onclick*="openNameModal"] { display:none !important; }',
-    'button[onclick*="openEditIG"] { display:none !important; }',
-    'button[onclick*="toggleFoodTrade"] { display:none !important; }',
-    'button[onclick*="toggleProblem"] { display:none !important; }',
-    'button[onclick*="deleteRestaurant"] { display:none !important; }',
-    'button[onclick*="exportBackup"] { display:none !important; }',
-    'button[onclick*="importBackup"] { display:none !important; }',
-    '#import-file-input { display:none !important; }',
-    '#guest-btn { background:#4CAF50 !important; }'
-  ].join('\n');
-  document.head.appendChild(style);
-  // Show guest banner
-  lsStatus('#E65100', '👁 Demo mode — read only');
-}
-
-function toggleGuestAccess() {
-  var expiry = null;
-  try { expiry = parseInt(localStorage.getItem('lv_guest_expiry') || '0'); } catch(e) {}
-  var isActive = expiry && Date.now() < expiry;
-  var btn = document.getElementById('guest-btn');
-  if (isActive) {
-    // Deactivate
-    try { localStorage.removeItem('lv_guest_expiry'); } catch(e) {}
-    if (btn) { btn.style.background = '#E65100'; btn.textContent = 'Guest'; }
-    showDMToast('Guest access deactivated');
-  } else {
-    // Activate for 4 hours
-    var fourHours = Date.now() + (4 * 60 * 60 * 1000);
-    try { localStorage.setItem('lv_guest_expiry', String(fourHours)); } catch(e) {}
-    if (btn) { btn.style.background = '#4CAF50'; btn.textContent = '✅ Guest ON'; }
-    var expires = new Date(fourHours);
-    var h = expires.getHours() % 12 || 12;
-    var m = expires.getMinutes();
-    var ap = expires.getHours() >= 12 ? 'PM' : 'AM';
-    showDMToast('Guest PIN 7070 active until ' + h + ':' + (m<10?'0'+m:m) + ' ' + ap);
-  }
-}
-
-// If already in guest mode from a previous session restore, apply it
-if (_guestMode) { window.addEventListener('load', function(){ setTimeout(_applyGuestMode, 500); }); }
 
 // ══════════════════════════════════════════════════════
 // PIN LOCK
@@ -2980,32 +2898,13 @@ function _pinCheck() {
     _pinEntry = ''; _pinUpdateDots(false);
     return;
   }
-  // Check guest PIN
-  var isGuest = false;
-  if (_pinEntry === '7070') {
-    var guestExpiry = null;
-    try { guestExpiry = parseInt(localStorage.getItem('lv_guest_expiry') || '0'); } catch(e) {}
-    if (guestExpiry && Date.now() < guestExpiry) {
-      isGuest = true;
-    } else {
-      _pinEntry = ''; _pinUpdateDots(true);
-      document.getElementById('pin-msg').textContent = 'Guest access not active or expired.';
-      setTimeout(function(){ document.getElementById('pin-msg').textContent = ''; _pinUpdateDots(false); }, 2000);
-      return;
-    }
-  }
-  if (_pinEntry === _pinCorrect || isGuest) {
+  if (_pinEntry === _pinCorrect) {
     // Correct — save session and unlock
     _pinAttempts = 0;
-    try {
-      sessionStorage.setItem('lv_pin_ok', '1');
-      if (isGuest) sessionStorage.setItem('lv_guest_mode', '1');
-    } catch(e) {}
+    try { sessionStorage.setItem('lv_pin_ok', '1'); sessionStorage.removeItem('lv_guest_mode'); } catch(e) {}
     document.getElementById('pin-screen').classList.add('hidden');
     document.getElementById('view-dashboard').classList.add('active');
-    fbLoad(); // sets status to 'Saved' + refreshes UI
-    if (isGuest) { lsStatus('#E65100', '👁 Demo mode — read only'); }
-    if (isGuest) _applyGuestMode();
+    fbLoad();
   } else {
     // Wrong — increment attempts
     _pinAttempts++;
@@ -3035,6 +2934,7 @@ function _pinInit() {
   // Already unlocked this session?
   try {
     if (sessionStorage.getItem('lv_pin_ok') === '1') {
+      sessionStorage.removeItem('lv_guest_mode'); // clear any stale guest flag
       document.getElementById('pin-screen').classList.add('hidden');
       document.getElementById('view-dashboard').classList.add('active');
       fbLoad();
@@ -3054,6 +2954,9 @@ var GH_API  = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE
 var LS_GH_TOKEN = 'lv_gh_token';
 
 function getGHToken() { try { return localStorage.getItem(LS_GH_TOKEN) || ''; } catch(e) { return ''; } }
+var _ghLongPressTimer = null;
+function _ghTouchStart() { _ghLongPressTimer = setTimeout(function(){ resetGHToken(); showDMToast('Token cleared — tap again to enter new one'); }, 800); }
+function _ghTouchEnd() { clearTimeout(_ghLongPressTimer); }
 
 function resetGHToken() {
   try { localStorage.removeItem(LS_GH_TOKEN); } catch(e) {}
@@ -3152,6 +3055,70 @@ function _doPush(token) {
   });
 }
 
+// ══════════════════════════════════════════════════════
+// SCROLLER WIDGET
+// ══════════════════════════════════════════════════════
+function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) {
+  var view  = document.getElementById(viewId);
+  var up    = document.getElementById(upId);
+  var down  = document.getElementById(downId);
+  var track = document.getElementById(trackId);
+  var thumb = document.getElementById(thumbId);
+  var pct   = document.getElementById(pctId);
+  if (!view || !thumb || !track) return;
+
+  function getScrollPct() {
+    var max = view.scrollHeight - view.clientHeight;
+    return max > 0 ? view.scrollTop / max : 0;
+  }
+  function setThumb() {
+    var ratio = view.clientHeight / Math.max(1, view.scrollHeight);
+    var trackH = track.clientHeight;
+    var thumbH = Math.max(40, Math.round(ratio * trackH));
+    thumb.style.height = thumbH + 'px';
+    var p = getScrollPct();
+    thumb.style.top = Math.round(p * (trackH - thumbH)) + 'px';
+    if (pct) pct.textContent = Math.round(p * 100) + '%';
+  }
+  // Store update fn on view so dashUpdateSlider can call it
+  view._updateSlider = setThumb;
+
+  view.addEventListener('scroll', setThumb, {passive: true});
+
+  // Arrow buttons
+  up.addEventListener('click',   function(){ view.scrollBy({top: -300, behavior:'smooth'}); });
+  down.addEventListener('click', function(){ view.scrollBy({top:  300, behavior:'smooth'}); });
+
+  // Drag thumb
+  var dragging = false, startY = 0, startTop = 0;
+  function onDragStart(clientY) { dragging = true; startY = clientY; startTop = thumb.offsetTop; }
+  function onDragMove(clientY) {
+    if (!dragging) return;
+    var trackH = track.clientHeight - thumb.clientHeight;
+    var newTop = Math.max(0, Math.min(trackH, startTop + (clientY - startY)));
+    var p = trackH > 0 ? newTop / trackH : 0;
+    view.scrollTop = p * (view.scrollHeight - view.clientHeight);
+    setThumb();
+  }
+  thumb.addEventListener('mousedown',  function(e){ onDragStart(e.clientY); e.preventDefault(); });
+  thumb.addEventListener('touchstart', function(e){ onDragStart(e.touches[0].clientY); e.preventDefault(); }, {passive:false});
+  document.addEventListener('mousemove',  function(e){ if(dragging) onDragMove(e.clientY); });
+  document.addEventListener('touchmove',  function(e){ if(dragging){ onDragMove(e.touches[0].clientY); e.preventDefault(); } }, {passive:false});
+  document.addEventListener('mouseup',  function(){ dragging=false; });
+  document.addEventListener('touchend', function(){ dragging=false; });
+
+  // Click on track to jump
+  track.addEventListener('click', function(e) {
+    if (e.target === thumb) return;
+    var rect = track.getBoundingClientRect();
+    var p = Math.max(0, Math.min(1, (e.clientY - rect.top) / track.clientHeight));
+    view.scrollTop = p * (view.scrollHeight - view.clientHeight);
+    setThumb();
+  });
+
+  setThumb();
+}
+
 // Data is stored in localStorage — no save needed on page close
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') {
@@ -3214,7 +3181,7 @@ window.addEventListener('load',function(){
     if(e.key!=='Escape')return;
     if(document.getElementById('modal-backdrop').classList.contains('open'))closeModal();
     else if(document.getElementById('ig-modal-backdrop').classList.contains('open')){ var _igv=document.getElementById('ig-modal-input').value.trim(); if(_igv&&_igv!=='@') saveIG(); else closeIGModal(); }
-    else if(document.getElementById('note-modal-backdrop').classList.contains('open')) saveNote();
+    else if(document.getElementById('note-modal-backdrop').classList.contains('open')) closeNoteModal(); // Escape cancels note edit
     else if(document.getElementById('name-modal-backdrop').classList.contains('open')){ var _nmv=document.getElementById('name-modal-input').value.trim(); if(_nmv) saveName(); else closeNameModal(); }
       else if(document.getElementById('add-record-backdrop').classList.contains('open'))closeAddRecord();
   });
@@ -3224,5 +3191,6 @@ window.addEventListener('load',function(){
   _pinInit();
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
