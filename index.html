@@ -3227,7 +3227,7 @@ function _refilter(){
     if(q){
       var rName=(nameOverrideMap[r.num]||r.name).toLowerCase();
       var rIG=(igOverrideMap[r.num]||r.instagram||'').toLowerCase().replace(/^@/,'');
-      if(rName.indexOf(q)===-1 && rIG.indexOf(q.replace(/^@/,''))===-1) continue;
+      if(!rName.startsWith(q)) continue;
     }
     _dashFiltered.push(i);
   }
