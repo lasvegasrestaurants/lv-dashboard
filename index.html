@@ -1,3 +1,20 @@
+
+function openFullEdit(num){
+  _feNum=num;
+  var r=getR(num);if(!r)return;
+  var fo=fieldOverrideMap[num]||{};
+  document.getElementById('full-edit-title').textContent=r.name;
+  document.getElementById('fe-name').value=nameOverrideMap[num]||r.name;
+  document.getElementById('fe-owner').value=fo.owner||r.owner||'';
+  document.getElementById('fe-instagram').value=igOverrideMap[num]||r.instagram||'';
+  document.getElementById('fe-phone').value=fo.phone||r.phone||'';
+  document.getElementById('fe-email').value=getBestEmail(num)||'';
+  document.getElementById('fe-cuisine').value=fo.cuisine||r.cuisine||'';
+  document.getElementById('fe-address').value=fo.address||r.address||'';
+  document.getElementById('fe-notes').value=userNotesMap[num]||'';
+  document.getElementById('full-edit-backdrop').classList.add('open');
+  setTimeout(function(){document.getElementById('fe-name').focus();},200);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
