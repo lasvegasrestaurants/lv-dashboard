@@ -432,6 +432,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   </div>
 </div>
 
+
+<!-- FULL EDIT MODAL -->
+<div class="modal-backdrop" id="full-edit-backdrop">
+  <div class="modal" style="max-height:90vh;">
+    <h2 id="full-edit-title">Edit Restaurant</h2>
+    <label>Name *</label><input type="text" id="fe-name" autocapitalize="words">
+    <label>Owner</label><input type="text" id="fe-owner">
+    <label>Instagram</label><input type="text" id="fe-instagram" autocapitalize="none" autocorrect="off">
+    <label>Phone</label><input type="tel" id="fe-phone">
+    <label>Email</label><input type="text" id="fe-email" autocapitalize="none" inputmode="email">
+    <label>Cuisine</label><input type="text" id="fe-cuisine">
+    <label>Address</label><input type="text" id="fe-address">
+    <label>Notes</label><textarea id="fe-notes" style="height:80px;resize:none;"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeFullEdit()">Cancel</button>
+      <button class="btn btn-save" onclick="saveFullEdit()">Save All</button>
+    </div>
+  </div>
+</div>
 <!-- ADD NEW RECORD MODAL -->
 <div class="modal-backdrop" id="add-record-backdrop">
   <div class="modal">
