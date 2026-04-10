@@ -3171,7 +3171,7 @@ function _buildCard(r, displayNum) {
   btns += '<button class="btn btn-note'+(userNotesMap[r.num]?' has-note':'')+'" onclick="openNoteModal('+r.num+')">Note</button>';
   btns += '<button class="btn btn-foodtrade'+(foodTradeMap[r.num]?' flagged':'')+'" onclick="toggleFoodTrade('+r.num+')">Food Trade</button>';
   btns += '<button class="btn btn-foodtradedone'+(foodTradeDoneMap[r.num]?' flagged':'')+'" onclick="toggleFoodTradeDone('+r.num+')">Trade Done</button>';
-  btns += '<button class="btn btn-ghosted'+(ghostedMap[r.num]?' flagged':'')+'" onclick="toggleGhosted('+r.num+')">u{1F47B} Ghosted</button>';
+  btns += '<button class="btn btn-ghosted'+(ghostedMap[r.num]?' flagged':'')+'" onclick="toggleGhosted('+r.num+')">👻 Ghosted</button>';
   btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
   btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
   btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
