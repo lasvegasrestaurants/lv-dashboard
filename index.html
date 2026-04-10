@@ -2236,8 +2236,9 @@ function importBackup(event) {
     _numToIdx = Object.create(null);
     RESTAURANTS = (isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE).filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
       _numToIdx[r.num] = i;
+      var _fo3=fieldOverrideMap[r.num]||{};
       return {
-        num: r.num, name: nameOverrideMap[r.num] || r.name, owner: r.owner,
+        num: r.num, name: nameOverrideMap[r.num] || r.name, owner: _fo3.owner || r.owner,
         instagram: igOverrideMap[r.num] || r.instagram,
         igHandle: (igOverrideMap[r.num] || r.instagram).replace(/^@/,''),
         phone: r.phone, phoneLink: (function(p){ var c=p.replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
@@ -3185,7 +3186,7 @@ function _buildCard(r, displayNum) {
   var isNotInterested = !!notInterestedMap[r.num];
   var cls = isSent?'sent':isBounced?'bounced':'pending';
 
-  var phoneLine = r.phoneLink
+  var _foCard=fieldOverrideMap[r.num]||{}; var _rphone=_foCard.phone||r.phone; var _rphoneLink=_rphone.replace(/\D/g,''); var phoneLine = _rphoneLink
     ?'<div class="info"><a href="tel:'+r.phoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 '+_esc(r.phone)+'</a></div>'
     :(r.phone?'<div class="info">📞 '+_esc(r.phone)+'</div>':'');
 
@@ -3210,9 +3211,9 @@ function _buildCard(r, displayNum) {
 
   var html = '<div class="card '+cls+'" id="dc'+r.num+'">'
     +'<div class="card-top">'+btns+'</div>'
-    +'<div class="ctag">'+_esc(r.cuisine)+'</div>'
+    +'<div class="ctag">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].cuisine)||r.cuisine)+'</div>'
     +'<div class="rname">'+_esc(nameOverrideMap[r.num]||r.name)+' <button onclick="openNameModal('+r.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div>'
-    +'<div class="info">'+_esc(r.owner)+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(igOverrideMap[r.num]||r.instagram)+(isBadIG?' (bad IG)':'')+'</span>'
+    +'<div class="info">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].owner)||r.owner)+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(igOverrideMap[r.num]||r.instagram)+(isBadIG?' (bad IG)':'')+'</span>'
     +' <button onclick="toggleBadIG('+r.num+')" class="btn btn-bad-ig'+(isBadIG?' flagged':'')+'" style="margin-left:4px;">Bad IG</button>'
     +' <button onclick="openEditIG('+r.num+')" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div>'
     +'<div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;">'
