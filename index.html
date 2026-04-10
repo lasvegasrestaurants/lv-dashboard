@@ -237,7 +237,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
 <!-- ═══════════════════════════════ DASHBOARD VIEW ═══════════════════════════════ -->
 <div class="view" id="view-dashboard">
-<div id="demo-banner">🎭 CUSTOMER CRM DEMO — Sample data only. Your real data is untouched.</div>
+
 
   <div class="hdr">
     <div id="fb-bar" style="padding:4px 0 0;">
@@ -299,7 +299,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
 <!-- ═══════════════════════════════ CRM VIEW ═══════════════════════════════ -->
 <div class="view" id="view-crm">
-<div id="crm-demo-banner" style="background:#F57F17;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:800;letter-spacing:.5px;position:sticky;top:0;z-index:20;">🎭 CUSTOMER CRM DEMO — Changes are isolated. Your real data is untouched.</div>
+
 
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -3557,8 +3557,7 @@ function _enterDemoMode() {
   });
   document.getElementById('pin-screen').classList.add('hidden');
   document.getElementById('view-crm').classList.add('active');
-  var banner = document.getElementById('crm-demo-banner');
-  if (banner) banner.style.display = 'block';
+  
   // Hide deploy button in demo mode
   var ghBtn = document.getElementById('gh-push-btn');
   if (ghBtn) ghBtn.style.display = 'none';
@@ -3665,7 +3664,6 @@ function logOut() {
   document.getElementById('pin-msg').textContent = '';
   // Hide demo banner
   var banner = document.getElementById('demo-banner');
-  if (banner) banner.classList.remove('visible');
   // Restore deploy button
   var ghBtn = document.getElementById('gh-push-btn');
   if (ghBtn) ghBtn.style.display = '';
