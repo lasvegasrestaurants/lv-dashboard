@@ -2111,7 +2111,7 @@ function _exportFallback(blob, filename) {
 
 function exportCSV() {
   // Build CSV with all restaurant data — opens directly in Excel/Numbers
-  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Sent Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Bad IG'];
+  var headers = ['#','Name','Status','Email','Email Status','Instagram','DM Date','Sent Date','Cuisine','Owner','Phone','Address','Notes','User Notes','Interested','Not Interested','Follow Up','Problem','Food Trade','Trade Done','Ghosted','Bad IG'];
   var rows = [headers];
 
   for (var i = 0; i < RESTAURANTS.length; i++) {
@@ -2158,6 +2158,8 @@ function exportCSV() {
       followup,
       problemMap[r.num] ? 'Yes' : '',
       foodTradeMap[r.num] ? 'Yes' : '',
+      foodTradeDoneMap[r.num] ? 'Yes' : '',
+      ghostedMap[r.num] ? 'Yes' : '',
       badIGMap[r.num] ? 'Yes' : '',
       sentDate
     ]);
@@ -3745,7 +3747,6 @@ function _startSessionTimer() {
   var ms = isDemo ? _DEMO_SESSION_MS : _SESSION_MS;
   try { sessionStorage.setItem('lv_login_time', Date.now()); } catch(e) {}
   if (isDemo) {
-    _demoSessionStart();
     _scheduleDemoActivityCheck();
   } else {
     setTimeout(function() {
@@ -3774,6 +3775,7 @@ function _showDemoActivityPrompt() {
   var countdown = 10;
   var el = document.getElementById('demo-activity-countdown');
   if (el) el.textContent = countdown;
+  clearInterval(_demoBootTimer);
   _demoBootTimer = setInterval(function() {
     countdown--;
     if (el) el.textContent = countdown;
