@@ -4078,7 +4078,7 @@ function _doPush(token) {
   fetch(GH_API, { method: 'GET', headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' } })
   .then(function(r) {
     if (r.status === 401) { _badToken(); return Promise.reject('done'); }
-    if (!r.ok) { _reset('GitHub error ' + r.status); return Promise.reject('done'); }
+    clearTimeout(_pushTimeout); if (!r.ok) { _reset('GitHub error ' + r.status); return Promise.reject('done'); }
     return r.json();
   })
   .then(function(data) {
@@ -4098,7 +4098,7 @@ function _doPush(token) {
   .then(function(r) {
     if (!r) return;
     if (r.status === 401) { _badToken(); return; }
-    if (r.ok) { _reset('Deployed! ✓ Live in 2 min'); }
+    clearTimeout(_pushTimeout); if (r.ok) { _reset('Deployed! ✓ Live in 2 min'); }
     else { r.json().then(function(d){ _reset((d && d.message) ? d.message.slice(0,40) : 'Push failed'); }).catch(function(){ _reset('Push failed'); }); }
   })
   .catch(function(err) {
