@@ -1808,8 +1808,6 @@ var LS_PROBLEM        = 'lv_outreach_problem_v1';
 var LS_CUSTOM_RECORDS = 'lv_outreach_custom_records_v1';
 var LS_FOODTRADE      = 'lv_outreach_foodtrade_v1';
 var LS_FOODTRADE_DONE = 'lv_outreach_foodtradedone_v1';
-var LS_GHOSTED        = 'lv_outreach_ghosted_v1';
-var LS_FIELD_OVERRIDE = 'lv_outreach_field_override_v1';
 var LS_FIELD_OVERRIDE  = 'lv_outreach_field_override_v1';
 var LS_GHOSTED        = 'lv_outreach_ghosted_v1';
 var LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
@@ -1888,11 +1886,6 @@ function loadCustomRecords()  { try { return JSON.parse(localStorage.getItem(LS_
 function loadFoodTrade()       { try { return JSON.parse(localStorage.getItem(LS_FOODTRADE))       || {}; } catch(e) { return {}; } }
 function saveFoodTrade()       { try { localStorage.setItem(LS_FOODTRADE, JSON.stringify(foodTradeMap)); } catch(e) {} lsSaved(); }
 function loadFoodTradeDone()   { try { return JSON.parse(localStorage.getItem(LS_FOODTRADE_DONE)) || {}; } catch(e) { return {}; } }
-function saveFoodTradeDone()   { try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} lsSaved(); }
-function loadGhosted()         { try { return JSON.parse(localStorage.getItem(LS_GHOSTED))       || {}; } catch(e) { return {}; } }
-function saveGhosted()         { try { localStorage.setItem(LS_GHOSTED, JSON.stringify(ghostedMap)); } catch(e) {} lsSaved(); }
-function loadFieldOverride()   { try { return JSON.parse(localStorage.getItem(LS_FIELD_OVERRIDE)) || {}; } catch(e) { return {}; } }
-function saveFieldOverride()   { try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} lsSaved(); }
 function loadFieldOverride()    { try { return JSON.parse(localStorage.getItem(LS_FIELD_OVERRIDE))  || {}; } catch(e) { return {}; } }
 function saveFieldOverride()    { try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} lsSaved(); }
 function saveFoodTradeDone()   { try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} lsSaved(); }
