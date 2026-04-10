@@ -161,9 +161,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-problem.flagged { background: #F9A825; color: #fff; }
 .b-problem { background: #F9A825; }
 .b-foodtrade  { background: #2E7D32; }
+.b-foodtradedone { background: #1B5E20; }
+.btn-foodtradedone { background: #fff; color: #1B5E20; border: 2px solid #1B5E20; font-size: 13px; padding: 8px 13px; }
+.btn-foodtradedone.flagged { background: #1B5E20; color: #fff; }
 .btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 13px; padding: 8px 13px; }
 .btn-foodtrade.flagged { background: #2E7D32; color: #fff; }
 .b-nodm    { background: #004D40; }
+.b-ghosted  { background: #546E7A; }
+.btn-ghosted { background: #fff; color: #546E7A; border: 2px solid #546E7A; font-size: 13px; padding: 8px 13px; }
+.btn-ghosted.flagged { background: #546E7A; color: #fff; }
 .btn-add-record { background: #4527A0; color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn-add-record:active { filter: brightness(.85); }
 .btn-delete:active { background: #7F0000; }
@@ -263,6 +269,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div class="badge b-followup" onclick="dashSetFilter('followup')">Follow Up: <span id="s-followup">0</span></div>
     <div class="badge b-problem"  onclick="dashSetFilter('problem')">Problem: <span id="s-problem">0</span></div>
     <div class="badge b-foodtrade" onclick="dashSetFilter('foodtrade')">Food Trade: <span id="s-foodtrade">0</span></div>
+    <div class="badge b-foodtradedone" onclick="dashSetFilter('foodtradedone')">Trade Done: <span id="s-foodtradedone">0</span></div>
+    <div class="badge b-ghosted" onclick="dashSetFilter('ghosted')">👻 Ghosted: <span id="s-ghosted">0</span></div>
     <div class="badge b-nodm"     onclick="dashSetFilter('nodm')">Waiting DM: <span id="s-nodm">0</span></div>
 
   </div>
@@ -1763,6 +1771,8 @@ var LS_DELETED        = 'lv_outreach_deleted_v1';
 var LS_PROBLEM        = 'lv_outreach_problem_v1';
 var LS_CUSTOM_RECORDS = 'lv_outreach_custom_records_v1';
 var LS_FOODTRADE      = 'lv_outreach_foodtrade_v1';
+var LS_FOODTRADE_DONE = 'lv_outreach_foodtradedone_v1';
+var LS_GHOSTED        = 'lv_outreach_ghosted_v1';
 var LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
 
 function _setDemoKeys() {
@@ -1780,6 +1790,8 @@ function _setDemoKeys() {
   LS_PROBLEM        = 'demo_problem_v1';
   LS_CUSTOM_RECORDS = 'demo_custom_records_v1';
   LS_FOODTRADE      = 'demo_foodtrade_v1';
+  LS_FOODTRADE_DONE = 'demo_foodtradedone_v1';
+  LS_GHOSTED        = 'demo_ghosted_v1';
   LS_USER_ATTEMPTS  = 'demo_user_attempts_v1';
 }
 
@@ -1798,6 +1810,8 @@ function _setRealKeys() {
   LS_PROBLEM        = 'lv_outreach_problem_v1';
   LS_CUSTOM_RECORDS = 'lv_outreach_custom_records_v1';
   LS_FOODTRADE      = 'lv_outreach_foodtrade_v1';
+  LS_FOODTRADE_DONE = 'lv_outreach_foodtradedone_v1';
+  LS_GHOSTED        = 'lv_outreach_ghosted_v1';
   LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
 }
 
@@ -1828,6 +1842,10 @@ function saveProblem()        { try { localStorage.setItem(LS_PROBLEM, JSON.stri
 function loadCustomRecords()  { try { return JSON.parse(localStorage.getItem(LS_CUSTOM_RECORDS))  || []; } catch(e) { return []; } }
 function loadFoodTrade()       { try { return JSON.parse(localStorage.getItem(LS_FOODTRADE))       || {}; } catch(e) { return {}; } }
 function saveFoodTrade()       { try { localStorage.setItem(LS_FOODTRADE, JSON.stringify(foodTradeMap)); } catch(e) {} lsSaved(); }
+function loadFoodTradeDone()   { try { return JSON.parse(localStorage.getItem(LS_FOODTRADE_DONE)) || {}; } catch(e) { return {}; } }
+function saveFoodTradeDone()   { try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} lsSaved(); }
+function loadGhosted()         { try { return JSON.parse(localStorage.getItem(LS_GHOSTED))       || {}; } catch(e) { return {}; } }
+function saveGhosted()         { try { localStorage.setItem(LS_GHOSTED, JSON.stringify(ghostedMap)); } catch(e) {} lsSaved(); }
 function saveCustomRecords()  { try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} lsSaved(); }
 // ══════════════════════════════════════════════════════
 // LOCAL SAVE STATUS
@@ -1883,6 +1901,8 @@ function _fbDoPush() {
     problem:       problemMap,
     customrecords: customRecords,
     foodtrade:     foodTradeMap,
+    foodtradedone: foodTradeDoneMap,
+    ghosted:       ghostedMap,
     userattempts:  userAttemptsMap,
     savedAt:       Date.now()
   };
@@ -1926,6 +1946,8 @@ function _applyFirebaseData(rec) {
       if (rec.problem)       { problemMap       = rec.problem;       try { localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); } catch(e) {} }
       if (rec.customrecords) { customRecords    = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
       if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     try { localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); } catch(e) {} }
+      if (rec.foodtradedone) { foodTradeDoneMap = rec.foodtradedone; try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} }
+      if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
       if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
       // Rebuild RESTAURANTS from updated maps
       _numToIdx = Object.create(null);
@@ -2037,6 +2059,8 @@ function exportBackup() {
     problem:       problemMap,
     customrecords: customRecords,
     foodtrade:     foodTradeMap,
+    foodtradedone: foodTradeDoneMap,
+    ghosted:       ghostedMap,
     userattempts:  userAttemptsMap
   };
   var json = JSON.stringify(payload, null, 2);
@@ -2176,6 +2200,8 @@ function importBackup(event) {
     if (rec.problem)       { problemMap       = rec.problem;       try { localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); } catch(e) {} }
     if (rec.customrecords) { customRecords    = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
     if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     try { localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); } catch(e) {} }
+    if (rec.foodtradedone) { foodTradeDoneMap = rec.foodtradedone; try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} }
+    if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
     if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
     _numToIdx = Object.create(null);
     RESTAURANTS = (isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE).filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
@@ -2218,7 +2244,7 @@ function importBackup(event) {
     _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
     dashSetFilter('all'); dashUpdateStats();
     lsSaved();
-    setTimeout(function(){ _fbDoPush(); }, 500); // push restored data to Firebase immediately
+    _fbSyncing = false; setTimeout(function(){ _fbDoPush(); }, 500);
     alert('Backup restored! ✓\n\nAll your data is loaded.');
     lsStatus('#4CAF50', 'Restored ✓ — ' + lsTs());
   };
@@ -2258,6 +2284,8 @@ var deletedMap       = loadDeleted();
 var problemMap       = loadProblem();
 var customRecords    = loadCustomRecords();
 var foodTradeMap     = loadFoodTrade();
+var foodTradeDoneMap = loadFoodTradeDone();
+var ghostedMap       = loadGhosted();
 var userAttemptsMap  = (function(){ try { return JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS))||{}; } catch(e) { return {}; } })();
 // Pre-flag known bad IG accounts — use localStorage only, no Firebase trigger on every load
 
@@ -2331,8 +2359,20 @@ function _esc(s) {
 }
 
 function toggleFoodTrade(num) {
-  if (foodTradeMap[num]) { delete foodTradeMap[num]; } else { foodTradeMap[num] = true; }
+  if (foodTradeMap[num]) { delete foodTradeMap[num]; } else { foodTradeMap[num] = true; delete foodTradeDoneMap[num]; saveFoodTradeDone(); }
   saveFoodTrade();
+  _invalidatePending(); _dashDirty = true;
+  dashRefreshCard(num); dashUpdateStats();
+}
+function toggleFoodTradeDone(num) {
+  if (foodTradeDoneMap[num]) { delete foodTradeDoneMap[num]; } else { foodTradeDoneMap[num] = true; delete foodTradeMap[num]; saveFoodTrade(); }
+  saveFoodTradeDone();
+  _invalidatePending(); _dashDirty = true;
+  dashRefreshCard(num); dashUpdateStats();
+}
+function toggleGhosted(num) {
+  if (ghostedMap[num]) { delete ghostedMap[num]; } else { ghostedMap[num] = true; }
+  saveGhosted();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
@@ -3130,6 +3170,8 @@ function _buildCard(r, displayNum) {
   btns += '<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'unmarkBounced':'markAttemptBounced')+'('+r.num+')">Bounced</button>';
   btns += '<button class="btn btn-note'+(userNotesMap[r.num]?' has-note':'')+'" onclick="openNoteModal('+r.num+')">Note</button>';
   btns += '<button class="btn btn-foodtrade'+(foodTradeMap[r.num]?' flagged':'')+'" onclick="toggleFoodTrade('+r.num+')">Food Trade</button>';
+  btns += '<button class="btn btn-foodtradedone'+(foodTradeDoneMap[r.num]?' flagged':'')+'" onclick="toggleFoodTradeDone('+r.num+')">Trade Done</button>';
+  btns += '<button class="btn btn-ghosted'+(ghostedMap[r.num]?' flagged':'')+'" onclick="toggleGhosted('+r.num+')">u{1F47B} Ghosted</button>';
   btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
   btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
   btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
@@ -3159,7 +3201,7 @@ function _buildCard(r, displayNum) {
 // DASHBOARD
 // ══════════════════════════════════════════════════════
 var dashFilter='all', dashSearch='', _dashFiltered=[], _dashDirty=true, _dashRafPending=false;
-var CARD_EST_H=560, RENDER_BUFFER=14, _dashRenderedRange=[-1,-1]; // generous estimate prevents gaps
+var CARD_EST_H=640, RENDER_BUFFER=14, _dashRenderedRange=[-1,-1]; // generous estimate prevents gaps
 var _dashList=document.getElementById('list')||{}, _dashNR=document.getElementById('no-results')||{};
 var _dashViewEl=document.getElementById('view-dashboard')||{};
 
@@ -3224,6 +3266,8 @@ function _refilter(){
     if(f==='noemail'       &&s!=='pending')  continue; // pending status is sufficient — no email check needed for speed
     if(f==='problem'       &&!problemMap[r.num])           continue;
     if(f==='foodtrade'     &&!foodTradeMap[r.num])         continue;
+    if(f==='foodtradedone' &&!foodTradeDoneMap[r.num])     continue;
+    if(f==='ghosted'       &&!ghostedMap[r.num])            continue;
     if(f==='nodm'          &&(dmMap[r.num]||badIGMap[r.num]))  continue;
     if(q){
       var rName=(nameOverrideMap[r.num]||r.name).toLowerCase();
@@ -3338,7 +3382,7 @@ function _getStatEls() {
   return _statEls;
 }
 function dashUpdateStats(){
-  var total=RESTAURANTS.length,sent=0,bounced=0,badig=0,interested=0,notinterested=0,notes=0,followup=0,problem=0,foodtrade=0,nodm=0,noemail=0;
+  var total=RESTAURANTS.length,sent=0,bounced=0,badig=0,interested=0,notinterested=0,notes=0,followup=0,problem=0,foodtrade=0,foodtradedone=0,ghosted=0,nodm=0,noemail=0;
   for(var i=0;i<total;i++){
     var r=RESTAURANTS[i],s=statusMap[r.num]||r.defaultStatus;
     if(s==='sent')sent++;
@@ -3350,6 +3394,9 @@ function dashUpdateStats(){
     if(followupMap[r.num])followup++;
     if(problemMap[r.num])problem++;
     if(foodTradeMap[r.num])foodtrade++;
+    if(foodTradeDoneMap[r.num])foodtradedone++;
+    if(ghostedMap[r.num])ghosted++;
+    var foodtradedone=0,ghosted=0;
     if(s==='pending')noemail++;
     if(!dmMap[r.num]&&!badIGMap[r.num])nodm++;
   }
@@ -3361,6 +3408,8 @@ function dashUpdateStats(){
   if(el.nodm)el.nodm.textContent=nodm;
   if(el.noemail)el.noemail.textContent=noemail;
   if(el.foodtrade)el.foodtrade.textContent=foodtrade;
+  var ftd=document.getElementById('s-foodtradedone'); if(ftd)ftd.textContent=foodtradedone;
+  var gh=document.getElementById('s-ghosted'); if(gh)gh.textContent=ghosted;
 }
 
 
@@ -3480,6 +3529,7 @@ function _enterDemoMode() {
 
 function pinDemoQuick() {
   _enterDemoMode();
+  _demoSessionStart();
 }
 
 function _pinCheck() {
@@ -3528,6 +3578,7 @@ function _pinCheck() {
 }
 
 function logOut() {
+  clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
@@ -3539,6 +3590,8 @@ function logOut() {
   // Reset demo flag and restore real storage keys
   isDemo = false;
   _setRealKeys();
+  RESTAURANTS = [];
+  _numToIdx = Object.create(null);
   // Reload all maps from real localStorage
   statusMap        = loadStatuses();
   attemptsMap      = loadAttempts();
@@ -3985,9 +4038,10 @@ function saveTokenAndPush() {
 
 function _doPush(token) {
   var btn = document.getElementById('gh-push-btn');
+  if (!btn) return;
   btn.disabled = true;
   function _reset(msg) {
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
     btn.textContent = msg || '⬆ Deploy';
     if (msg && msg !== '⬆ GitHub') setTimeout(function(){ btn.textContent = '⬆ Deploy'; }, 5000);
   }
@@ -4009,7 +4063,13 @@ function _doPush(token) {
           var b64 = reader.result.split(',')[1];
           resolve(b64);
         };
-        reader.onerror = function() { reject('FileReader error'); };
+        reader.onerror = function() {
+        // Fallback: manual base64 for iOS
+        try {
+          var b = btoa(unescape(encodeURIComponent(html)));
+          resolve(b);
+        } catch(e2) { reject('encode failed'); }
+      };
         reader.readAsDataURL(blob);
       } catch(e) { reject('encode error: ' + e.message); }
     });
@@ -4622,6 +4682,7 @@ function saveCrmPoints() {
 function crmDelete(id) {
   var c = CRM_CUSTOMERS.find(function(x){return x.id===id;});
   if (!c) return;
+  if (!confirm("Delete " + c.name + "?")) return;
   var snap = JSON.parse(JSON.stringify(c));
   var idx = CRM_CUSTOMERS.findIndex(function(x){return x.id===id;});
   CRM_CUSTOMERS.splice(idx, 1);
