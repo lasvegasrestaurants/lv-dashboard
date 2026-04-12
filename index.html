@@ -3407,6 +3407,8 @@ function manualMarkSent(num){
 
 // Cache stat badge DOM refs once
 var _statEls = null;
+var _feNum = null;
+var RENDER_BUFFER = 3;
 function _getStatEls() {
   if (_statEls) return _statEls;
   _statEls = {
