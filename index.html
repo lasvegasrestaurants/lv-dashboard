@@ -2282,7 +2282,7 @@ function importBackup(event) {
     _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
     dashSetFilter('all'); dashUpdateStats();
     lsSaved();
-    _fbSyncing = false; setTimeout(function(){ _fbDoPush(); }, 500);
+    _fbSyncing = false; setTimeout(function(){ if(isDemo === false) _fbDoPush(); }, 500);
     alert('Backup restored! ✓\n\nAll your data is loaded.');
     lsStatus('#4CAF50', 'Restored ✓ — ' + lsTs());
   };
@@ -2403,18 +2403,21 @@ function _esc(s) {
 function toggleFoodTrade(num) {
   if (foodTradeMap[num]) { delete foodTradeMap[num]; } else { foodTradeMap[num] = true; delete foodTradeDoneMap[num]; saveFoodTradeDone(); }
   saveFoodTrade();
+  _fbDoPush();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
 function toggleFoodTradeDone(num) {
   if (foodTradeDoneMap[num]) { delete foodTradeDoneMap[num]; } else { foodTradeDoneMap[num] = true; delete foodTradeMap[num]; saveFoodTrade(); }
   saveFoodTradeDone();
+  _fbDoPush();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
 function toggleGhosted(num) {
   if (ghostedMap[num]) { delete ghostedMap[num]; } else { ghostedMap[num] = true; }
   saveGhosted();
+  _fbDoPush();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
@@ -3080,6 +3083,7 @@ function saveNote() {
 
 var _igModalNum = null;
 
+function openEditName(num) { openFullEdit(num); }
 function openEditIG(num) {
   _igModalNum = num;
   var r = getR(num);
@@ -3825,6 +3829,7 @@ function demoActivityYes() {
 
 window._demoActivityNo = function _demoActivityNo() {
   clearInterval(_demoBootTimer);
+  _demoBootTimer = null;
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
   showDMToast('Session ended. Thanks for trying the demo!');
@@ -3849,12 +3854,14 @@ function _checkSessionExpiry() {
 var _adminLongPressTimer = null;
 
 function _logoutTouchStart() {
+  clearTimeout(_logoutTouchTimer);
   if (isDemo) return;
   _adminLongPressTimer = setTimeout(function() {
     openAdminDashboard();
   }, 3000);
 }
 function _logoutTouchEnd() {
+  clearTimeout(_logoutTouchTimer);
   clearTimeout(_adminLongPressTimer);
 }
 
@@ -4053,6 +4060,9 @@ var LS_GH_TOKEN = 'lv_gh_token';
 
 function getGHToken() { try { return localStorage.getItem(LS_GH_TOKEN) || ''; } catch(e) { return ''; } }
 var _ghLongPressTimer = null;
+var _logoutTouchTimer = null;
+var _pushTimeout = null;
+var _pinLockTimer = null;
 function _ghTouchStart() { _ghLongPressTimer = setTimeout(function(){ resetGHToken(); showDMToast('Token cleared — tap again to enter new one'); }, 800); }
 function _ghTouchEnd() { clearTimeout(_ghLongPressTimer); }
 
