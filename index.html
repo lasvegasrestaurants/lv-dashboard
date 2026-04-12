@@ -1979,8 +1979,6 @@ function _applyFirebaseData(rec) {
       if (rec.foodtradedone) { foodTradeDoneMap = rec.foodtradedone; try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} }
       if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
       if (rec.fieldoverride) { fieldOverrideMap  = rec.fieldoverride; try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} }
-      if (rec.customrecords) { customRecords = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
-      if (rec.customrecords) { customRecords = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
       if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
       // Rebuild RESTAURANTS from updated maps
       _numToIdx = Object.create(null);
