@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant Customers</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #152238;
+    --card: #1c2e47;
+    --border: #243650;
+    --text: #e8eaf0;
+    --muted: #7a92aa;
+    --accent: #4a90d9;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --gold: #C9A02A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* PIN screen */
+  #pinScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .pin-logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .pin-logo span { color: var(--gold); }
+  .pin-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .pin-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .pin-input {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 22px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 8px;
+    outline: none;
+    width: 200px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .pin-input:focus { border-color: var(--accent); }
+  .pin-input.error { border-color: var(--red); animation: shake 0.3s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+  }
+  .pin-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 200px;
+    transition: opacity 0.2s;
+  }
+  .pin-btn:hover { opacity: 0.85; }
+  .pin-err { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
+  .pin-err.show { display: block; }
+
+  /* Main app */
+  #app { display: none; }
+
+  /* Header */
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .back-btn {
+    background: var(--border);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: #333645; }
+  .header-title { font-size: 18px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  /* Restaurant tabs */
+  .restaurant-tabs {
+    padding: 16px 24px 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 16px;
+    border-radius: 8px 8px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--muted);
+    background: transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab:hover { color: var(--text); background: var(--card); }
+  .tab.active {
+    color: var(--text);
+    background: var(--card);
+    border-color: var(--border);
+    margin-bottom: -1px;
+  }
+  .tab .badge {
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-size: 11px;
+  }
+
+  /* Content */
+  .content { padding: 24px; }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 700; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.gold { color: var(--gold); }
+
+  /* Search + export */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 180px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .export-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .export-btn:hover { background: #333645; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: #111e30; }
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:hover td { background: rgba(59,130,246,0.04); }
+  .sms-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .sms-yes { background: rgba(16,185,129,0.15); color: var(--green); }
+  .sms-no  { background: rgba(239,68,68,0.12);  color: var(--red); }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+
+  .loading {
+    text-align: center;
+    padding: 48px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 600px) {
+    th:nth-child(n+5), td:nth-child(n+5) { display: none; }
+    .content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN Screen -->
+<div id="pinScreen">
+  <div class="pin-logo">LV Master Dashboard</div>
+  <div class="pin-title">Customer Database</div>
+  <div class="pin-sub">Enter your dashboard PIN to continue</div>
+  <input type="password" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••" inputmode="numeric"
+    onkeydown="if(event.key==='Enter') checkPin()">
+  <button class="pin-btn" onclick="checkPin()">Unlock</button>
+  <div class="pin-err" id="pinErr">Incorrect PIN. Try again.</div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <a href="https://lvr-data-a60c1.web.app" class="back-btn">
+        ← Dashboard
+      </a>
+      <div>
+        <div class="header-title">Restaurant Customers</div>
+        <div class="header-sub">Live from Firebase · lvr-data-a60c1</div>
+      </div>
+    </div>
+    <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+
+  <div class="restaurant-tabs" id="tabs">
+    <!-- populated dynamically -->
+  </div>
+
+  <div class="content">
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-label">Total Signups</div>
+        <div class="stat-value" id="statTotal">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">SMS Authorized</div>
+        <div class="stat-value green" id="statSms">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Have Birthday</div>
+        <div class="stat-value gold" id="statBday">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Have Anniversary</div>
+        <div class="stat-value gold" id="statAnniv">—</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search name, phone, email…" oninput="renderTable()">
+    </div>
+
+    <div class="table-wrap">
+      <div class="loading" id="loadingMsg">Loading customers…</div>
+      <table id="customerTable" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Birthday</th>
+            <th>Anniversary</th>
+            <th>SMS</th>
+            <th>Signed Up</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <div class="icon">👥</div>
+        <p>No customers yet — share that QR code!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com';
+  const PIN    = '227422';
+
+  // Known restaurants — add more here as you roll out
+  const RESTAURANTS = [
+    { id: 'toasted-flamingo', label: '🍞 Toasted Flamingo' },
+    // { id: 'next-restaurant', label: '🍕 Next Place' },
+  ];
+
+  let activeRestaurant = RESTAURANTS[0].id;
+  let allCustomers = [];
+
+  // ── PIN ──
+  function checkPin() {
+    const val = document.getElementById('pinInput').value;
+    const inp = document.getElementById('pinInput');
+    if (val === PIN) {
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      buildTabs();
+      loadCustomers(activeRestaurant);
+    } else {
+      inp.classList.add('error');
+      document.getElementById('pinErr').classList.add('show');
+      setTimeout(() => { inp.classList.remove('error'); inp.value = ''; }, 600);
+    }
+  }
+  document.getElementById('pinInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPin();
+  });
+
+  // ── Tabs ──
+  function buildTabs() {
+    const container = document.getElementById('tabs');
+    container.innerHTML = '';
+    RESTAURANTS.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'tab' + (r.id === activeRestaurant ? ' active' : '');
+      btn.dataset.id = r.id;
+      btn.innerHTML = `${r.label} <span class="badge" id="badge-${r.id}">…</span>`;
+      btn.onclick = () => switchTab(r.id);
+      container.appendChild(btn);
+    });
+  }
+
+  function switchTab(id) {
+    activeRestaurant = id;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+    document.getElementById('searchInput').value = '';
+    loadCustomers(id);
+  }
+
+  // ── Load ──
+  async function loadCustomers(restaurantId) {
+    document.getElementById('loadingMsg').style.display = 'block';
+    document.getElementById('customerTable').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+
+    try {
+      const res = await fetch(`${DB_URL}/restaurants/${restaurantId}/customers.json`);
+      const raw = await res.json();
+      allCustomers = raw
+        ? Object.entries(raw).map(([key, val]) => ({ _key: key, ...val }))
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        : [];
+    } catch (e) {
+      allCustomers = [];
+    }
+
+    // Badge count
+    const badge = document.getElementById('badge-' + restaurantId);
+    if (badge) badge.textContent = allCustomers.length;
+
+    updateStats();
+    renderTable();
+    document.getElementById('loadingMsg').style.display = 'none';
+  }
+
+  // ── Stats ──
+  function updateStats() {
+    document.getElementById('statTotal').textContent = allCustomers.length;
+    document.getElementById('statSms').textContent   = allCustomers.filter(c => c.sms_authorized).length;
+    document.getElementById('statBday').textContent  = allCustomers.filter(c => c.birthday_month).length;
+    document.getElementById('statAnniv').textContent = allCustomers.filter(c => c.anniversary_month).length;
+  }
+
+  // ── Table ──
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtDate(m, d, y) {
+    if (!m) return '—';
+    const mo = MONTHS[(m||1)-1] || '';
+    return [mo, d, y].filter(Boolean).join(' ');
+  }
+
+  function renderTable() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allCustomers.filter(c => {
+      if (!q) return true;
+      const name = `${c.first_name||''} ${c.last_name||''}`.toLowerCase();
+      return name.includes(q) || (c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q);
+    });
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    if (!filtered.length) {
+      document.getElementById('customerTable').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'block';
+      document.getElementById('emptyState').querySelector('p').textContent =
+        q ? 'No results for "' + q + '"' : 'No customers yet — share that QR code!';
+      return;
+    }
+
+    document.getElementById('customerTable').style.display = 'table';
+    document.getElementById('emptyState').style.display = 'none';
+
+    filtered.forEach((c, i) => {
+      const signed = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:var(--muted)">${i+1}</td>
+        <td><strong>${c.first_name||''} ${c.last_name||''}</strong></td>
+        <td>${c.phone||'—'}</td>
+        <td style="color:var(--muted);font-size:12px">${c.email||'—'}</td>
+        <td>${fmtDate(c.birthday_month, c.birthday_day, c.birthday_year)}</td>
+        <td>${fmtDate(c.anniversary_month, c.anniversary_day, c.anniversary_year)}</td>
+        <td><span class="sms-pill ${c.sms_authorized?'sms-yes':'sms-no'}">${c.sms_authorized?'✓ Yes':'✗ No'}</span></td>
+        <td style="color:var(--muted);font-size:12px">${signed}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── CSV Export ──
+  function exportCSV() {
+    const headers = ['First Name','Last Name','Phone','Email','Birthday','Anniversary','SMS Auth','Signed Up'];
+    const rows = allCustomers.map(c => [
+      c.first_name||'', c.last_name||'', c.phone||'', c.email||'',
+      fmtDate(c.birthday_month, c.birthday_day, c.birthday_year),
+      fmtDate(c.anniversary_month, c.anniversary_day, c.anniversary_year),
+      c.sms_authorized ? 'Yes' : 'No',
+      c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `${activeRestaurant}-customers-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+</script>
+</body>
+</html>
