@@ -2,512 +2,833 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Restaurant Customers</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #152238;
-    --card: #1c2e47;
-    --border: #243650;
-    --text: #e8eaf0;
-    --muted: #7a92aa;
-    --accent: #4a90d9;
-    --green: #2ecc71;
-    --red: #e74c3c;
-    --gold: #C9A02A;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+html,body{height:100%;overflow:hidden;background:#0d1b2e;color:#e8eaf0;font-family:'Inter',sans-serif;}
+#pinScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;}
+.pin-title{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:0.5px;}
+.pin-sub{font-size:14px;color:#7a92aa;margin-bottom:28px;}
+.pin-dots{display:flex;gap:14px;margin-bottom:28px;}
+.pin-dots span{width:14px;height:14px;border-radius:50%;border:2px solid #3a5060;background:transparent;display:inline-block;transition:all 0.15s;}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:270px;}
+.pin-key{background:#1c2e47;border:none;border-radius:14px;padding:18px;font-size:22px;font-weight:700;color:#e8eaf0;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.1s;}
+.pin-key.del{font-size:15px;color:#4a90d9;}
+.pin-key.pressed,.pin-key:active{background:rgba(144,202,249,0.25);}
+.pin-err{font-size:13px;color:#e74c3c;margin-top:14px;display:none;text-align:center;}
+.pin-err.show{display:block;}
 
-  /* PIN screen */
-  #pinScreen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-  }
-  .pin-logo {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 32px;
-  }
-  .pin-logo span { color: var(--gold); }
-  .pin-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .pin-sub {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-  .pin-input {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 20px;
-    font-size: 22px;
-    font-family: 'Inter', sans-serif;
-    color: var(--text);
-    text-align: center;
-    letter-spacing: 8px;
-    outline: none;
-    width: 200px;
-    margin-bottom: 16px;
-    transition: border-color 0.2s;
-  }
-  .pin-input:focus { border-color: var(--accent); }
-  .pin-input.error { border-color: var(--red); animation: shake 0.3s; }
-  @keyframes shake {
-    0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
-  }
-  .pin-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 32px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 200px;
-    transition: opacity 0.2s;
-  }
-  .pin-btn:hover { opacity: 0.85; }
-  .pin-err { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
-  .pin-err.show { display: block; }
+#app{display:none;height:100%;flex-direction:column;overflow:hidden;}
 
-  /* Main app */
-  #app { display: none; }
+/* HEADER */
+.hdr{background:#152238;border-bottom:1px solid #243650;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.back-btn{background:#243650;border:none;border-radius:8px;padding:7px 12px;color:#e8eaf0;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;}
+.hdr-title{font-size:15px;font-weight:800;}
+.hdr-sub{font-size:10px;color:#7a92aa;margin-top:1px;}
+.filter-btn{background:#1c2e47;border:1px solid #243650;border-radius:8px;padding:7px 12px;color:#e8eaf0;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.filter-btn.on{border-color:#4a90d9;color:#4a90d9;}
 
-  /* Header */
-  .header {
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .header-left { display: flex; align-items: center; gap: 16px; }
-  .back-btn {
-    background: var(--border);
-    border: none;
-    border-radius: 8px;
-    padding: 8px 14px;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.2s;
-  }
-  .back-btn:hover { background: #333645; }
-  .header-title { font-size: 18px; font-weight: 700; }
-  .header-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+/* BADGES — same as main dashboard */
+.stats{display:flex;flex-wrap:wrap;gap:7px;padding:10px 14px;border-bottom:1px solid #243650;flex-shrink:0;}
+.badge{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;color:#fff;white-space:nowrap;cursor:pointer;opacity:0.9;transition:opacity .15s,transform .1s;user-select:none;}
+.badge:active{transform:scale(0.95);}
+.badge.active-badge{outline:3px solid #fff;opacity:1;}
+.b-total{background:#2E4057;}
+.b-sms{background:#1a7a4a;}
+.b-bday{background:#C9A02A;}
+.b-anniv{background:#E91E63;}
+.b-vip{background:#6a1b9a;}
+.b-hot{background:#e67e22;}
+.b-winback{background:#37474f;}
 
-  /* Restaurant tabs */
-  .restaurant-tabs {
-    padding: 16px 24px 0;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-  }
-  .tab {
-    padding: 8px 16px;
-    border-radius: 8px 8px 0 0;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-bottom: none;
-    color: var(--muted);
-    background: transparent;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .tab:hover { color: var(--text); background: var(--card); }
-  .tab.active {
-    color: var(--text);
-    background: var(--card);
-    border-color: var(--border);
-    margin-bottom: -1px;
-  }
-  .tab .badge {
-    background: var(--accent);
-    color: white;
-    border-radius: 20px;
-    padding: 1px 7px;
-    font-size: 11px;
-  }
+/* SEARCH */
+.search-row{display:flex;gap:8px;padding:8px 14px;border-bottom:1px solid #243650;flex-shrink:0;}
+.search-input{flex:1;background:#1c2e47;border:1px solid #243650;border-radius:10px;padding:9px 12px;color:#e8eaf0;font-size:14px;outline:none;font-family:'Inter',sans-serif;}
+.search-input:focus{border-color:#4a90d9;}
+.search-input::placeholder{color:#7a92aa;}
 
-  /* Content */
-  .content { padding: 24px; }
+/* CARDS */
+.cards-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 80px;}
+.ccard{background:#152238;border:1px solid #243650;border-radius:12px;padding:12px;margin-bottom:8px;}
+.ccard.vip{border-color:rgba(201,160,42,0.5);}
+.cc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.cc-info{flex:1;min-width:0;}
+.cc-name{font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;flex-wrap:wrap;overflow:hidden;}
+.cc-name span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;}
+.cc-phone{font-size:11px;color:#7a92aa;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cc-pts{background:rgba(201,160,42,0.15);color:#C9A02A;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;flex-shrink:0;}
+.vip-tag{background:rgba(201,160,42,0.2);color:#C9A02A;border:1px solid rgba(201,160,42,0.3);border-radius:20px;padding:1px 7px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.vip-tag.off{background:rgba(255,255,255,0.04);color:#3d5060;border-color:#243650;}
+.cc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.cb{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.cb-bday{background:rgba(201,160,42,0.12);color:#C9A02A;}
+.cb-anniv{background:rgba(233,30,140,0.12);color:#E91E63;}
+.cb-sms{background:rgba(46,204,113,0.12);color:#2ecc71;}
+.cb-nosms{background:rgba(231,76,60,0.1);color:#e74c3c;}
+.cb-today{background:rgba(233,30,140,0.25);color:#E91E63;font-weight:800;}
+.cc-actions{display:flex;gap:6px;}
+.ca{flex:1;border:none;border-radius:8px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;min-width:0;}
+.ca-t{background:rgba(46,204,113,0.15);color:#2ecc71;}
+.ca-e{background:rgba(74,144,217,0.15);color:#4a90d9;}
+.ca-d{background:rgba(156,39,176,0.15);color:#ce93d8;}
+.pts-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:8px;overflow:hidden;}
+.pts-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#C9A02A,#f39c12);}
+.contact-log{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+.ctag{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;}
+.ct-t{background:rgba(46,204,113,0.1);color:#2ecc71;}
+.ct-e{background:rgba(74,144,217,0.1);color:#4a90d9;}
+.ct-d{background:rgba(156,39,176,0.1);color:#ce93d8;}
 
-  /* Stats row */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .stat-value { font-size: 26px; font-weight: 700; }
-  .stat-value.green { color: var(--green); }
-  .stat-value.gold { color: var(--gold); }
+.empty-state{text-align:center;padding:48px 24px;color:#7a92aa;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
 
-  /* Search + export */
-  .toolbar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .search-input {
-    flex: 1;
-    min-width: 180px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    color: var(--text);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .search-input:focus { border-color: var(--accent); }
-  .search-input::placeholder { color: var(--muted); }
-  .export-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 16px;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .export-btn:hover { background: #333645; }
+/* FILTER PANEL */
+.fp-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;}
+.fp-overlay.open{display:block;}
+.fp-panel{position:fixed;bottom:0;left:0;right:0;background:#1c2e47;border-radius:20px 20px 0 0;padding:16px 18px 40px;z-index:101;transform:translateY(100%);transition:transform 0.3s;max-height:75vh;overflow-y:auto;}
+.fp-panel.open{transform:translateY(0);}
+.fp-handle{width:40px;height:4px;background:#2d4460;border-radius:4px;margin:0 auto 16px;}
+.fp-title{font-size:15px;font-weight:800;margin-bottom:14px;}
+.fp-sec{margin-bottom:18px;}
+.fp-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a92aa;margin-bottom:7px;display:flex;justify-content:space-between;}
+.fp-lbl span{color:#e8eaf0;font-size:13px;text-transform:none;letter-spacing:0;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;background:#243650;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4a90d9;cursor:pointer;}
+.sms-row{display:flex;align-items:center;justify-content:space-between;background:#152238;border:1px solid #243650;border-radius:10px;padding:12px;}
+.toggle{position:relative;width:44px;height:24px;}
+.toggle input{display:none;}
+.t-track{position:absolute;inset:0;background:#243650;border-radius:24px;transition:background 0.2s;}
+.t-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform 0.2s;}
+.toggle input:checked~.t-track{background:#2ecc71;}
+.toggle input:checked~.t-thumb{transform:translateX(20px);}
+.fp-reset{width:100%;background:#243650;color:#e8eaf0;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
 
-  /* Table */
-  .table-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: #111e30; }
-  th {
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    white-space: nowrap;
-  }
-  td {
-    padding: 12px 16px;
-    font-size: 13px;
-    border-top: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  tr:hover td { background: rgba(59,130,246,0.04); }
-  .sms-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-  .sms-yes { background: rgba(16,185,129,0.15); color: var(--green); }
-  .sms-no  { background: rgba(239,68,68,0.12);  color: var(--red); }
+/* CUSTOMER MODAL */
+.cm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:flex-end;justify-content:center;}
+.cm-overlay.open{display:flex;}
+.cm-sheet{background:#1a2d44;border-radius:22px 22px 0 0;padding:0 18px 40px;width:100%;max-width:460px;max-height:85vh;overflow-y:auto;}
+.cm-handle{width:40px;height:4px;background:#2d4460;border-radius:4px;margin:12px auto 16px;}
+.cm-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.cm-name{font-size:19px;font-weight:800;}
+.cm-x{background:#243650;border:none;border-radius:50%;width:30px;height:30px;color:#e8eaf0;font-size:15px;cursor:pointer;}
+.cm-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #243650;}
+.cm-row:last-of-type{border-bottom:none;}
+.cm-icon{font-size:17px;width:26px;text-align:center;}
+.cm-key{font-size:10px;color:#7a92aa;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;}
+.cm-val{font-size:14px;font-weight:600;}
+.cm-acts{display:flex;gap:8px;margin:14px 0;}
+.cm-act{flex:1;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;}
+.cma-t{background:rgba(46,204,113,0.15);color:#2ecc71;}
+.cma-e{background:rgba(74,144,217,0.15);color:#4a90d9;}
+.cma-d{background:rgba(156,39,176,0.15);color:#ce93d8;}
+.pts-row{background:#152238;border:1px solid #243650;border-radius:10px;padding:12px;margin-bottom:10px;}
+.pts-adj-row{display:flex;gap:6px;margin-top:8px;}
+.pts-adj{flex:1;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;}
+.pa-m{background:rgba(231,76,60,0.12);color:#e74c3c;}
+.pa-p{background:rgba(46,204,113,0.12);color:#2ecc71;}
+.cm-del{width:100%;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.25);border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;}
 
-  .empty-state {
-    text-align: center;
-    padding: 48px 24px;
-    color: var(--muted);
-  }
-  .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
-  .empty-state p { font-size: 15px; }
+/* VIP CONFIRM */
+.vip-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.vip-overlay.open{display:flex;}
+.vip-box{background:#1c2e47;border:1px solid #243650;border-radius:16px;padding:28px 22px;max-width:300px;width:100%;text-align:center;}
+.vip-icon{font-size:42px;margin-bottom:12px;}
+.vip-title{font-size:17px;font-weight:800;margin-bottom:8px;}
+.vip-sub{font-size:13px;color:#7a92aa;margin-bottom:22px;line-height:1.5;}
+.vip-btns{display:flex;gap:10px;}
+.vip-cancel{flex:1;background:#243650;color:#e8eaf0;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;}
+.vip-ok{flex:1;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;}
 
-  .loading {
-    text-align: center;
-    padding: 48px;
-    color: var(--muted);
-    font-size: 15px;
-  }
+/* MESSAGE COMPOSER */
+.mc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:400;align-items:flex-end;justify-content:center;}
+.mc-overlay.open{display:flex;animation:fIn 0.2s ease;}
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+.mc-sheet{background:#1a2d44;border-radius:22px 22px 0 0;padding:0 18px 40px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;animation:sUp 0.25s ease;}
+@keyframes sUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mc-handle{width:40px;height:4px;background:#2d4460;border-radius:4px;margin:12px auto 0;}
+.mc-ctx{padding:12px 0 10px;border-bottom:1px solid #243650;margin-bottom:12px;}
+.mc-ctxbadge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:6px;}
+.mc-who{font-size:17px;font-weight:800;}
+.mc-sub{font-size:11px;color:#7a92aa;margin-top:2px;}
+.mc-types{display:flex;gap:6px;margin-bottom:10px;}
+.mc-type{flex:1;border:1px solid #243650;border-radius:10px;padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;background:transparent;color:#7a92aa;transition:all 0.2s;}
+.mc-type.on{color:#e8eaf0;border-color:#4a90d9;background:rgba(74,144,217,0.12);}
+.mc-offers{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #243650;}
+.mc-offer-lbl{font-size:10px;font-weight:700;color:#7a92aa;text-transform:uppercase;letter-spacing:1px;width:100%;margin-bottom:4px;}
+.offer-pill{border:1px solid #243650;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:#7a92aa;white-space:nowrap;transition:all 0.2s;}
+.offer-pill.on{background:rgba(201,160,42,0.2);border-color:#C9A02A;color:#C9A02A;}
+.mc-tmpls-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a92aa;margin-bottom:7px;}
+.mc-tmpl{border:1px solid #243650;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;background:#152238;transition:all 0.2s;}
+.mc-tmpl.on{border-color:#2ecc71;background:rgba(46,204,113,0.06);}
+.mc-tmpl-title{font-size:12px;font-weight:700;margin-bottom:3px;}
+.mc-tmpl-preview{font-size:11px;color:#7a92aa;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.mc-edit-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a92aa;display:flex;justify-content:space-between;margin-bottom:6px;}
+.mc-chars{font-weight:400;}
+.mc-chars.over{color:#e74c3c;}
+.mc-textarea{width:100%;background:#0d1b2e;border:1px solid #243650;border-radius:10px;padding:12px;color:#e8eaf0;font-size:14px;font-family:'Inter',sans-serif;resize:none;outline:none;line-height:1.5;margin-bottom:10px;}
+.mc-textarea:focus{border-color:#4a90d9;}
+.mc-send{width:100%;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:6px;}
+.mc-send-t{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;}
+.mc-send-e{background:linear-gradient(135deg,#4a90d9,#2980b9);color:#fff;}
+.mc-send-d{background:linear-gradient(135deg,#9C27B0,#7B1FA2);color:#fff;}
+.mc-cancel{width:100%;background:transparent;border:none;padding:10px;font-size:14px;color:#7a92aa;cursor:pointer;font-weight:600;}
 
-  @media (max-width: 600px) {
-    th:nth-child(n+5), td:nth-child(n+5) { display: none; }
-    .content { padding: 16px; }
-  }
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c2e47;border:1px solid #243650;color:#e8eaf0;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;transition:transform 0.3s;z-index:999;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- PIN Screen -->
+<!-- Anti-zoom script -->
+<script>
+(function(){
+  
+// iOS PIN touch handler - prevents double-tap zoom on PIN
+(function(){
+  var g=document.getElementById('pinGrid');
+  if(!g)return;
+  g.addEventListener('touchstart',function(e){
+    var b=e.target.closest('.pin-key');
+    if(!b)return;
+    e.preventDefault();e.stopPropagation();
+    b.classList.add('pressed');
+    var d=b.textContent.trim();
+    if(d==='Del')pinDel();
+    else if(d>='0'&&d<='9')pinKey(d);
+  },{passive:false});
+  g.addEventListener('touchend',function(e){
+    document.querySelectorAll('.pin-key').forEach(function(k){k.classList.remove('pressed');});
+    e.preventDefault();
+  },{passive:false});
+})();
+
+var lt=0;
+  document.addEventListener('touchstart',function(e){
+    var now=Date.now();
+    if(now-lt<350){e.preventDefault();}
+    lt=now;
+  },{passive:false});
+  document.addEventListener('touchmove',function(e){
+    if(e.touches.length>1){e.preventDefault();}
+  },{passive:false});
+})();
+</script>
+
+<!-- PIN SCREEN -->
 <div id="pinScreen">
-  <div class="pin-logo">LV Master Dashboard</div>
-  <div class="pin-title">Customer Database</div>
-  <div class="pin-sub">Enter your dashboard PIN to continue</div>
-  <input type="password" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••" inputmode="numeric"
-    onkeydown="if(event.key==='Enter') checkPin()">
-  <button class="pin-btn" onclick="checkPin()">Unlock</button>
+  <div class="pin-title">Restaurant Customers</div>
+  <div class="pin-sub">Enter your PIN to continue</div>
+  <div class="pin-dots" id="pinDots">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="pin-grid" id="pinGrid">
+    <button class="pin-key">1</button><button class="pin-key">2</button><button class="pin-key">3</button>
+    <button class="pin-key">4</button><button class="pin-key">5</button><button class="pin-key">6</button>
+    <button class="pin-key">7</button><button class="pin-key">8</button><button class="pin-key">9</button>
+    <div></div><button class="pin-key">0</button><button class="pin-key del">Del</button>
+  </div>
   <div class="pin-err" id="pinErr">Incorrect PIN. Try again.</div>
 </div>
 
-<!-- Main App -->
+<!-- MAIN APP -->
 <div id="app">
-  <div class="header">
-    <div class="header-left">
-      <a href="https://lvr-data-a60c1.web.app" class="back-btn">
-        ← Dashboard
-      </a>
+
+  <div class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="back-btn">← Back</a>
       <div>
-        <div class="header-title">Restaurant Customers</div>
-        <div class="header-sub">Live from Firebase · lvr-data-a60c1</div>
+        <div class="hdr-title">Restaurant Customers</div>
+        <div class="hdr-sub" id="hdrSub">Loading…</div>
       </div>
     </div>
-    <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="filter-btn" id="filterBtn" onclick="toggleFilter()">⚙ Filters</button>
   </div>
 
-  <div class="restaurant-tabs" id="tabs">
-    <!-- populated dynamically -->
+  <!-- BADGE FILTERS — same pattern as main dashboard -->
+  <div class="stats" id="statsBar">
+    <div class="badge b-total active-badge" onclick="setFilter('all',this)">All: <span id="b-total">0</span></div>
+    <div class="badge b-sms" onclick="setFilter('sms',this)">📱 SMS: <span id="b-sms">0</span></div>
+    <div class="badge b-bday" onclick="setFilter('bday',this)">🎂 Birthdays: <span id="b-bday">0</span></div>
+    <div class="badge b-anniv" onclick="setFilter('anniv',this)">💍 Anniversaries: <span id="b-anniv">0</span></div>
+    <div class="badge b-vip" onclick="setFilter('vip',this)">⭐ VIP: <span id="b-vip">0</span></div>
+    <div class="badge b-hot" onclick="setFilter('hot',this)">🔥 Hot: <span id="b-hot">0</span></div>
+    <div class="badge b-winback" onclick="setFilter('winback',this)">❄️ Win-Back: <span id="b-winback">0</span></div>
   </div>
 
-  <div class="content">
-    <div class="stats-row" id="statsRow">
-      <div class="stat-card">
-        <div class="stat-label">Total Signups</div>
-        <div class="stat-value" id="statTotal">—</div>
+  <div class="search-row">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search name, phone, email…" oninput="renderCards()">
+  </div>
+
+  <div class="cards-wrap" id="cardsWrap">
+    <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div>
+  </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="fp-overlay" id="fpOverlay" onclick="toggleFilter()"></div>
+<div class="fp-panel" id="fpPanel">
+  <div class="fp-handle"></div>
+  <div class="fp-title">⚙ Filter Customers</div>
+  <div class="fp-sec">
+    <div class="fp-lbl">🎂 Birthdays within <span id="bdLbl">45 days</span></div>
+    <input type="range" id="bdSlider" min="1" max="90" value="45" oninput="document.getElementById('bdLbl').textContent=this.value+' days';renderCards()">
+  </div>
+  <div class="fp-sec">
+    <div class="fp-lbl">💍 Anniversaries within <span id="anLbl">45 days</span></div>
+    <input type="range" id="anSlider" min="1" max="90" value="45" oninput="document.getElementById('anLbl').textContent=this.value+' days';renderCards()">
+  </div>
+  <div class="fp-sec">
+    <div class="fp-lbl">👤 Min Age <span id="minAgeLbl">18</span></div>
+    <input type="range" id="minAge" min="18" max="80" value="18" oninput="document.getElementById('minAgeLbl').textContent=this.value;renderCards()">
+    <div class="fp-lbl" style="margin-top:10px">Max Age <span id="maxAgeLbl">80</span></div>
+    <input type="range" id="maxAge" min="18" max="100" value="80" oninput="document.getElementById('maxAgeLbl').textContent=this.value;renderCards()">
+  </div>
+  <div class="fp-sec">
+    <div class="fp-lbl">⭐ Min Points <span id="minPtsLbl">0</span></div>
+    <input type="range" id="minPts" min="0" max="750" value="0" step="10" oninput="document.getElementById('minPtsLbl').textContent=this.value;renderCards()">
+  </div>
+  <div class="fp-sec">
+    <div class="sms-row">
+      <div>
+        <div style="font-size:14px;font-weight:600">📱 SMS Only</div>
+        <div style="font-size:11px;color:#7a92aa">Show opted-in only</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">SMS Authorized</div>
-        <div class="stat-value green" id="statSms">—</div>
+      <label class="toggle"><input type="checkbox" id="smsOnly" onchange="renderCards()"><div class="t-track"></div><div class="t-thumb"></div></label>
+    </div>
+  </div>
+  <button class="fp-reset" onclick="resetFilters()">↺ Reset Filters</button>
+</div>
+
+<!-- CUSTOMER DETAIL -->
+<div class="cm-overlay" id="cmOverlay" onclick="if(event.target===this)closeCm()">
+  <div class="cm-sheet">
+    <div class="cm-handle"></div>
+    <div class="cm-hdr">
+      <div class="cm-name" id="cmName"></div>
+      <button class="cm-x" onclick="closeCm()">✕</button>
+    </div>
+    <div id="cmRows"></div>
+    <div class="cm-acts">
+      <button class="cm-act cma-t" id="cmText">📱 Text</button>
+      <button class="cm-act cma-e" id="cmEmail">✉️ Email</button>
+      <button class="cm-act cma-d" id="cmDm">💬 DM</button>
+    </div>
+    <div class="pts-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11px;font-weight:700;color:#7a92aa">LOYALTY POINTS</span>
+        <span id="cmPts" style="font-size:18px;font-weight:800;color:#C9A02A">0</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Have Birthday</div>
-        <div class="stat-value gold" id="statBday">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Have Anniversary</div>
-        <div class="stat-value gold" id="statAnniv">—</div>
+      <div class="pts-bar"><div class="pts-fill" id="cmPtsBar" style="width:0%"></div></div>
+      <div class="pts-adj-row">
+        <button class="pts-adj pa-m" onclick="adjPts(-50)">− 50</button>
+        <button class="pts-adj pa-m" onclick="adjPts(-10)">− 10</button>
+        <button class="pts-adj pa-p" onclick="adjPts(10)">+ 10</button>
+        <button class="pts-adj pa-p" onclick="adjPts(50)">+ 50</button>
       </div>
     </div>
+    <button class="cm-del" onclick="doDelete()">🗑 Remove This Customer</button>
+  </div>
+</div>
 
-    <div class="toolbar">
-      <input type="text" class="search-input" id="searchInput" placeholder="Search name, phone, email…" oninput="renderTable()">
-    </div>
-
-    <div class="table-wrap">
-      <div class="loading" id="loadingMsg">Loading customers…</div>
-      <table id="customerTable" style="display:none">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Birthday</th>
-            <th>Anniversary</th>
-            <th>SMS</th>
-            <th>Signed Up</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-      <div class="empty-state" id="emptyState" style="display:none">
-        <div class="icon">👥</div>
-        <p>No customers yet — share that QR code!</p>
-      </div>
+<!-- VIP CONFIRM -->
+<div class="vip-overlay" id="vipOverlay" onclick="if(event.target===this)closeVip()">
+  <div class="vip-box">
+    <div class="vip-icon" id="vipIcon">⭐</div>
+    <div class="vip-title" id="vipTitle"></div>
+    <div class="vip-sub" id="vipSub"></div>
+    <div class="vip-btns">
+      <button class="vip-cancel" onclick="closeVip()">Cancel</button>
+      <button class="vip-ok" id="vipOk">Confirm</button>
     </div>
   </div>
 </div>
 
+<!-- MESSAGE COMPOSER -->
+<div class="mc-overlay" id="mcOverlay" onclick="if(event.target===this)closeMc()">
+  <div class="mc-sheet">
+    <div class="mc-handle"></div>
+    <div class="mc-ctx">
+      <div class="mc-ctxbadge" id="mcCtxBadge"></div>
+      <div class="mc-who" id="mcWho"></div>
+      <div class="mc-sub" id="mcSub"></div>
+    </div>
+    <div class="mc-types">
+      <button class="mc-type on" id="mct-text" onclick="setMcType('text')">📱 Text</button>
+      <button class="mc-type" id="mct-email" onclick="setMcType('email')">✉️ Email</button>
+      <button class="mc-type" id="mct-dm" onclick="setMcType('dm')">💬 DM</button>
+    </div>
+    <div class="mc-offers">
+      <div class="mc-offer-lbl">Offer to include</div>
+      <button class="offer-pill" onclick="setOffer('none',this)">No offer</button>
+      <button class="offer-pill on" onclick="setOffer('$10 off',this)">$10 off</button>
+      <button class="offer-pill" onclick="setOffer('$15 off',this)">$15 off</button>
+      <button class="offer-pill" onclick="setOffer('$20 off',this)">$20 off</button>
+      <button class="offer-pill" onclick="setOffer('free dessert',this)">Free dessert</button>
+      <button class="offer-pill" onclick="setOffer('free drink',this)">Free drink</button>
+    </div>
+    <div class="mc-tmpls-lbl">Choose a template</div>
+    <div id="mcTmpls"></div>
+    <div class="mc-edit-lbl">Edit message <span class="mc-chars" id="mcChars"></span></div>
+    <textarea class="mc-textarea" id="mcText" rows="5" oninput="updateChars()"></textarea>
+    <button class="mc-send" id="mcSendBtn" onclick="doSend()"></button>
+    <button class="mc-cancel" onclick="closeMc()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  const DB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com';
-  const PIN    = '227422';
+const DB='https://lvr-data-a60c1-default-rtdb.firebaseio.com';
+const PIN='227422';
+const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const COLORS=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#e91e8c'];
 
-  // Known restaurants — add more here as you roll out
-  const RESTAURANTS = [
-    { id: 'toasted-flamingo', label: '🍞 Toasted Flamingo' },
-    // { id: 'next-restaurant', label: '🍕 Next Place' },
-  ];
+let customers=[],curFilter='all',activeMcKey=null,mcType='text',mcOffer='$10 off',activeCmKey=null,pendingVipKey=null,isDemo=false;
 
-  let activeRestaurant = RESTAURANTS[0].id;
-  let allCustomers = [];
-
-  // ── PIN ──
-  function checkPin() {
-    const val = document.getElementById('pinInput').value;
-    const inp = document.getElementById('pinInput');
-    if (val === PIN) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      buildTabs();
-      loadCustomers(activeRestaurant);
-    } else {
-      inp.classList.add('error');
-      document.getElementById('pinErr').classList.add('show');
-      setTimeout(() => { inp.classList.remove('error'); inp.value = ''; }, 600);
-    }
-  }
-  document.getElementById('pinInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkPin();
+// ── PIN ──
+var pinVal='';
+function pinKey(d){if(pinVal.length>=6)return;pinVal+=d;updateDots();if(pinVal.length===6)setTimeout(checkPin,150);}
+function pinDel(){pinVal=pinVal.slice(0,-1);updateDots();document.getElementById('pinErr').classList.remove('show');}
+function updateDots(){var ds=document.querySelectorAll('#pinDots span');ds.forEach(function(d,i){d.style.background=i<pinVal.length?'#4a90d9':'transparent';d.style.borderColor=i<pinVal.length?'#4a90d9':'#3a5060';});}
+function checkPin(){
+  if(pinVal===PIN){pinVal='';document.getElementById('pinScreen').style.display='none';var a=document.getElementById('app');a.style.display='flex';loadCustomers();}
+  else{document.querySelectorAll('#pinDots span').forEach(function(d){d.style.background='#e74c3c';d.style.borderColor='#e74c3c';});document.getElementById('pinErr').classList.add('show');setTimeout(function(){pinVal='';updateDots();document.getElementById('pinErr').classList.remove('show');},800);}
+}
+// PIN touch handlers
+(function(){
+  var g=document.getElementById('pinGrid');
+  g.addEventListener('touchstart',function(e){
+    var b=e.target.closest('.pin-key');
+    if(!b)return;
+    e.preventDefault();e.stopPropagation();
+    b.classList.add('pressed');
+    var d=b.textContent.trim();
+    if(d==='Del')pinDel();
+    else if(d>='0'&&d<='9')pinKey(d);
+  },{passive:false});
+  g.addEventListener('touchend',function(e){
+    document.querySelectorAll('.pin-key').forEach(function(b){b.classList.remove('pressed');});
+    e.preventDefault();
+  },{passive:false});
+  // Also wire onclick for desktop
+  g.addEventListener('click',function(e){
+    var b=e.target.closest('.pin-key');if(!b)return;
+    var d=b.textContent.trim();
+    if(d==='Del')pinDel();
+    else if(d>='0'&&d<='9')pinKey(d);
   });
+})();
 
-  // ── Tabs ──
-  function buildTabs() {
-    const container = document.getElementById('tabs');
-    container.innerHTML = '';
-    RESTAURANTS.forEach(r => {
-      const btn = document.createElement('button');
-      btn.className = 'tab' + (r.id === activeRestaurant ? ' active' : '');
-      btn.dataset.id = r.id;
-      btn.innerHTML = `${r.label} <span class="badge" id="badge-${r.id}">…</span>`;
-      btn.onclick = () => switchTab(r.id);
-      container.appendChild(btn);
-    });
+// ── DEMO DATA ──
+function makeDemo(){
+  var fn=['James','Michael','David','Christopher','Matthew','Joshua','Daniel','Andrew','Ryan','Justin','Brandon','Tyler','Jonathan','Kevin','Brian','Eric','Adam','Aaron','Timothy','Patrick','Sean','Kyle','Benjamin','Nathan','Ethan','Noah','Liam','Mason','Logan','Oliver','Ashley','Jessica','Emily','Amanda','Stephanie','Nicole','Rachel','Lauren','Heather','Tiffany','Amber','Melissa','Jennifer','Kimberly','Christina','Angela','Rebecca','Diana','Lisa','Karen','Sandra','Michelle','Danielle','Whitney','Natalie','Sara','Alexis','Vanessa','Sofia','Maya','Priya','Aisha','Yuki','Kenji','Layla','Zara','Imani','Jordan','Taylor','Morgan','Riley','Cameron','Casey','Alex','Avery','Quinn','Skyler','Kennedy','Harper','Zoe','Mia','Luna','Aria','Nora','Chloe','Lily','Grace','Hannah','Claire','Audrey','Savannah','Aaliyah','Jasmine','Simone','Wei','Min','Jin','Hana','Suki'];
+  var ln=['Williams','Johnson','Davis','Anderson','Thompson','Harris','Lewis','Robinson','Walker','Hall','Young','King','Scott','Green','Adams','Baker','Nelson','Carter','Mitchell','Roberts','Turner','Phillips','Campbell','Parker','Evans','Edwards','Collins','Stewart','Morris','Rogers','Reed','Cook','Morgan','Bell','Murphy','Bailey','Cooper','Richardson','Cox','Howard','Ward','Peterson','Gray','Watson','Brooks','Kelly','Sanders','Price','Bennett','Wood','Barnes','Ross','Henderson','Coleman','Jenkins','Perry','Powell','Patterson','Hughes','Washington','Butler','Simmons','Foster','Bryant','Russell','Griffin','Hayes','Myers','Ford','Hamilton','Graham','Sullivan','Wallace','Cole','West','Owens','Reynolds','Fisher','Ellis','Harrison','Gibson','Marshall','Murray','Freeman','Patel','Nguyen','Kim','Lee','Park','Yamamoto','Tanaka','Singh','Khan','Ahmed','Rahman','Chen','Wong','Liu','Zhang','Okafor','Mensah','Adeyemi','Silva','Santos','Oliveira','Costa'];
+  var domains=['gmail.com','yahoo.com','outlook.com','icloud.com','hotmail.com','aol.com'];
+  var dim=[31,28,31,30,31,30,31,31,30,31,30,31];
+  var allDays=[];for(var m=1;m<=12;m++)for(var d=1;d<=dim[m-1];d++)allDays.push([m,d]);
+  for(var i=allDays.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=allDays[i];allDays[i]=allDays[j];allDays[j]=t;}
+  var anDays=allDays.slice().sort(function(){return Math.random()-0.5;});
+  var used=new Set(),out=[];
+  for(var i=0;i<356;i++){
+    var f=fn[i%fn.length],l=ln[(i+Math.floor(i/fn.length))%ln.length];
+    var dom=domains[i%domains.length];
+    var em=f.toLowerCase()+'.'+l.toLowerCase()+'@'+dom;
+    if(used.has(em))em=f.toLowerCase()+'.'+l.toLowerCase()+i+'@'+dom;
+    used.add(em);
+    var bd=allDays[i],by=1948+Math.floor(Math.random()*60);
+    var hasA=i<100,an=hasA?anDays[i]:[null,null],ay=hasA?1980+Math.floor(Math.random()*43):null;
+    var ac=['702','725'][i%2];
+    var ctypes=['text','email','dm',null,null];
+    var ct=ctypes[i%ctypes.length];
+    var cts=ct?new Date(Date.now()-Math.floor(Math.random()*30)*86400000).toISOString():null;
+    var obj={_key:'demo_'+i,first_name:f,last_name:l,phone:'('+ac+') 555-'+String(2000+i).padStart(4,'0'),email:em,birthday_month:bd[0],birthday_day:bd[1],birthday_year:by,anniversary_month:hasA?an[0]:null,anniversary_day:hasA?an[1]:null,anniversary_year:ay,sms_authorized:i%4!==0,points:Math.floor(Math.random()*750),status:i%12===0?'vip':'active',timestamp:new Date(Date.now()-Math.random()*15552000000).toISOString()};
+    if(ct==='text')obj.last_text=cts;
+    if(ct==='email')obj.last_email=cts;
+    if(ct==='dm')obj.last_dm=cts;
+    out.push(obj);
   }
+  return out;
+}
 
-  function switchTab(id) {
-    activeRestaurant = id;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
-    document.getElementById('searchInput').value = '';
-    loadCustomers(id);
+// ── LOAD ──
+async function loadCustomers(){
+  try{
+    var res=await fetch(DB+'/restaurants/toasted-flamingo/customers.json');
+    var raw=await res.json();
+    var real=raw?Object.entries(raw).map(function(e){return Object.assign({_key:e[0],points:0,status:'active'},e[1]);}).sort(function(a,b){return new Date(b.timestamp)-new Date(a.timestamp);}):[];
+    if(real.length===0){isDemo=true;customers=makeDemo();}
+    else{isDemo=false;customers=real;}
+  }catch(e){isDemo=true;customers=makeDemo();}
+  updateBadges();
+  renderCards();
+  document.getElementById('hdrSub').textContent=(isDemo?'Demo · ':'')+customers.filter(function(c){return c.status!=='deleted';}).length+' customers';
+}
+
+// ── UTILS ──
+function daysUntil(m,d){
+  if(!m||!d)return null;
+  var now=new Date();now.setHours(0,0,0,0);
+  var next=new Date(now.getFullYear(),m-1,d);
+  if(next<now)next=new Date(now.getFullYear()+1,m-1,d);
+  return Math.round((next-now)/86400000);
+}
+function getAge(y){if(!y||y<1900||y>2008)return null;return new Date().getFullYear()-y;}
+function fmtD(m,d,y){if(!m)return'—';return[MOS[(m||1)-1],d,y].filter(Boolean).join(' ');}
+function daysAgo(ts){if(!ts)return null;var d=Math.floor((Date.now()-new Date(ts))/86400000);return d===0?'Today':d===1?'Yesterday':d+'d ago';}
+function avatarColor(s){var h=0;for(var i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return COLORS[Math.abs(h)%COLORS.length];}
+function initials(c){return((c.first_name||'?')[0]+(c.last_name||'?')[0]).toUpperCase();}
+
+// ── BADGES ──
+function updateBadges(){
+  var a=customers.filter(function(c){return c.status!=='deleted';});
+  var bd=parseInt(document.getElementById('bdSlider').value)||45;
+  var an=parseInt(document.getElementById('anSlider').value)||45;
+  document.getElementById('b-total').textContent=a.length;
+  document.getElementById('b-sms').textContent=a.filter(function(c){return c.sms_authorized;}).length;
+  document.getElementById('b-bday').textContent=a.filter(function(c){return c.birthday_month&&daysUntil(c.birthday_month,c.birthday_day)<=bd;}).length;
+  document.getElementById('b-anniv').textContent=a.filter(function(c){return c.anniversary_month&&daysUntil(c.anniversary_month,c.anniversary_day)<=an;}).length;
+  document.getElementById('b-vip').textContent=a.filter(function(c){return c.status==='vip';}).length;
+  document.getElementById('b-hot').textContent=a.filter(function(c){return(c.points||0)>=300||c.status==='vip';}).length;
+  document.getElementById('b-winback').textContent=a.filter(function(c){return(c.points||0)<50&&new Date(c.timestamp)<new Date(Date.now()-7776000000);}).length;
+}
+
+// ── FILTER ──
+function setFilter(f,el){
+  curFilter=f;
+  document.querySelectorAll('.badge').forEach(function(b){b.classList.remove('active-badge');});
+  el.classList.add('active-badge');
+  document.getElementById('searchInput').value='';
+  renderCards();
+}
+function toggleFilter(){
+  document.getElementById('fpOverlay').classList.toggle('open');
+  document.getElementById('fpPanel').classList.toggle('open');
+  document.getElementById('filterBtn').classList.toggle('on');
+}
+function resetFilters(){
+  document.getElementById('bdSlider').value=45;document.getElementById('bdLbl').textContent='45 days';
+  document.getElementById('anSlider').value=45;document.getElementById('anLbl').textContent='45 days';
+  document.getElementById('minAge').value=18;document.getElementById('minAgeLbl').textContent='18';
+  document.getElementById('maxAge').value=80;document.getElementById('maxAgeLbl').textContent='80';
+  document.getElementById('minPts').value=0;document.getElementById('minPtsLbl').textContent='0';
+  document.getElementById('smsOnly').checked=false;
+  renderCards();
+}
+function getList(){
+  var q=document.getElementById('searchInput').value.toLowerCase();
+  var bd=parseInt(document.getElementById('bdSlider').value)||45;
+  var an=parseInt(document.getElementById('anSlider').value)||45;
+  var minA=parseInt(document.getElementById('minAge').value)||18;
+  var maxA=parseInt(document.getElementById('maxAge').value)||80;
+  var minP=parseInt(document.getElementById('minPts').value)||0;
+  var smsO=document.getElementById('smsOnly').checked;
+  var list=customers.filter(function(c){return c.status!=='deleted';});
+  if(curFilter==='sms')list=list.filter(function(c){return c.sms_authorized;});
+  else if(curFilter==='bday')list=list.filter(function(c){return c.birthday_month&&daysUntil(c.birthday_month,c.birthday_day)<=bd;}).sort(function(a,b){return daysUntil(a.birthday_month,a.birthday_day)-daysUntil(b.birthday_month,b.birthday_day);}).slice(0,99);
+  else if(curFilter==='anniv')list=list.filter(function(c){return c.anniversary_month&&daysUntil(c.anniversary_month,c.anniversary_day)<=an;}).sort(function(a,b){return daysUntil(a.anniversary_month,a.anniversary_day)-daysUntil(b.anniversary_month,b.anniversary_day);}).slice(0,99);
+  else if(curFilter==='vip')list=list.filter(function(c){return c.status==='vip';});
+  else if(curFilter==='hot')list=list.filter(function(c){return(c.points||0)>=300||c.status==='vip';}).sort(function(a,b){return(b.points||0)-(a.points||0);});
+  else if(curFilter==='winback')list=list.filter(function(c){return(c.points||0)<50&&new Date(c.timestamp)<new Date(Date.now()-7776000000);});
+  if(smsO)list=list.filter(function(c){return c.sms_authorized;});
+  if(minP>0)list=list.filter(function(c){return(c.points||0)>=minP;});
+  list=list.filter(function(c){var age=getAge(c.birthday_year);return!age||(age>=minA&&age<=maxA);});
+  if(q)list=list.filter(function(c){var n=(c.first_name||'')+' '+(c.last_name||'');return n.toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q);});
+  return list;
+}
+
+// ── RENDER CARDS ──
+function renderCards(){
+  updateBadges();
+  var list=getList();
+  var wrap=document.getElementById('cardsWrap');
+  if(!list.length){wrap.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><p>No customers match.</p></div>';return;}
+  var html='';
+  list.forEach(function(c,i){
+    var isVip=c.status==='vip';
+    var color=avatarColor(c.first_name+c.last_name);
+    var bd=c.birthday_month?daysUntil(c.birthday_month,c.birthday_day):null;
+    var ad=c.anniversary_month?daysUntil(c.anniversary_month,c.anniversary_day):null;
+    var age=getAge(c.birthday_year);
+    var pct=Math.min(100,Math.round((c.points||0)/750*100));
+    var badges='';
+    if(bd!==null&&bd<=30)badges+='<span class="cb '+(bd===0?'cb-today':'cb-bday')+'">'+(bd===0?'🎉 TODAY!':bd<=7?'🎂 '+bd+'d':'🎂 '+bd+'d')+'</span>';
+    if(ad!==null&&ad<=30)badges+='<span class="cb '+(ad===0?'cb-today':'cb-anniv')+'">'+(ad===0?'💍 TODAY!':'💍 '+ad+'d')+'</span>';
+    badges+='<span class="cb '+(c.sms_authorized?'cb-sms':'cb-nosms')+'">'+(c.sms_authorized?'📱 SMS':'No SMS')+'</span>';
+    var clog='';
+    if(c.last_text)clog+='<span class="ctag ct-t">📱 '+daysAgo(c.last_text)+'</span>';
+    if(c.last_email)clog+='<span class="ctag ct-e">✉️ '+daysAgo(c.last_email)+'</span>';
+    if(c.last_dm)clog+='<span class="ctag ct-d">💬 '+daysAgo(c.last_dm)+'</span>';
+    html+='<div class="ccard'+(isVip?' vip':'')+'">'+
+      '<div class="cc-top">'+
+        '<div class="cc-avatar" style="background:'+color+'20;color:'+color+'">'+initials(c)+'</div>'+
+        '<div class="cc-info">'+
+          '<div class="cc-name">'+
+            '<span onclick="openCm(\''+c._key+'\')">'+(c.first_name||'')+' '+(c.last_name||'')+'</span>'+
+            (age?'<span style="font-size:10px;color:#7a92aa;font-weight:400">'+age+'y</span>':'')+
+            '<button class="vip-tag '+(isVip?'':'off')+'" onclick="confirmVip(\''+c._key+'\')">'+(isVip?'⭐ VIP':'VIP')+'</button>'+
+          '</div>'+
+          '<div class="cc-phone">'+(c.phone||'')+'</div>'+
+        '</div>'+
+        '<div class="cc-pts">⭐ '+(c.points||0)+'</div>'+
+      '</div>'+
+      '<div class="pts-bar"><div class="pts-fill" style="width:'+pct+'%"></div></div>'+
+      (badges?'<div class="cc-badges">'+badges+'</div>':'')+
+      (clog?'<div class="contact-log">'+clog+'</div>':'')+
+      '<div class="cc-actions">'+
+        '<button class="ca ca-t" onclick="openMc(\''+c._key+'\',\'text\')">📱 Text</button>'+
+        '<button class="ca ca-e" onclick="openMc(\''+c._key+'\',\'email\')">✉️ Email</button>'+
+        '<button class="ca ca-d" onclick="openMc(\''+c._key+'\',\'dm\')">💬 DM</button>'+
+      '</div>'+
+    '</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+// ── CUSTOMER MODAL ──
+function openCm(key){
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  activeCmKey=key;
+  var isVip=c.status==='vip';
+  document.getElementById('cmName').innerHTML=(c.first_name||'')+' '+(c.last_name||'')+(isVip?' <span style="color:#C9A02A">⭐</span>':'');
+  var rows=[
+    c.phone?['📱','Phone',c.phone]:null,
+    c.email?['✉️','Email',c.email]:null,
+    ['🎂','Birthday',fmtD(c.birthday_month,c.birthday_day,c.birthday_year)+(c.birthday_month?' ('+daysUntil(c.birthday_month,c.birthday_day)+'d away)':'')],
+    ['💍','Anniversary',fmtD(c.anniversary_month,c.anniversary_day,c.anniversary_year)+(c.anniversary_month?' ('+daysUntil(c.anniversary_month,c.anniversary_day)+'d away)':'')],
+    getAge(c.birthday_year)?['👤','Age',getAge(c.birthday_year)]:null,
+    ['📅','Since',c.timestamp?new Date(c.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'],
+    ['📲','SMS',c.sms_authorized?'✓ Authorized':'✗ Not authorized'],
+    c.last_text?['📱','Last Text',daysAgo(c.last_text)]:null,
+    c.last_email?['✉️','Last Email',daysAgo(c.last_email)]:null,
+    c.last_dm?['💬','Last DM',daysAgo(c.last_dm)]:null,
+  ].filter(function(r){return r&&r[2]&&r[2]!=='—';});
+  document.getElementById('cmRows').innerHTML=rows.map(function(r){return'<div class="cm-row"><div class="cm-icon">'+r[0]+'</div><div><div class="cm-key">'+r[1]+'</div><div class="cm-val">'+r[2]+'</div></div></div>';}).join('');
+  var pts=c.points||0;
+  document.getElementById('cmPts').textContent=pts;
+  document.getElementById('cmPtsBar').style.width=Math.min(100,Math.round(pts/750*100))+'%';
+  document.getElementById('cmText').onclick=function(){closeCm();openMc(key,'text');};
+  document.getElementById('cmEmail').onclick=function(){closeCm();openMc(key,'email');};
+  document.getElementById('cmDm').onclick=function(){closeCm();openMc(key,'dm');};
+  document.getElementById('cmOverlay').classList.add('open');
+}
+function closeCm(){document.getElementById('cmOverlay').classList.remove('open');activeCmKey=null;}
+function adjPts(amt){
+  var c=customers.find(function(x){return x._key===activeCmKey;});if(!c)return;
+  c.points=Math.max(0,(c.points||0)+amt);
+  document.getElementById('cmPts').textContent=c.points;
+  document.getElementById('cmPtsBar').style.width=Math.min(100,Math.round(c.points/750*100))+'%';
+  if(!isDemo)saveDb(activeCmKey,{points:c.points});
+  renderCards();
+}
+function doDelete(){
+  alert("doDelete called, key="+activeCmKey);
+  if(!activeCmKey)return;
+  var c=customers.find(function(x){return x._key===activeCmKey;});
+  if(!c)return;
+  var name=c.first_name;
+  c.status="deleted";
+  if(!isDemo)saveDb(activeCmKey,{status:"deleted"});
+  closeCm();renderCards();
+  toast("Removed "+name);
+}
+function delCustomer(key){
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  if(!confirm('Remove '+c.first_name+' '+c.last_name+'?\n\nThis cannot be undone.'))return;
+  c.status='deleted';
+  if(!isDemo)saveDb(key,{status:'deleted'});
+  closeCm();renderCards();
+  toast('🗑 Removed '+c.first_name);
+}
+
+// ── VIP ──
+function confirmVip(key){
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  pendingVipKey=key;
+  var isVip=c.status==='vip';
+  document.getElementById('vipIcon').textContent=isVip?'🔄':'⭐';
+  document.getElementById('vipTitle').textContent=isVip?'Remove '+c.first_name+' from VIP?':'Make '+c.first_name+' '+c.last_name+' a VIP?';
+  document.getElementById('vipSub').textContent=isVip?c.first_name+' will return to regular status.':'VIPs get exclusive offers and appear in your VIP list.';
+  var ok=document.getElementById('vipOk');
+  ok.style.background=isVip?'#e74c3c':'#C9A02A';
+  ok.style.color=isVip?'#fff':'#000';
+  ok.textContent=isVip?'Remove VIP':'Yes, Make VIP ⭐';
+  ok.onclick=doVip;
+  document.getElementById('vipOverlay').classList.add('open');
+}
+function closeVip(){document.getElementById('vipOverlay').classList.remove('open');pendingVipKey=null;}
+function doVip(){
+  var key=pendingVipKey;closeVip();
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  c.status=c.status==='vip'?'active':'vip';
+  if(!isDemo)saveDb(key,{status:c.status});
+  renderCards();
+  toast(c.status==='vip'?'⭐ '+c.first_name+' is VIP!':c.first_name+' removed from VIP');
+}
+
+// ── MESSAGE COMPOSER ──
+function getCtx(c){
+  var bd=c.birthday_month?daysUntil(c.birthday_month,c.birthday_day):null;
+  var ad=c.anniversary_month?daysUntil(c.anniversary_month,c.anniversary_day):null;
+  if(bd===0)return{type:'bday-today',label:'🎉 Birthday TODAY!',cls:'ctx-bday',color:'rgba(201,160,42,0.2)',tc:'#C9A02A'};
+  if(bd!==null&&bd<=14)return{type:'bday',label:'🎂 Birthday in '+bd+' day'+(bd===1?'':'s'),cls:'ctx-bday',color:'rgba(201,160,42,0.2)',tc:'#C9A02A'};
+  if(ad===0)return{type:'anniv-today',label:'💍 Anniversary TODAY!',cls:'ctx-anniv',color:'rgba(233,30,140,0.2)',tc:'#E91E63'};
+  if(ad!==null&&ad<=14)return{type:'anniv',label:'💍 Anniversary in '+ad+' day'+(ad===1?'':'s'),cls:'ctx-anniv',color:'rgba(233,30,140,0.2)',tc:'#E91E63'};
+  if(c.status==='vip')return{type:'vip',label:'⭐ VIP Member',color:'rgba(201,160,42,0.15)',tc:'#C9A02A'};
+  if((c.points||0)<50&&new Date(c.timestamp)<new Date(Date.now()-7776000000))return{type:'winback',label:'❄️ Win-Back',color:'rgba(156,39,176,0.15)',tc:'#ce93d8'};
+  return{type:'general',label:'📍 General',color:'rgba(74,144,217,0.15)',tc:'#4a90d9'};
+}
+function getTmpls(ctxType,name,type){
+  var o=mcOffer==='none'?'':mcOffer;
+  var ol=o?'\n\n🎁 '+o.charAt(0).toUpperCase()+o.slice(1)+' on your next visit — just show this message!':'';
+  var sg='\n\n— The Toasted Team\nToasted Gastrobrunch · Flamingo Rd, Las Vegas';
+  var ss='\n-Toasted';
+  var T={
+    'bday-today':[
+      {t:'🎉 Birthday Celebration',m:type==='text'?'Happy Birthday '+name+'! 🎉 Come celebrate at Toasted today!'+(o?' We have a special '+o+' waiting for you!':'')+ss:'Hi '+name+',\n\nHappy Birthday! 🎂\n\nWe\'d love to celebrate with you today — come in and let us treat you right!'+ol+sg},
+      {t:'🎂 Birthday Surprise',m:type==='text'?name+', it\'s your birthday! 🎂 Toasted Gastrobrunch wants to celebrate YOU today!'+(o?' '+o+' on us!':'')+ss:'Happy Birthday '+name+'! 🎉\n\nOn behalf of the whole Toasted family, wishing you an incredible day. Come in and let us make it special!'+ol+sg},
+    ],
+    'bday':[
+      {t:'🎂 Birthday Coming Up',m:type==='text'?'Hi '+name+'! Your birthday is almost here 🎂 Come celebrate at Toasted!'+(o?' Enjoy '+o+' on your big day!':'')+ss:'Hi '+name+',\n\nYour birthday is just around the corner! 🎂\n\nCome in and let us celebrate you — we love making birthdays special at Toasted.'+ol+sg},
+      {t:'🎁 Birthday Gift',m:type==='text'?name+', your birthday is coming up 🎉 Toasted has a gift waiting for you!'+(o?' '+o+' — just for you!':'')+ss:'Hi '+name+',\n\nBirthdays only come once a year and you deserve to treat yourself! 🎂\n\nCome celebrate at Toasted Gastrobrunch.'+ol+sg},
+      {t:'🥂 Pre-Birthday Invite',m:type==='text'?'Hey '+name+'! Book your birthday brunch at Toasted 🎂'+(o?' Special: '+o+' on your big day!':'')+ss:'Hi '+name+',\n\nBirthday season is here for you! Reserve your table at Toasted and let us make it a day you\'ll remember.'+ol+sg},
+    ],
+    'anniv-today':[
+      {t:'💍 Happy Anniversary!',m:type==='text'?'Happy Anniversary '+name+'! 💍 Celebrate your special day at Toasted!'+(o?' '+o+' for two tonight!':'')+ss:'Hi '+name+',\n\nHappy Anniversary! 💍\n\nWhat a beautiful milestone. Come in and let us be part of your celebration today.'+ol+sg},
+      {t:'💕 Anniversary Surprise',m:type==='text'?name+', happy anniversary! 💍 Toasted Gastrobrunch wants to celebrate you both!'+(o?' Special: '+o+' for the happy couple!':'')+ss:'Dear '+name+',\n\nLove is worth celebrating, and today is your day! 💕\n\nCome to Toasted for an anniversary experience you won\'t forget.'+ol+sg},
+    ],
+    'anniv':[
+      {t:'💍 Anniversary Coming Up',m:type==='text'?'Hi '+name+'! Your anniversary is coming up 💍 Make it special at Toasted!'+(o?' '+o+' for two!':'')+ss:'Hi '+name+',\n\nYour anniversary is right around the corner! 💍\n\nMake it a night to remember at Toasted Gastrobrunch — we\'ll take care of everything.'+ol+sg},
+      {t:'🥂 Plan Your Anniversary',m:type==='text'?name+', anniversary plans ready? 💍 Book at Toasted Gastrobrunch!'+(o?' We\'ll have '+o+' waiting!':'')+ss:'Hi '+name+',\n\nDon\'t leave your anniversary to chance. 💍\n\nBook your table at Toasted now and let us create an unforgettable evening.'+ol+sg},
+    ],
+    'vip':[
+      {t:'⭐ VIP Exclusive Offer',m:type==='text'?name+', exclusive VIP offer from Toasted! 🌟'+(o?' '+o+' — VIPs only!':'')+ss:'Hi '+name+',\n\nAs a valued VIP member of the Toasted family, we have an exclusive offer just for you. ⭐'+ol+sg},
+      {t:'👑 VIP Personal Invite',m:type==='text'?'Hey '+name+'! VIP special waiting for you at Toasted 🌟'+(o?' '+o+' on your next visit!':'')+ss:'Dear '+name+',\n\nYour loyalty means everything to us. ⭐\n\nAs a thank-you for being part of the Toasted VIP family, here\'s something exclusively for you.'+ol+sg},
+    ],
+    'winback':[
+      {t:'💙 We Miss You',m:type==='text'?name+', it\'s been a while! We miss you at Toasted 💙'+(o?' Come back & enjoy '+o+' on us!':'')+ss:'Hi '+name+',\n\nIt\'s been a while and we genuinely miss seeing you! 💙\n\nCome back to Toasted — we have exciting new menu items and would love to catch up.'+ol+sg},
+      {t:'🌟 Welcome Back',m:type==='text'?'Hey '+name+'! Come back to Toasted — we haven\'t forgotten about you!'+(o?' Welcome back gift: '+o+'!':'')+ss:'Hi '+name+',\n\nWe haven\'t forgotten about you! 🌟\n\nCome back to Toasted Gastrobrunch — so much has changed and we think you\'ll love it.'+ol+sg},
+    ],
+    'general':[
+      {t:'🍞 Special Offer',m:type==='text'?'Hi '+name+'! Toasted Gastrobrunch has something special for you!'+(o?' Enjoy '+o+' on your next visit!':'')+' Come see us!'+ss:'Hi '+name+',\n\nWe appreciate you being part of the Toasted family! 🍞\n\nCome in and enjoy great food, great vibes, and great company.'+ol+sg},
+      {t:'👋 Just Saying Hi',m:type==='text'?'Hey '+name+'! The Toasted team is thinking about you 🍞'+(o?' We have '+o+' waiting!':'')+ss:'Hi '+name+',\n\nJust wanted to reach out and say hello from the whole Toasted team! 👋\n\nWe\'d love to see you in soon.'+ol+sg},
+      {t:'🔥 New Menu Alert',m:type==='text'?name+'! New menu at Toasted Gastrobrunch 🔥'+(o?' First visit: '+o+' — limited time!':'')+ss:'Hi '+name+',\n\nBig news — we\'ve just updated our menu and it is 🔥\n\nNew dishes, new flavors, same great atmosphere. Come try it!'+ol+sg},
+    ],
+  };
+  return T[ctxType]||T['general'];
+}
+function openMc(key,type){
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  activeMcKey=key;mcType=type||'text';mcOffer='$10 off';
+  var ctx=getCtx(c);
+  var badge=document.getElementById('mcCtxBadge');
+  badge.textContent=ctx.label;
+  badge.style.background=ctx.color;
+  badge.style.color=ctx.tc;
+  document.getElementById('mcWho').textContent=(c.first_name||'')+' '+(c.last_name||'');
+  document.getElementById('mcSub').textContent=(c.phone||'')+(c.email?' · '+c.email:'');
+  ['text','email','dm'].forEach(function(t){document.getElementById('mct-'+t).classList.toggle('on',t===mcType);});
+  document.querySelectorAll('.offer-pill').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.offer-pill')[1].classList.add('on');
+  buildTmpls(ctx,c);
+  document.getElementById('mcOverlay').classList.add('open');
+}
+function buildTmpls(ctx,c){
+  var tmpls=getTmpls(ctx.type,(c.first_name||''),mcType);
+  var html='';
+  tmpls.forEach(function(t,i){
+    html+='<div class="mc-tmpl'+(i===0?' on':'')+'" onclick="selectTmpl(this,\''+encodeURIComponent(t.m)+'\')">'+
+      '<div class="mc-tmpl-title">'+t.t+'</div>'+
+      '<div class="mc-tmpl-preview">'+t.m.replace(/\n/g,' ')+'</div>'+
+    '</div>';
+  });
+  document.getElementById('mcTmpls').innerHTML=html;
+  document.getElementById('mcText').value=decodeURIComponent(tmpls[0].m);
+  updateChars();
+  updateSendBtn();
+}
+function selectTmpl(el,msg){
+  document.querySelectorAll('.mc-tmpl').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('mcText').value=decodeURIComponent(msg);
+  updateChars();
+}
+function setMcType(t){
+  mcType=t;
+  ['text','email','dm'].forEach(function(x){document.getElementById('mct-'+x).classList.toggle('on',x===t);});
+  var c=customers.find(function(x){return x._key===activeMcKey;});
+  if(c)buildTmpls(getCtx(c),c);
+  updateSendBtn();
+}
+function setOffer(o,el){
+  mcOffer=o;
+  document.querySelectorAll('.offer-pill').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  var c=customers.find(function(x){return x._key===activeMcKey;});
+  if(c)buildTmpls(getCtx(c),c);
+}
+function updateChars(){
+  var len=document.getElementById('mcText').value.length;
+  var el=document.getElementById('mcChars');
+  el.textContent=mcType==='text'?len+'/160':len+' chars';
+  el.className='mc-chars'+(mcType==='text'&&len>160?' over':'');
+}
+function updateSendBtn(){
+  var b=document.getElementById('mcSendBtn');
+  if(mcType==='text'){b.textContent='📱 Send Text';b.className='mc-send mc-send-t';}
+  else if(mcType==='email'){b.textContent='✉️ Send Email';b.className='mc-send mc-send-e';}
+  else{b.textContent='💬 Copy DM Message';b.className='mc-send mc-send-d';}
+}
+function doSend(){
+  var c=customers.find(function(x){return x._key===activeMcKey;});if(!c)return;
+  var msg=document.getElementById('mcText').value;
+  if(!msg.trim()){toast('Message is empty!');return;}
+  logContact(activeMcKey,mcType);
+  if(mcType==='text'){
+    var ph=(c.phone||'').replace(/\D/g,'');
+    if(ph)window.location.href='sms:+1'+ph+'&body='+encodeURIComponent(msg);
+    else toast('No phone number on file');
+  }else if(mcType==='email'){
+    var ctx=getCtx(c);
+    var subs={'bday-today':'Happy Birthday from Toasted! 🎉','bday':'Your Birthday Gift from Toasted 🎂','anniv-today':'Happy Anniversary! 💍','anniv':'Your Anniversary is Coming Up! 💍','vip':'Exclusive VIP Offer from Toasted ⭐','winback':'We Miss You at Toasted 💙','general':'A Special Message from Toasted Gastrobrunch 🍞'};
+    if(c.email)window.location.href='mailto:'+c.email+'?subject='+encodeURIComponent(subs[ctx.type]||subs.general)+'&body='+encodeURIComponent(msg);
+    else toast('No email on file');
+  }else{
+    navigator.clipboard.writeText(msg).then(function(){toast('💬 Copied! Paste into Instagram DM');}).catch(function(){toast('Message ready to send');});
   }
+  closeMc();renderCards();
+}
+function closeMc(){document.getElementById('mcOverlay').classList.remove('open');activeMcKey=null;}
 
-  // ── Load ──
-  async function loadCustomers(restaurantId) {
-    document.getElementById('loadingMsg').style.display = 'block';
-    document.getElementById('customerTable').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'none';
+// ── CONTACT LOG ──
+function logContact(key,type){
+  if(!key||isDemo)return;
+  var c=customers.find(function(x){return x._key===key;});if(!c)return;
+  var ts=new Date().toISOString();
+  if(type==='text')c.last_text=ts;
+  else if(type==='email')c.last_email=ts;
+  else if(type==='dm')c.last_dm=ts;
+  saveDb(key,{['last_'+type]:ts});
+}
 
-    try {
-      const res = await fetch(`${DB_URL}/restaurants/${restaurantId}/customers.json`);
-      const raw = await res.json();
-      allCustomers = raw
-        ? Object.entries(raw).map(([key, val]) => ({ _key: key, ...val }))
-            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        : [];
-    } catch (e) {
-      allCustomers = [];
-    }
+// ── FIREBASE ──
+async function saveDb(key,data){
+  try{await fetch(DB+'/restaurants/toasted-flamingo/customers/'+key+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
+  catch(e){console.error(e);}
+}
 
-    // Badge count
-    const badge = document.getElementById('badge-' + restaurantId);
-    if (badge) badge.textContent = allCustomers.length;
-
-    updateStats();
-    renderTable();
-    document.getElementById('loadingMsg').style.display = 'none';
-  }
-
-  // ── Stats ──
-  function updateStats() {
-    document.getElementById('statTotal').textContent = allCustomers.length;
-    document.getElementById('statSms').textContent   = allCustomers.filter(c => c.sms_authorized).length;
-    document.getElementById('statBday').textContent  = allCustomers.filter(c => c.birthday_month).length;
-    document.getElementById('statAnniv').textContent = allCustomers.filter(c => c.anniversary_month).length;
-  }
-
-  // ── Table ──
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fmtDate(m, d, y) {
-    if (!m) return '—';
-    const mo = MONTHS[(m||1)-1] || '';
-    return [mo, d, y].filter(Boolean).join(' ');
-  }
-
-  function renderTable() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = allCustomers.filter(c => {
-      if (!q) return true;
-      const name = `${c.first_name||''} ${c.last_name||''}`.toLowerCase();
-      return name.includes(q) || (c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q);
-    });
-
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-
-    if (!filtered.length) {
-      document.getElementById('customerTable').style.display = 'none';
-      document.getElementById('emptyState').style.display = 'block';
-      document.getElementById('emptyState').querySelector('p').textContent =
-        q ? 'No results for "' + q + '"' : 'No customers yet — share that QR code!';
-      return;
-    }
-
-    document.getElementById('customerTable').style.display = 'table';
-    document.getElementById('emptyState').style.display = 'none';
-
-    filtered.forEach((c, i) => {
-      const signed = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '—';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="color:var(--muted)">${i+1}</td>
-        <td><strong>${c.first_name||''} ${c.last_name||''}</strong></td>
-        <td>${c.phone||'—'}</td>
-        <td style="color:var(--muted);font-size:12px">${c.email||'—'}</td>
-        <td>${fmtDate(c.birthday_month, c.birthday_day, c.birthday_year)}</td>
-        <td>${fmtDate(c.anniversary_month, c.anniversary_day, c.anniversary_year)}</td>
-        <td><span class="sms-pill ${c.sms_authorized?'sms-yes':'sms-no'}">${c.sms_authorized?'✓ Yes':'✗ No'}</span></td>
-        <td style="color:var(--muted);font-size:12px">${signed}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // ── CSV Export ──
-  function exportCSV() {
-    const headers = ['First Name','Last Name','Phone','Email','Birthday','Anniversary','SMS Auth','Signed Up'];
-    const rows = allCustomers.map(c => [
-      c.first_name||'', c.last_name||'', c.phone||'', c.email||'',
-      fmtDate(c.birthday_month, c.birthday_day, c.birthday_year),
-      fmtDate(c.anniversary_month, c.anniversary_day, c.anniversary_year),
-      c.sms_authorized ? 'Yes' : 'No',
-      c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''
-    ]);
-    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-    const a = document.createElement('a');
-    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-    a.download = `${activeRestaurant}-customers-${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
+// ── TOAST ──
+var tTimer;
+function toast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove('show');},2500);
+}
 </script>
 </body>
 </html>
