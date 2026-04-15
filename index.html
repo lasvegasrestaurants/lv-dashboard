@@ -3594,6 +3594,12 @@ function _pinCheck() {
     _pinEntry = ''; _pinUpdateDots(false);
     return;
   }
+  if (_pinEntry === FRIEND_PIN) {
+    _pinAttempts = 0;
+    _pinEntry = '';
+    _enterFriendMode();
+    return;
+  }
   if (_pinEntry === DEMO_PIN) {
     _pinAttempts = 0;
     _pinEntry = '';
