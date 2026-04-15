@@ -2066,13 +2066,6 @@ function fbLoad() {
       })
       .catch(function(){}); // silent fail on poll errors
   }, 10000);
-
-  // Heartbeat — refresh sync status every 60s so the timestamp stays current
-  setInterval(function() {
-    if (!isDemo && document.visibilityState === "visible") {
-      lsStatus("#4CAF50", "☁ Synced " + lsTs());
-    }
-  }, 60000);
 }
 
 // ══════════════════════════════════════════════════════
@@ -3594,12 +3587,6 @@ function _pinCheck() {
     _pinEntry = ''; _pinUpdateDots(false);
     return;
   }
-  if (_pinEntry === FRIEND_PIN) {
-    _pinAttempts = 0;
-    _pinEntry = '';
-    _enterFriendMode();
-    return;
-  }
   if (_pinEntry === DEMO_PIN) {
     _pinAttempts = 0;
     _pinEntry = '';
@@ -4044,12 +4031,6 @@ function savePinChange() {
 }
 
 function _pinInit() {
-  // Always require PIN on page load/refresh
-  try {
-    sessionStorage.removeItem('lv_pin_ok');
-    sessionStorage.removeItem('lv_friend_ok');
-    sessionStorage.removeItem('lv_demo_ok');
-  } catch(e) {}
   // Already unlocked this session?
   try {
     if (sessionStorage.getItem('lv_demo_ok') === '1') {
