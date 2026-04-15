@@ -2066,6 +2066,13 @@ function fbLoad() {
       })
       .catch(function(){}); // silent fail on poll errors
   }, 10000);
+
+  // Heartbeat — refresh sync status every 60s so the timestamp stays current
+  setInterval(function() {
+    if (!isDemo && document.visibilityState === "visible") {
+      lsStatus("#4CAF50", "☁ Synced " + lsTs());
+    }
+  }, 60000);
 }
 
 // ══════════════════════════════════════════════════════
