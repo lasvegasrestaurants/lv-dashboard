@@ -4044,6 +4044,12 @@ function savePinChange() {
 }
 
 function _pinInit() {
+  // Always require PIN on page load/refresh
+  try {
+    sessionStorage.removeItem('lv_pin_ok');
+    sessionStorage.removeItem('lv_friend_ok');
+    sessionStorage.removeItem('lv_demo_ok');
+  } catch(e) {}
   // Already unlocked this session?
   try {
     if (sessionStorage.getItem('lv_demo_ok') === '1') {
