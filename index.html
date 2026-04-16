@@ -601,6 +601,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 // ══════════════════════════════════════════════════════
 var DEMO_PIN = '123456';
 var isDemo   = false;
+var FRIEND_PIN='111111';
+var isFriend=false;
+var FB_REAL_URL='https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
+var FB_FRIEND_URL='https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_friend.json';
 
 var RESTAURANTS_DEMO = [
   {num:1,name:'Butcher & Thief',owner:'Cory Harwell',instagram:'@butcherandthief',phone:'(725) 202-1234',email:'info@butcherandthief.com',newEmail:'',cuisine:'Steakhouse',defaultStatus:'sent',notes:'',address:'8670 W Sunset Rd Suite H100, Las Vegas, NV 89148'},
@@ -1840,7 +1844,7 @@ function _setRealKeys() {
   LS_GHOSTED        = 'lv_outreach_ghosted_v1';
   LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
 }
-
+function _setFriendKeys(){LS_STATUS='fr_status_v1';LS_ATTEMPTS='fr_attempts_v1';LS_DM='fr_dm_v1';LS_BAD_IG='fr_bad_ig_v1';LS_IG_OVERRIDE='fr_ig_override_v1';LS_USER_NOTES='fr_user_notes_v1';LS_NAME_OVERRIDE='fr_name_override_v1';LS_FOLLOWUP='fr_followup_v1';LS_INTERESTED='fr_interested_v1';LS_NOT_INTERESTED='fr_not_interested_v1';LS_DELETED='fr_deleted_v1';LS_PROBLEM='fr_problem_v1';LS_CUSTOM_RECORDS='fr_custom_records_v1';LS_FOODTRADE='fr_foodtrade_v1';LS_FOODTRADE_DONE='fr_foodtradedone_v1';LS_GHOSTED='fr_ghosted_v1';LS_FIELD_OVERRIDE='fr_field_override_v1';LS_USER_ATTEMPTS='fr_user_attempts_v1';}
 function loadStatuses()  { try { return JSON.parse(localStorage.getItem(LS_STATUS))   || {}; } catch(e) { return {}; } }
 function loadAttempts()  { try { return JSON.parse(localStorage.getItem(LS_ATTEMPTS)) || {}; } catch(e) { return {}; } }
 function loadDMDates()   { try { return JSON.parse(localStorage.getItem(LS_DM))       || {}; } catch(e) { return {}; } }
@@ -3581,11 +3585,18 @@ function pinDemoQuick() {
   _enterDemoMode();
   _demoSessionStart();
 }
+function _enterFriendMode(){try{isFriend=true;isDemo=false;_setFriendKeys();FB_URL=FB_FRIEND_URL;try{sessionStorage.setItem('lv_friend_ok','1');sessionStorage.removeItem('lv_pin_ok');sessionStorage.removeItem('lv_demo_ok');}catch(e){}var fk=['fr_status_v1','fr_attempts_v1','fr_dm_v1','fr_bad_ig_v1','fr_ig_override_v1','fr_user_notes_v1','fr_name_override_v1','fr_followup_v1','fr_interested_v1','fr_not_interested_v1','fr_deleted_v1','fr_problem_v1','fr_custom_records_v1','fr_foodtrade_v1','fr_foodtradedone_v1','fr_ghosted_v1','fr_field_override_v1','fr_user_attempts_v1'];for(var i=0;i<fk.length;i++){try{localStorage.removeItem(fk[i]);}catch(e){}}statusMap={};attemptsMap={};dmMap={};badIGMap={};igOverrideMap={};userNotesMap={};nameOverrideMap={};followupMap={};interestedMap={};notInterestedMap={};deletedMap={};problemMap={};customRecords=[];foodTradeMap={};foodTradeDoneMap={};ghostedMap={};fieldOverrideMap={};userAttemptsMap={};_numToIdx=Object.create(null);RESTAURANTS=RESTAURANTS_BASE.filter(function(r,i){return i<767;}).map(function(r,idx){var n=r.num,nm=r.name||'',ig=r.instagram||'',ph=r.phone||'',pl=ph.replace(/[^0-9]/g,'');_numToIdx[n]=idx;attemptsMap[n]=[{email:r.email||'',status:'pending',date:null,note:''}];return{num:n,name:nm,owner:r.owner||'',instagram:ig,igHandle:ig.replace(/^@/,''),phone:ph,phoneLink:pl.length>=7?pl:'',cuisine:r.cuisine||'',notes:r.notes||'',address:r.address||'',defaultStatus:'pending',status:'pending',attempts:attemptsMap[n],_search:nm.toLowerCase()};});document.getElementById('pin-screen').classList.add('hidden');document.getElementById('view-dashboard').classList.add('active');var b1=document.getElementById('gh-push-btn');if(b1)b1.style.display='none';var b2=document.querySelector('[onclick="exportBackup()"]');if(b2)b2.style.display='none';var b3=document.querySelector('[onclick="exportCSV()"]');if(b3)b3.style.display='none';var b4=document.getElementById('restore-btn');if(b4)b4.style.display='none';var s1=document.querySelector('.b-verified');if(s1)s1.style.display='none';var s2=document.querySelector('.b-noemail');if(s2)s2.style.display='none';var s3=document.querySelector('.b-bounced');if(s3)s3.style.display='none';_statEls=null;_cachedMaxNum=0;_dashDirty=true;dashSetFilter('all');lsStatus('#4CAF50','Friend Mode');fetch(FB_FRIEND_URL).then(function(r){return r.ok?r.json():null;}).then(function(rec){if(rec&&rec.status){statusMap=rec.status||{};dmMap=rec.dm||{};ghostedMap=rec.ghosted||{};userNotesMap=rec.usernotes||{};followupMap=rec.followup||{};problemMap=rec.problem||{};}  _statEls=null;_cachedMaxNum=0;_dashDirty=true;dashSetFilter('all');dashUpdateStats();lsStatus('#4CAF50','Friend Mode');}).catch(function(){dashUpdateStats();});_startSessionTimer();}catch(err){console.error('friend err:',err);isFriend=false;FB_URL=FB_REAL_URL;_setRealKeys();try{sessionStorage.removeItem('lv_friend_ok');}catch(e){}document.getElementById('pin-screen').classList.remove('hidden');document.getElementById('view-dashboard').classList.remove('active');document.getElementById('pin-msg').textContent='Error. Try again.';}}
 
 function _pinCheck() {
   if (_pinLocked) {
     document.getElementById('pin-msg').textContent = 'Too many attempts. Wait 30s.';
     _pinEntry = ''; _pinUpdateDots(false);
+    return;
+  }
+  if (_pinEntry === FRIEND_PIN) {
+    _pinAttempts = 0;
+    _pinEntry = '';
+    _enterFriendMode();
     return;
   }
   if (_pinEntry === DEMO_PIN) {
@@ -3630,11 +3641,13 @@ function _pinCheck() {
 function logOut() {
   clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
+  isFriend=false;FB_URL=FB_REAL_URL;
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
   try {
     sessionStorage.removeItem('lv_pin_ok');
     sessionStorage.removeItem('lv_demo_ok');
+    sessionStorage.removeItem('lv_friend_ok');
     sessionStorage.removeItem('lv_guest_mode');
   } catch(e) {}
   // Reset demo flag and restore real storage keys
@@ -4038,6 +4051,10 @@ function _pinInit() {
       _enterDemoMode();
       return;
     }
+    if (sessionStorage.getItem('lv_friend_ok') === '1') {
+      _enterFriendMode();
+      return;
+    }
     if (sessionStorage.getItem('lv_pin_ok') === '1') {
       sessionStorage.removeItem('lv_guest_mode'); // clear any stale guest flag
       document.getElementById('pin-screen').classList.add('hidden');
@@ -4073,7 +4090,7 @@ function resetGHToken() {
 }
 
 function pushToGitHub() {
-  if (isDemo) { showDMToast('Deploy disabled in Demo Mode'); return; }
+  if (isDemo||isFriend) { showDMToast('Deploy disabled'); return; }
   var token = getGHToken();
   if (!token) {
     document.getElementById('token-modal-backdrop').classList.add('open');
