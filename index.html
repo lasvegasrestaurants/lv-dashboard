@@ -3619,7 +3619,7 @@ function _enterFriendMode() {
   ghostedMap=loadGhosted();fieldOverrideMap=loadFieldOverride();
   try{userAttemptsMap=JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS))||{};}catch(e){userAttemptsMap={};}
   _numToIdx=Object.create(null);
-  RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return !deletedMap[r.num];}).map(function(r,i){
+  RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return r.num<=766&&!deletedMap[r.num];}).map(function(r,i){
     _numToIdx[r.num]=i;
     if(!attemptsMap[r.num]){var seed=[{email:r.email,status:r.defaultStatus==='bounced'?'bounced':r.defaultStatus==='sent'?'sent':'pending',date:null,note:''}];if(r.newEmail&&r.newEmail!==r.email)seed.push({email:r.newEmail,status:'pending',date:null,note:'Alt contact'});attemptsMap[r.num]=seed;}
     var fo=fieldOverrideMap[r.num]||{};var ph=fo.phone||r.phone;var pl=ph.replace(/[^0-9]/g,'');
