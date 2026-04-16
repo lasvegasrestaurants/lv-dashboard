@@ -2735,10 +2735,15 @@ function buildMailtoLink(addr, rname) {
   var n = rname || 'Team';
   var subj = encodeURIComponent('We Would Love to Work With ' + n + '!');
   // Use \r\n (CRLF) — required by mailto RFC for proper paragraph spacing
-  var body = encodeURIComponent(_buildOutreachMsg(n).replace(/\n/g, '\r\n'));
+  var body;
+  if (isFriend) {
+    body = '';
+  } else {
+    body = encodeURIComponent(_buildOutreachMsg(n).replace(/\n/g, '\r\n'));
+  }
   // Standard mailto: works with any email app on any device
   // Do NOT encode addr — encodeURIComponent turns @ into %40 which breaks some clients
-  return 'mailto:' + addr + '?subject=' + subj + '&body=' + body;
+  return 'mailto:' + addr + '?subject=' + subj + (body ? '&body=' + body : '');
 }
 // ══════════════════════════════════════════════════════
 // ADD EMAIL MODAL
