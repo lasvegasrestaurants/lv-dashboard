@@ -3611,13 +3611,13 @@ function _enterFriendMode() {
   _setFriendKeys();
   FB_URL=FB_FRIEND_URL;
   try{sessionStorage.setItem('lv_friend_ok','1');sessionStorage.removeItem('lv_pin_ok');sessionStorage.removeItem('lv_demo_ok');}catch(e){}
-  statusMap=loadStatuses();attemptsMap=loadAttempts();dmMap=loadDMDates();
-  badIGMap=loadBadIG();igOverrideMap=loadIGOverride();userNotesMap=loadUserNotes();
-  nameOverrideMap=loadNameOverride();followupMap=loadFollowup();interestedMap=loadInterested();
-  notInterestedMap=loadNotInterested();deletedMap=loadDeleted();problemMap=loadProblem();
-  customRecords=loadCustomRecords();foodTradeMap=loadFoodTrade();foodTradeDoneMap=loadFoodTradeDone();
-  ghostedMap=loadGhosted();fieldOverrideMap=loadFieldOverride();
-  try{userAttemptsMap=JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS))||{};}catch(e){userAttemptsMap={};}
+  statusMap={};attemptsMap={};dmMap={};
+  badIGMap={};igOverrideMap={};userNotesMap={};
+  nameOverrideMap={};followupMap={};interestedMap={};
+  notInterestedMap={};deletedMap={};problemMap={};
+  customRecords=[];foodTradeMap={};foodTradeDoneMap={};
+  ghostedMap={};fieldOverrideMap={};
+  userAttemptsMap={};
   _numToIdx=Object.create(null);
   RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return r.num<=766&&!deletedMap[r.num];}).map(function(r,i){
     _numToIdx[r.num]=i;
