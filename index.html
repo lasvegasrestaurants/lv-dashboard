@@ -3611,6 +3611,8 @@ function _enterFriendMode() {
   _setFriendKeys();
   FB_URL=FB_FRIEND_URL;
   try{sessionStorage.setItem('lv_friend_ok','1');sessionStorage.removeItem('lv_pin_ok');sessionStorage.removeItem('lv_demo_ok');}catch(e){}
+  var _fkeys=['friend_status_v1','friend_attempts_v1','friend_dm_v1','friend_bad_ig_v1','friend_ig_override_v1','friend_user_notes_v1','friend_name_override_v1','friend_followup_v1','friend_interested_v1','friend_not_interested_v1','friend_deleted_v1','friend_problem_v1','friend_custom_records_v1','friend_foodtrade_v1','friend_foodtradedone_v1','friend_ghosted_v1','friend_field_override_v1','friend_user_attempts_v1'];
+  for(var _fi2=0;_fi2<_fkeys.length;_fi2++){try{localStorage.removeItem(_fkeys[_fi2]);}catch(e){}}
   statusMap={};attemptsMap={};dmMap={};
   badIGMap={};igOverrideMap={};userNotesMap={};
   nameOverrideMap={};followupMap={};interestedMap={};
