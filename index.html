@@ -251,7 +251,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="pushToGitHub()" id="gh-push-btn" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Deploy</button>
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
-        <button onclick="window.location.href='restaurant-customers.html'" style="background:#9C27B0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">👥 Customers</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
       </div>
@@ -2533,6 +2532,8 @@ function saveNewRecord() {
 }
 
 function deleteRestaurant(num) {
+  delete _numToIdx[num];
+  delete _numToIdx[num];
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
@@ -3261,7 +3262,7 @@ function dashSetFilter(f) {
     var srBar=document.getElementById('search-result-bar');if(srBar)srBar.style.display='none';
   }
   document.querySelectorAll('.stats .badge').forEach(function(b){ b.classList.remove('active-badge'); });
-  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade',foodtradedone:'.b-foodtradedone',ghosted:'.b-ghosted'};
+  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade'};
   if(bmap[f]){var el=document.querySelector(bmap[f]);if(el)el.classList.add('active-badge');}
   _dashViewEl.scrollTop=0;
   _dashRenderedRange=[-1,-1];
