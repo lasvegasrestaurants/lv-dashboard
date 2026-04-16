@@ -251,7 +251,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="pushToGitHub()" id="gh-push-btn" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Deploy</button>
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
-        <button onclick="window.location.href='restaurant-customers.html'" style="background:#9C27B0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">👥 Customers</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
       </div>
@@ -602,10 +601,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 // ══════════════════════════════════════════════════════
 var DEMO_PIN = '123456';
 var isDemo   = false;
-var FRIEND_PIN = '111111';
-var isFriend = false;
-var FB_REAL_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
-var FB_FRIEND_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_friend.json';
 
 var RESTAURANTS_DEMO = [
   {num:1,name:'Butcher & Thief',owner:'Cory Harwell',instagram:'@butcherandthief',phone:'(725) 202-1234',email:'info@butcherandthief.com',newEmail:'',cuisine:'Steakhouse',defaultStatus:'sent',notes:'',address:'8670 W Sunset Rd Suite H100, Las Vegas, NV 89148'},
@@ -1846,27 +1841,6 @@ function _setRealKeys() {
   LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
 }
 
-function _setFriendKeys() {
-  LS_STATUS         = 'friend_status_v1';
-  LS_ATTEMPTS       = 'friend_attempts_v1';
-  LS_DM             = 'friend_dm_v1';
-  LS_BAD_IG         = 'friend_bad_ig_v1';
-  LS_IG_OVERRIDE    = 'friend_ig_override_v1';
-  LS_USER_NOTES     = 'friend_user_notes_v1';
-  LS_NAME_OVERRIDE  = 'friend_name_override_v1';
-  LS_FOLLOWUP       = 'friend_followup_v1';
-  LS_INTERESTED     = 'friend_interested_v1';
-  LS_NOT_INTERESTED = 'friend_not_interested_v1';
-  LS_DELETED        = 'friend_deleted_v1';
-  LS_PROBLEM        = 'friend_problem_v1';
-  LS_CUSTOM_RECORDS = 'friend_custom_records_v1';
-  LS_FOODTRADE      = 'friend_foodtrade_v1';
-  LS_FOODTRADE_DONE = 'friend_foodtradedone_v1';
-  LS_GHOSTED        = 'friend_ghosted_v1';
-  LS_FIELD_OVERRIDE = 'friend_field_override_v1';
-  LS_USER_ATTEMPTS  = 'friend_user_attempts_v1';
-}
-
 function loadStatuses()  { try { return JSON.parse(localStorage.getItem(LS_STATUS))   || {}; } catch(e) { return {}; } }
 function loadAttempts()  { try { return JSON.parse(localStorage.getItem(LS_ATTEMPTS)) || {}; } catch(e) { return {}; } }
 function loadDMDates()   { try { return JSON.parse(localStorage.getItem(LS_DM))       || {}; } catch(e) { return {}; } }
@@ -2046,43 +2020,6 @@ function _applyFirebaseData(rec) {
 
 var _fbPollTimer = null;
 var _fbLastSavedAt = 0;
-
-function _fbFriendLoad() {
-  // Friend mode: load from friend Firebase path, don't apply Shane's data
-  lsStatus('#4CAF50','Friend Mode — Loading...');
-  fetch(FB_FRIEND_URL)
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(rec){
-      if (rec && rec.status) {
-        // Apply friend's own saved data
-        statusMap        = rec.status        || {};
-        attemptsMap      = rec.attempts      || {};
-        dmMap            = rec.dm            || {};
-        badIGMap         = rec.badig         || {};
-        igOverrideMap    = rec.igovr         || {};
-        userNotesMap     = rec.usernotes     || {};
-        nameOverrideMap  = rec.nameoverride  || {};
-        followupMap      = rec.followup      || {};
-        interestedMap    = rec.interested    || {};
-        notInterestedMap = rec.notinterested || {};
-        deletedMap       = rec.deleted       || {};
-        problemMap       = rec.problem       || {};
-        customRecords    = rec.customrecords || [];
-        foodTradeMap     = rec.foodtrade     || {};
-        foodTradeDoneMap = rec.foodtradedone || {};
-        ghostedMap       = rec.ghosted       || {};
-        fieldOverrideMap = rec.fieldoverride || {};
-      }
-      _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
-      dashSetFilter('all'); dashUpdateStats();
-      lsStatus('#4CAF50','Friend Mode');
-    })
-    .catch(function(){
-      _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
-      dashSetFilter('all'); dashUpdateStats();
-      lsStatus('#4CAF50','Friend Mode — Offline');
-    });
-}
 
 function fbLoad() {
   if (isDemo) { lsStatus('#F57F17', '🎭 Demo Mode'); dashRender(); dashUpdateSlider(); return; }
@@ -2595,6 +2532,8 @@ function saveNewRecord() {
 }
 
 function deleteRestaurant(num) {
+  delete _numToIdx[num];
+  delete _numToIdx[num];
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
@@ -3323,7 +3262,7 @@ function dashSetFilter(f) {
     var srBar=document.getElementById('search-result-bar');if(srBar)srBar.style.display='none';
   }
   document.querySelectorAll('.stats .badge').forEach(function(b){ b.classList.remove('active-badge'); });
-  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade',foodtradedone:'.b-foodtradedone',ghosted:'.b-ghosted'};
+  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade'};
   if(bmap[f]){var el=document.querySelector(bmap[f]);if(el)el.classList.add('active-badge');}
   _dashViewEl.scrollTop=0;
   _dashRenderedRange=[-1,-1];
@@ -3643,48 +3582,10 @@ function pinDemoQuick() {
   _demoSessionStart();
 }
 
-function _enterFriendMode() {
-  isFriend=true; isDemo=false;
-  _setFriendKeys();
-  FB_URL=FB_FRIEND_URL;
-  try{sessionStorage.setItem('lv_friend_ok','1');sessionStorage.removeItem('lv_pin_ok');sessionStorage.removeItem('lv_demo_ok');}catch(e){}
-  var _fkeys=['friend_status_v1','friend_attempts_v1','friend_dm_v1','friend_bad_ig_v1','friend_ig_override_v1','friend_user_notes_v1','friend_name_override_v1','friend_followup_v1','friend_interested_v1','friend_not_interested_v1','friend_deleted_v1','friend_problem_v1','friend_custom_records_v1','friend_foodtrade_v1','friend_foodtradedone_v1','friend_ghosted_v1','friend_field_override_v1','friend_user_attempts_v1'];
-  for(var _fi2=0;_fi2<_fkeys.length;_fi2++){try{localStorage.removeItem(_fkeys[_fi2]);}catch(e){}}
-  statusMap={};attemptsMap={};dmMap={};
-  badIGMap={};igOverrideMap={};userNotesMap={};
-  nameOverrideMap={};followupMap={};interestedMap={};
-  notInterestedMap={};deletedMap={};problemMap={};
-  customRecords=[];foodTradeMap={};foodTradeDoneMap={};
-  ghostedMap={};fieldOverrideMap={};
-  userAttemptsMap={};
-  _numToIdx=Object.create(null);
-  RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return r.num<=766&&!deletedMap[r.num];}).map(function(r,i){
-    _numToIdx[r.num]=i;
-    if(!attemptsMap[r.num]){var seed=[{email:r.email,status:r.defaultStatus==='bounced'?'bounced':r.defaultStatus==='sent'?'sent':'pending',date:null,note:''}];if(r.newEmail&&r.newEmail!==r.email)seed.push({email:r.newEmail,status:'pending',date:null,note:'Alt contact'});attemptsMap[r.num]=seed;}
-    var fo=fieldOverrideMap[r.num]||{};var ph=fo.phone||r.phone;var pl=ph.replace(/[^0-9]/g,'');
-    return{num:r.num,name:nameOverrideMap[r.num]||r.name,owner:fo.owner||r.owner,instagram:igOverrideMap[r.num]||r.instagram,igHandle:(igOverrideMap[r.num]||r.instagram).replace(/^@/,''),phone:ph,phoneLink:pl.length>=7?pl:'',cuisine:fo.cuisine||r.cuisine,notes:r.notes||'',address:fo.address||r.address||'',defaultStatus:r.defaultStatus,status:statusMap[r.num]||r.defaultStatus,attempts:attemptsMap[r.num],_search:(nameOverrideMap[r.num]||r.name).toLowerCase()};
-  });
-  for(var i=0;i<customRecords.length;i++){var cr=customRecords[i];if(deletedMap[cr.num])continue;if(!attemptsMap[cr.num])attemptsMap[cr.num]=[{email:cr.email||'',status:'pending',date:null,note:''}];var pl2=(cr.phone||'').replace(/[^0-9]/g,'');RESTAURANTS.push({num:cr.num,name:nameOverrideMap[cr.num]||cr.name,owner:cr.owner||'',instagram:igOverrideMap[cr.num]||cr.instagram||'',igHandle:(igOverrideMap[cr.num]||cr.instagram||'').replace(/^@/,''),phone:cr.phone||'',phoneLink:pl2.length>=7?pl2:'',cuisine:cr.cuisine||'',notes:cr.notes||'',address:cr.address||'',defaultStatus:'pending',status:statusMap[cr.num]||'pending',attempts:attemptsMap[cr.num],_search:(cr.name||'').toLowerCase()});_numToIdx[cr.num]=RESTAURANTS.length-1;}
-  document.getElementById('pin-screen').classList.add('hidden');
-  document.getElementById('view-dashboard').classList.add('active');
-  var gb=document.getElementById('gh-push-btn');if(gb)gb.style.display='none';
-  _statEls=null;_cachedMaxNum=0;_dashDirty=true;
-  dashSetFilter('all');
-  lsStatus('#4CAF50','Friend Mode');
-  _fbFriendLoad();
-  _startSessionTimer();
-}
-
 function _pinCheck() {
   if (_pinLocked) {
     document.getElementById('pin-msg').textContent = 'Too many attempts. Wait 30s.';
     _pinEntry = ''; _pinUpdateDots(false);
-    return;
-  }
-  if (_pinEntry === FRIEND_PIN) {
-    _pinAttempts = 0;
-    _pinEntry = '';
-    _enterFriendMode();
     return;
   }
   if (_pinEntry === DEMO_PIN) {
@@ -3729,14 +3630,11 @@ function _pinCheck() {
 function logOut() {
   clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
-  isFriend=false;
-  FB_URL=FB_REAL_URL;
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
   try {
     sessionStorage.removeItem('lv_pin_ok');
     sessionStorage.removeItem('lv_demo_ok');
-    sessionStorage.removeItem('lv_friend_ok');
     sessionStorage.removeItem('lv_guest_mode');
   } catch(e) {}
   // Reset demo flag and restore real storage keys
@@ -4140,10 +4038,6 @@ function _pinInit() {
       _enterDemoMode();
       return;
     }
-    if (sessionStorage.getItem('lv_friend_ok') === '1') {
-      _enterFriendMode();
-      return;
-    }
     if (sessionStorage.getItem('lv_pin_ok') === '1') {
       sessionStorage.removeItem('lv_guest_mode'); // clear any stale guest flag
       document.getElementById('pin-screen').classList.add('hidden');
@@ -4179,7 +4073,7 @@ function resetGHToken() {
 }
 
 function pushToGitHub() {
-  if (isDemo || isFriend) { showDMToast('Deploy disabled'); return; }
+  if (isDemo) { showDMToast('Deploy disabled in Demo Mode'); return; }
   var token = getGHToken();
   if (!token) {
     document.getElementById('token-modal-backdrop').classList.add('open');
