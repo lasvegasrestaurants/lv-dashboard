@@ -2047,6 +2047,43 @@ function _applyFirebaseData(rec) {
 var _fbPollTimer = null;
 var _fbLastSavedAt = 0;
 
+function _fbFriendLoad() {
+  // Friend mode: load from friend Firebase path, don't apply Shane's data
+  lsStatus('#4CAF50','Friend Mode — Loading...');
+  fetch(FB_FRIEND_URL)
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(rec){
+      if (rec && rec.status) {
+        // Apply friend's own saved data
+        statusMap        = rec.status        || {};
+        attemptsMap      = rec.attempts      || {};
+        dmMap            = rec.dm            || {};
+        badIGMap         = rec.badig         || {};
+        igOverrideMap    = rec.igovr         || {};
+        userNotesMap     = rec.usernotes     || {};
+        nameOverrideMap  = rec.nameoverride  || {};
+        followupMap      = rec.followup      || {};
+        interestedMap    = rec.interested    || {};
+        notInterestedMap = rec.notinterested || {};
+        deletedMap       = rec.deleted       || {};
+        problemMap       = rec.problem       || {};
+        customRecords    = rec.customrecords || [];
+        foodTradeMap     = rec.foodtrade     || {};
+        foodTradeDoneMap = rec.foodtradedone || {};
+        ghostedMap       = rec.ghosted       || {};
+        fieldOverrideMap = rec.fieldoverride || {};
+      }
+      _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
+      dashSetFilter('all'); dashUpdateStats();
+      lsStatus('#4CAF50','Friend Mode');
+    })
+    .catch(function(){
+      _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
+      dashSetFilter('all'); dashUpdateStats();
+      lsStatus('#4CAF50','Friend Mode — Offline');
+    });
+}
+
 function fbLoad() {
   if (isDemo) { lsStatus('#F57F17', '🎭 Demo Mode'); dashRender(); dashUpdateSlider(); return; }
   // Initial fetch on load
@@ -3634,7 +3671,7 @@ function _enterFriendMode() {
   _statEls=null;_cachedMaxNum=0;_dashDirty=true;
   dashSetFilter('all');
   lsStatus('#4CAF50','Friend Mode');
-  fbLoad();
+  _fbFriendLoad();
   _startSessionTimer();
 }
 
