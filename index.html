@@ -2536,8 +2536,6 @@ function saveNewRecord() {
 }
 
 function deleteRestaurant(num) {
-  delete _numToIdx[num];
-  delete _numToIdx[num];
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
