@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1B2E4A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -200,36 +197,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .modal-actions .btn { flex: 1; justify-content: center; padding: 12px; font-size: 14px; }
 .btn-cancel { background: #CFD8DC; color: #37474F; }
 .btn-save   { background: #1A237E; }
-
-.tasks-nav{display:flex;gap:8px;padding:10px 12px 0;border-bottom:2px solid #e8e8e8;}
-.tasks-nav-btn{flex:1;padding:9px 6px;border:none;background:none;font-size:13px;font-weight:700;color:#888;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;}
-.tasks-nav-btn.active{color:#1565C0;border-bottom-color:#1565C0;background:#fff;border-radius:8px 8px 0 0;box-shadow:0 -2px 8px rgba(0,0,0,0.08);}
-.task-list{padding:10px 12px;overflow-y:auto;flex:1;}
-.task-card{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.10);display:flex;align-items:flex-start;gap:10px;border-left:4px solid #1565C0;}
-.task-card.overdue{border-left-color:#C62828;background:#fff5f5;}
-.task-card.due-soon{border-left-color:#E65100;}
-.task-card.proj{border-left-color:#6A1B9A;}
-.task-title{font-size:15px;font-weight:700;color:#111;margin-bottom:3px;}
-.task-desc{font-size:13px;color:#555;margin-bottom:5px;}
-.task-cd{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:4px;}
-.task-cd.overdue{background:#C62828;color:#fff;}
-.task-cd.due-soon{background:#E65100;color:#fff;}
-.task-cd.ok{background:#1B5E20;color:#fff;}
-.task-cd.no-date{background:#888;color:#fff;}
-.task-arrows{display:flex;flex-direction:column;gap:2px;}
-.task-arrow{background:none;border:1.5px solid #ccc;border-radius:6px;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555;}
-.task-add-btn{width:100%;padding:12px;border:2px dashed #ccc;border-radius:12px;background:none;font-size:14px;font-weight:700;color:#888;cursor:pointer;margin-bottom:10px;box-sizing:border-box;}
-.tmov{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;display:flex;align-items:flex-end;justify-content:center;}
-.tmod{background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 32px;width:100%;max-width:500px;}
-.tmod h3{margin:0 0 14px;font-size:17px;}
-.tmod input,.tmod textarea{width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:10px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px;}
-.tmod textarea{height:80px;resize:none;}
-.tmod-btns{display:flex;gap:8px;margin-top:4px;}
-.tmod-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
-.tmod-save{background:#1565C0;color:#fff;}
-.tmod-cancel{background:#eee;color:#333;}
-.tasks-empty{text-align:center;color:#aaa;padding:40px 20px;font-size:15px;}
-
 </style>
 </head>
 <body>
@@ -283,7 +250,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="exportCSV()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Excel</button>
         <button onclick="pushToGitHub()" id="gh-push-btn" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Deploy</button>
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
-        <button onclick="showTasksTab()" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Tasks</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
@@ -5124,157 +5090,5 @@ window.addEventListener('load',function(){
   _pinInit();
 });
 </script>
-
-<div class="view" id="view-tasks" style="display:none;flex-direction:column;background:#f7f8fa;">
-  <div class="hdr" style="padding:10px 12px 0;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <button onclick="showDashTab()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
-      <span style="font-size:15px;font-weight:800;color:#111;flex:1;">📋 Tasks &amp; Projects</span>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒</button>
-    </div>
-  </div>
-  <div class="tasks-nav">
-    <button class="tasks-nav-btn active" id="tn-todos" onclick="switchTasksTab('todos')">✅ To-Do</button>
-    <button class="tasks-nav-btn" id="tn-projects" onclick="switchTasksTab('projects')">🚀 Projects</button>
-  </div>
-  <div id="tasks-panel-todos" class="task-list">
-    <button class="task-add-btn" onclick="openTaskModal('todo')">＋ Add To-Do</button>
-    <div id="todo-list"></div>
-  </div>
-  <div id="tasks-panel-projects" class="task-list" style="display:none;">
-    <button class="task-add-btn" onclick="openTaskModal('project')">＋ Add Project</button>
-    <div id="project-list"></div>
-  </div>
-</div>
-<div id="tmov" class="tmov" style="display:none;">
-  <div class="tmod">
-    <h3 id="tmod-title">New To-Do</h3>
-    <input id="tmod-name" placeholder="Title (required)" maxlength="100">
-    <textarea id="tmod-desc" placeholder="Details / notes (optional)"></textarea>
-    <input type="date" id="tmod-date" style="color:#333;">
-    <div class="tmod-btns">
-      <button class="tmod-cancel" onclick="closeTaskModal()">Cancel</button>
-      <button class="tmod-save" onclick="saveTaskModal()">Save</button>
-    </div>
-  </div>
-</div>
-<script>
-var LS_TODOS='lv_todos_v1',LS_PROJECTS='lv_projects_v1';
-var _tmt='todo',_teid=null,_tsub='todos';
-function _lt(){try{return JSON.parse(localStorage.getItem(LS_TODOS))||[];}catch(e){return[];}}
-function _lp(){try{return JSON.parse(localStorage.getItem(LS_PROJECTS))||[];}catch(e){return[];}}
-function _st(a){try{localStorage.setItem(LS_TODOS,JSON.stringify(a));}catch(e){}}
-function _sp(a){try{localStorage.setItem(LS_PROJECTS,JSON.stringify(a));}catch(e){}}
-function showTasksTab(){
-  document.getElementById('view-dashboard').classList.remove('active');
-  var vt=document.getElementById('view-tasks');
-  vt.classList.add('active');
-  vt.style.display='flex';
-  renderTodos();renderProjects();
-  if(!window._ttick)window._ttick=setInterval(function(){renderTodos();renderProjects();},60000);
-}
-function showDashTab(){
-  document.getElementById('view-tasks').classList.remove('active');
-  document.getElementById('view-dashboard').classList.add('active');
-}
-function switchTasksTab(t){
-  _tsub=t;
-  document.getElementById('tn-todos').classList.toggle('active',t==='todos');
-  document.getElementById('tn-projects').classList.toggle('active',t==='projects');
-  document.getElementById('tasks-panel-todos').style.display=t==='todos'?'':'none';
-  document.getElementById('tasks-panel-projects').style.display=t==='projects'?'':'none';
-}
-function _tcd(d){
-  if(!d)return{label:'No due date',cls:'no-date'};
-  var due=new Date(d+'T23:59:59'),now=new Date(),diff=due-now;
-  if(diff<0)return{label:'OVERDUE',cls:'overdue'};
-  var days=Math.floor(diff/86400000),hrs=Math.floor((diff%86400000)/3600000);
-  if(days===0)return{label:hrs+'h left',cls:'due-soon'};
-  if(days<=3)return{label:days+'d '+hrs+'h left',cls:'due-soon'};
-  return{label:days+' days left',cls:'ok'};
-}
-function _tsort(a){
-  var od=[],rest=[];
-  a.forEach(function(t){
-    if(t.date&&new Date(t.date+'T23:59:59')<new Date())od.push(t);
-    else rest.push(t);
-  });
-  return od.concat(rest);
-}
-function _rl(items,cid,type){
-  var el=document.getElementById(cid);if(!el)return;
-  var s=_tsort(items);
-  if(!s.length){el.innerHTML='<div class="tasks-empty">Nothing here yet.<br>Tap above to add one.</div>';return;}
-  el.innerHTML=s.map(function(t){
-    var cd=_tcd(t.date);
-    var cls='task-card'+(type==='project'?' proj':'')+(cd.cls==='overdue'?' overdue':cd.cls==='due-soon'?' due-soon':'');
-    return '<div class="'+cls+'">'+
-      '<div class="task-arrows">'+
-        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',-1)">▲</button>'+
-        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',1)">▼</button>'+
-      '</div>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div class="task-title">'+_esc(t.name)+'</div>'+
-        (t.desc?'<div class="task-desc">'+_esc(t.desc)+'</div>':'')+
-        '<span class="task-cd '+cd.cls+'">⏱ '+cd.label+'</span>'+
-      '</div>'+
-      '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">'+
-        '<button style="background:none;border:none;color:#C62828;font-size:16px;cursor:pointer;" onclick="_dt(''+type+'',''+t.id+'')">✕</button>'+
-        '<button style="background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;" onclick="openTaskModalEdit(''+type+'',''+t.id+'')">Edit</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-function renderTodos(){_rl(_lt(),'todo-list','todo');}
-function renderProjects(){_rl(_lp(),'project-list','project');}
-function _mv(type,id,dir){
-  var a=type==='todo'?_lt():_lp();
-  var i=a.findIndex(function(t){return t.id===id;});
-  if(i<0)return;var j=i+dir;if(j<0||j>=a.length)return;
-  var tmp=a[i];a[i]=a[j];a[j]=tmp;
-  type==='todo'?_st(a):_sp(a);
-  type==='todo'?renderTodos():renderProjects();
-}
-function _dt(type,id){
-  var a=type==='todo'?_lt():_lp();
-  a=a.filter(function(t){return t.id!==id;});
-  type==='todo'?_st(a):_sp(a);
-  type==='todo'?renderTodos():renderProjects();
-}
-function openTaskModal(type){
-  _tmt=type;_teid=null;
-  document.getElementById('tmod-title').textContent=type==='todo'?'New To-Do':'New Project';
-  document.getElementById('tmod-name').value='';
-  document.getElementById('tmod-desc').value='';
-  document.getElementById('tmod-date').value='';
-  document.getElementById('tmov').style.display='flex';
-  setTimeout(function(){document.getElementById('tmod-name').focus();},100);
-}
-function openTaskModalEdit(type,id){
-  var a=type==='todo'?_lt():_lp();
-  var t=a.find(function(x){return x.id===id;});if(!t)return;
-  _tmt=type;_teid=id;
-  document.getElementById('tmod-title').textContent=type==='todo'?'Edit To-Do':'Edit Project';
-  document.getElementById('tmod-name').value=t.name;
-  document.getElementById('tmod-desc').value=t.desc||'';
-  document.getElementById('tmod-date').value=t.date||'';
-  document.getElementById('tmov').style.display='flex';
-}
-function closeTaskModal(){document.getElementById('tmov').style.display='none';}
-function saveTaskModal(){
-  var name=document.getElementById('tmod-name').value.trim();
-  if(!name){document.getElementById('tmod-name').focus();return;}
-  var desc=document.getElementById('tmod-desc').value.trim();
-  var date=document.getElementById('tmod-date').value;
-  var a=_tmt==='todo'?_lt():_lp();
-  if(_teid){var t=a.find(function(x){return x.id===_teid;});if(t){t.name=name;t.desc=desc;t.date=date;}}
-  else a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,desc:desc,date:date});
-  _tmt==='todo'?_st(a):_sp(a);
-  closeTaskModal();
-  _tmt==='todo'?renderTodos():renderProjects();
-}
-document.addEventListener('click',function(e){if(e.target===document.getElementById('tmov'))closeTaskModal();});
-</script>
-
 </body>
 </html>
