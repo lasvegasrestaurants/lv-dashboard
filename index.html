@@ -43,7 +43,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .stats { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px 14px; background: #1B2E4A; }
 .badge { padding: 8px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #fff; white-space: nowrap; cursor: pointer; opacity: 0.9; transition: opacity .15s, transform .1s; user-select: none; }
 .badge:hover { opacity: 1; transform: scale(1.04); }
-.badge.active-badge { outline: 3px solid #fff; opacity: 1; }
+.badge.active-badge { outline: 3px solid #fff !important; box-shadow: 0 0 0 3px rgba(255,255,255,0.5) !important; opacity: 1 !important; }
 .b-total    { background: #2E4057; }
 .b-verified { background: #1B5E20; }
 .b-noemail  { background: #283593; }
@@ -2055,23 +2055,6 @@ function _applyFirebaseData(rec) {
 var _fbPollTimer = null;
 var _fbLastSavedAt = 0;
 
-function _fbFriendLoad() {
-  lsStatus('#4CAF50','Friend Mode');
-  fetch(FB_FRIEND_URL)
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(rec){
-      if(rec&&rec.status){
-        statusMap=rec.status||{};dmMap=rec.dm||{};ghostedMap=rec.ghosted||{};
-        userNotesMap=rec.usernotes||{};followupMap=rec.followup||{};
-        problemMap=rec.problem||{};foodTradeMap=rec.foodtrade||{};
-        foodTradeDoneMap=rec.foodtradedone||{};
-      }
-      _statEls=null;_cachedMaxNum=0;_dashDirty=true;
-      dashSetFilter('all');dashUpdateStats();
-      lsStatus('#4CAF50','Friend Mode');
-    }).catch(function(){dashUpdateStats();});
-}
-
 function fbLoad() {
   if (isDemo) { lsStatus('#F57F17', '🎭 Demo Mode'); dashRender(); dashUpdateSlider(); return; }
   // Initial fetch on load
@@ -2583,6 +2566,8 @@ function saveNewRecord() {
 }
 
 function deleteRestaurant(num) {
+  delete _numToIdx[num];
+  delete _numToIdx[num];
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
@@ -3311,7 +3296,7 @@ function dashSetFilter(f) {
     var srBar=document.getElementById('search-result-bar');if(srBar)srBar.style.display='none';
   }
   document.querySelectorAll('.stats .badge').forEach(function(b){ b.classList.remove('active-badge'); });
-  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade'};
+  var bmap={all:'.b-total',sent:'.b-verified',bounced:'.b-bounced',badig:'.b-bad-ig',interested:'.b-interested',notinterested:'.b-not-interested',notes:'.b-notes',followup:'.b-followup',problem:'.b-problem',nodm:'.b-nodm',noemail:'.b-noemail',foodtrade:'.b-foodtrade',foodtradedone:'.b-foodtradedone',ghosted:'.b-ghosted'};
   if(bmap[f]){var el=document.querySelector(bmap[f]);if(el)el.classList.add('active-badge');}
   _dashViewEl.scrollTop=0;
   _dashRenderedRange=[-1,-1];
@@ -3369,7 +3354,7 @@ function _refilter(){
     if(q){
       var rName=(nameOverrideMap[r.num]||r.name).toLowerCase();
       var rIG=(igOverrideMap[r.num]||r.instagram||'').toLowerCase().replace(/^@/,'');
-      if(rName.indexOf(q)!==0 && rIG.indexOf(q.replace(/^@/,""))!==0) continue;
+      if(rName.indexOf(q)===-1 && rIG.indexOf(q.replace(/^@/,""))===-1) continue;
     }
     _dashFiltered.push(i);
   }
@@ -3684,7 +3669,6 @@ function logOut() {
   try {
     sessionStorage.removeItem('lv_pin_ok');
     sessionStorage.removeItem('lv_demo_ok');
-    sessionStorage.removeItem('lv_friend_ok');
     sessionStorage.removeItem('lv_guest_mode');
   } catch(e) {}
   // Reset demo flag and restore real storage keys
@@ -5175,155 +5159,121 @@ window.addEventListener('load',function(){
   </div>
 </div>
 <script>
-var LS_T="lv_todos_v1",LS_P="lv_projects_v1";
-var _tmt="todo",_teid=null,_tsub="todos";
-function _lt(){try{return JSON.parse(localStorage.getItem(LS_T))||[];}catch(e){return[];}}
-function _lp(){try{return JSON.parse(localStorage.getItem(LS_P))||[];}catch(e){return[];}}
-function _st(a){try{localStorage.setItem(LS_T,JSON.stringify(a));}catch(e){}}
-function _sp(a){try{localStorage.setItem(LS_P,JSON.stringify(a));}catch(e){}}
-function tEsc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML;}
-
+var LS_TODOS='lv_todos_v1',LS_PROJECTS='lv_projects_v1';
+var _tmt='todo',_teid=null,_tsub='todos';
+function _lt(){try{return JSON.parse(localStorage.getItem(LS_TODOS))||[];}catch(e){return[];}}
+function _lp(){try{return JSON.parse(localStorage.getItem(LS_PROJECTS))||[];}catch(e){return[];}}
+function _st(a){try{localStorage.setItem(LS_TODOS,JSON.stringify(a));}catch(e){}}
+function _sp(a){try{localStorage.setItem(LS_PROJECTS,JSON.stringify(a));}catch(e){}}
 function showTasksTab(){
-  var vd=document.getElementById("view-dashboard");
-  vd.classList.remove("active");
-  vd.style.display="none";
-  var vt=document.getElementById("view-tasks");
-  vt.classList.add("active");
-  vt.style.display="flex";
-  tRender("todo");tRender("project");
-  if(!window._ttick)window._ttick=setInterval(function(){tRender("todo");tRender("project");},60000);
+  document.getElementById('view-dashboard').classList.remove('active');
+  var vt=document.getElementById('view-tasks');
+  vt.classList.add('active');
+  vt.style.display='flex';
+  renderTodos();renderProjects();
+  if(!window._ttick)window._ttick=setInterval(function(){renderTodos();renderProjects();},60000);
 }
-
 function showDashTab(){
-  var vt=document.getElementById("view-tasks");
-  vt.classList.remove("active");
-  vt.style.display="none";
-  var vd=document.getElementById("view-dashboard");
-  vd.classList.add("active");
-  vd.style.display="block";
+  document.getElementById('view-tasks').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
 }
-
 function switchTasksTab(t){
   _tsub=t;
-  document.getElementById("tn-todos").classList.toggle("active",t==="todos");
-  document.getElementById("tn-projects").classList.toggle("active",t==="projects");
-  document.getElementById("tasks-panel-todos").style.display=t==="todos"?"":"none";
-  document.getElementById("tasks-panel-projects").style.display=t==="projects"?"":"none";
+  document.getElementById('tn-todos').classList.toggle('active',t==='todos');
+  document.getElementById('tn-projects').classList.toggle('active',t==='projects');
+  document.getElementById('tasks-panel-todos').style.display=t==='todos'?'':'none';
+  document.getElementById('tasks-panel-projects').style.display=t==='projects'?'':'none';
 }
-
-function tCd(date){
-  if(!date)return{label:"No due date",cls:"no-date"};
-  var due=new Date(date+"T23:59:59"),now=new Date(),d=due-now;
-  if(d<0)return{label:"OVERDUE",cls:"overdue"};
-  var days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000);
-  if(days===0)return{label:hrs+"h left",cls:"due-soon"};
-  if(days<=3)return{label:days+"d "+hrs+"h left",cls:"due-soon"};
-  return{label:days+" days left",cls:"ok"};
+function _tcd(d){
+  if(!d)return{label:'No due date',cls:'no-date'};
+  var due=new Date(d+'T23:59:59'),now=new Date(),diff=due-now;
+  if(diff<0)return{label:'OVERDUE',cls:'overdue'};
+  var days=Math.floor(diff/86400000),hrs=Math.floor((diff%86400000)/3600000);
+  if(days===0)return{label:hrs+'h left',cls:'due-soon'};
+  if(days<=3)return{label:days+'d '+hrs+'h left',cls:'due-soon'};
+  return{label:days+' days left',cls:'ok'};
 }
-
-function tSort(arr){
+function _tsort(a){
   var od=[],rest=[];
-  arr.forEach(function(t){
-    if(t.date&&new Date(t.date+"T23:59:59")<new Date())od.push(t);
+  a.forEach(function(t){
+    if(t.date&&new Date(t.date+'T23:59:59')<new Date())od.push(t);
     else rest.push(t);
   });
   return od.concat(rest);
 }
-
-function tRender(type){
-  var arr=type==="todo"?_lt():_lp();
-  var cid=type==="todo"?"todo-list":"project-list";
-  var el=document.getElementById(cid);
-  if(!el)return;
-  var sorted=tSort(arr);
-  if(!sorted.length){
-    el.innerHTML="<div style='text-align:center;color:#aaa;padding:40px 20px;font-size:15px;line-height:1.6;'>Nothing here yet.<br>Tap the button above to add one.</div>";
-    return;
-  }
-  var h="";
-  for(var i=0;i<sorted.length;i++){
-    var t=sorted[i];
-    var cd=tCd(t.date);
-    var isOd=cd.cls==="overdue",isSoon=cd.cls==="due-soon";
-    var cardCls="task-card"+(type==="project"?" proj":"")+(isOd?" overdue":isSoon?" due-soon":"");
-    var tid=JSON.stringify(t.id),ttype=JSON.stringify(type);
-    h+="<div class="+JSON.stringify(cardCls)+">";
-    h+="<div class='task-arrows'>";
-    h+="<button class='task-arrow' onclick='tMove("+ttype+","+tid+",-1)'>&#9650;</button>";
-    h+="<button class='task-arrow' onclick='tMove("+ttype+","+tid+",1)'>&#9660;</button>";
-    h+="</div>";
-    h+="<div style='flex:1;min-width:0;'>";
-    h+="<div class='task-title'>"+tEsc(t.name)+"</div>";
-    if(t.desc)h+="<div class='task-desc'>"+tEsc(t.desc)+"</div>";
-    h+="<span class='task-cd "+cd.cls+"'>&#9201; "+cd.label+"</span>";
-    h+="</div>";
-    h+="<div style='display:flex;flex-direction:column;gap:4px;align-items:flex-end;'>";
-    h+="<button style='background:none;border:none;color:#C62828;font-size:18px;cursor:pointer;' onclick='tDel("+ttype+","+tid+")'>&#10005;</button>";
-    h+="<button style='background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;' onclick='tEdit("+ttype+","+tid+")'>Edit</button>";
-    h+="</div></div>";
-  }
-  el.innerHTML=h;
+function _rl(items,cid,type){
+  var el=document.getElementById(cid);if(!el)return;
+  var s=_tsort(items);
+  if(!s.length){el.innerHTML='<div class="tasks-empty">Nothing here yet.<br>Tap above to add one.</div>';return;}
+  el.innerHTML=s.map(function(t){
+    var cd=_tcd(t.date);
+    var cls='task-card'+(type==='project'?' proj':'')+(cd.cls==='overdue'?' overdue':cd.cls==='due-soon'?' due-soon':'');
+    return '<div class="'+cls+'">'+
+      '<div class="task-arrows">'+
+        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',-1)">▲</button>'+
+        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',1)">▼</button>'+
+      '</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div class="task-title">'+_esc(t.name)+'</div>'+
+        (t.desc?'<div class="task-desc">'+_esc(t.desc)+'</div>':'')+
+        '<span class="task-cd '+cd.cls+'">⏱ '+cd.label+'</span>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">'+
+        '<button style="background:none;border:none;color:#C62828;font-size:16px;cursor:pointer;" onclick="_dt(''+type+'',''+t.id+'')">✕</button>'+
+        '<button style="background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;" onclick="openTaskModalEdit(''+type+'',''+t.id+'')">Edit</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
-
-function renderTodos(){tRender("todo");}
-function renderProjects(){tRender("project");}
-
-function tMove(type,id,dir){
-  var arr=type==="todo"?_lt():_lp();
-  var i=arr.findIndex(function(x){return x.id===id;});
-  if(i<0)return;var j=i+dir;if(j<0||j>=arr.length)return;
-  var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
-  type==="todo"?_st(arr):_sp(arr);tRender(type);
+function renderTodos(){_rl(_lt(),'todo-list','todo');}
+function renderProjects(){_rl(_lp(),'project-list','project');}
+function _mv(type,id,dir){
+  var a=type==='todo'?_lt():_lp();
+  var i=a.findIndex(function(t){return t.id===id;});
+  if(i<0)return;var j=i+dir;if(j<0||j>=a.length)return;
+  var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  type==='todo'?_st(a):_sp(a);
+  type==='todo'?renderTodos():renderProjects();
 }
-
-function tDel(type,id){
-  if(!confirm("Delete this item?"))return;
-  var arr=(type==="todo"?_lt():_lp()).filter(function(x){return x.id!==id;});
-  type==="todo"?_st(arr):_sp(arr);tRender(type);
+function _dt(type,id){
+  var a=type==='todo'?_lt():_lp();
+  a=a.filter(function(t){return t.id!==id;});
+  type==='todo'?_st(a):_sp(a);
+  type==='todo'?renderTodos():renderProjects();
 }
-
 function openTaskModal(type){
   _tmt=type;_teid=null;
-  document.getElementById("tmod-title").textContent=type==="todo"?"New To-Do":"New Project";
-  document.getElementById("tmod-name").value="";
-  document.getElementById("tmod-desc").value="";
-  document.getElementById("tmod-date").value="";
-  document.getElementById("tmov").style.display="flex";
-  setTimeout(function(){document.getElementById("tmod-name").focus();},150);
+  document.getElementById('tmod-title').textContent=type==='todo'?'New To-Do':'New Project';
+  document.getElementById('tmod-name').value='';
+  document.getElementById('tmod-desc').value='';
+  document.getElementById('tmod-date').value='';
+  document.getElementById('tmov').style.display='flex';
+  setTimeout(function(){document.getElementById('tmod-name').focus();},100);
 }
-
-function tEdit(type,id){
-  var arr=type==="todo"?_lt():_lp();
-  var t=arr.find(function(x){return x.id===id;});if(!t)return;
+function openTaskModalEdit(type,id){
+  var a=type==='todo'?_lt():_lp();
+  var t=a.find(function(x){return x.id===id;});if(!t)return;
   _tmt=type;_teid=id;
-  document.getElementById("tmod-title").textContent=type==="todo"?"Edit To-Do":"Edit Project";
-  document.getElementById("tmod-name").value=t.name;
-  document.getElementById("tmod-desc").value=t.desc||"";
-  document.getElementById("tmod-date").value=t.date||"";
-  document.getElementById("tmov").style.display="flex";
+  document.getElementById('tmod-title').textContent=type==='todo'?'Edit To-Do':'Edit Project';
+  document.getElementById('tmod-name').value=t.name;
+  document.getElementById('tmod-desc').value=t.desc||'';
+  document.getElementById('tmod-date').value=t.date||'';
+  document.getElementById('tmov').style.display='flex';
 }
-
-function closeTaskModal(){document.getElementById("tmov").style.display="none";}
-
+function closeTaskModal(){document.getElementById('tmov').style.display='none';}
 function saveTaskModal(){
-  var name=document.getElementById("tmod-name").value.trim();
-  if(!name){document.getElementById("tmod-name").focus();return;}
-  var desc=document.getElementById("tmod-desc").value.trim();
-  var date=document.getElementById("tmod-date").value;
-  var arr=_tmt==="todo"?_lt():_lp();
-  if(_teid){
-    var t=arr.find(function(x){return x.id===_teid;});
-    if(t){t.name=name;t.desc=desc;t.date=date;}
-  }else{
-    arr.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,desc:desc,date:date});
-  }
-  _tmt==="todo"?_st(arr):_sp(arr);
-  closeTaskModal();tRender(_tmt);
+  var name=document.getElementById('tmod-name').value.trim();
+  if(!name){document.getElementById('tmod-name').focus();return;}
+  var desc=document.getElementById('tmod-desc').value.trim();
+  var date=document.getElementById('tmod-date').value;
+  var a=_tmt==='todo'?_lt():_lp();
+  if(_teid){var t=a.find(function(x){return x.id===_teid;});if(t){t.name=name;t.desc=desc;t.date=date;}}
+  else a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,desc:desc,date:date});
+  _tmt==='todo'?_st(a):_sp(a);
+  closeTaskModal();
+  _tmt==='todo'?renderTodos():renderProjects();
 }
-
-document.addEventListener("click",function(e){
-  if(e.target===document.getElementById("tmov"))closeTaskModal();
-});
+document.addEventListener('click',function(e){if(e.target===document.getElementById('tmov'))closeTaskModal();});
 </script>
 
 </body>
