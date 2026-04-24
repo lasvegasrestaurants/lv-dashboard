@@ -5129,12 +5129,12 @@ window.addEventListener('load',function(){
   <div class="hdr" style="padding:10px 12px 0;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button onclick="showDashTab()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
-      <span style="font-size:15px;font-weight:800;color:#111;flex:1;">📋 Tasks &amp; Projects</span>
+      <span style="font-size:15px;font-weight:800;color:#111;flex:1;">✅ To-Do &amp; Projects</span>
       <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒</button>
     </div>
   </div>
   <div class="tasks-nav">
-    <button class="tasks-nav-btn active" id="tn-todos" onclick="switchTasksTab('todos')">📋 Tasks</button>
+    <button class="tasks-nav-btn active" id="tn-todos" onclick="switchTasksTab('todos')">✅ To-Do</button>
     <button class="tasks-nav-btn" id="tn-projects" onclick="switchTasksTab('projects')">🚀 Projects</button>
   </div>
   <div id="tasks-panel-todos" class="task-list">
@@ -5160,6 +5160,13 @@ window.addEventListener('load',function(){
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<style>
+.task-drag{cursor:grab;padding:0 6px 0 2px;color:#aaa;font-size:20px;line-height:1;user-select:none;touch-action:none;align-self:center;}
+.task-drag:active{cursor:grabbing;}
+.task-ghost{opacity:0.4;background:#eef3fb;}
+.task-chosen{box-shadow:0 4px 14px rgba(0,0,0,0.18);}
+</style>
 <script>
 var _LT="lv_todos_v1",_LP="lv_projects_v1",_tmt="todo",_teid=null;
 function _gtl(){try{return JSON.parse(localStorage.getItem(_LT))||[];}catch(e){return[];}}
@@ -5200,16 +5207,16 @@ function _tr(type){
   var cid=type==="todo"?"todo-list":"project-list";
   var el=document.getElementById(cid);
   if(!el)return;
-  var od=[],rest=[];
-  arr.forEach(function(t){new Date((t.date||"2099")+"T23:59:59")<new Date()?od.push(t):rest.push(t);});
-  arr=od.concat(rest);
+  // Manual order respected — overdue items stay styled (red border + OVERDUE badge)
+  // but do NOT auto-jump to top. User controls priority via arrows or drag handle.
   if(!arr.length){el.innerHTML="<div style='text-align:center;color:#aaa;padding:40px 20px;font-size:15px;'>Nothing yet. Tap above to add.</div>";return;}
   var h="";
   arr.forEach(function(t){
     var cd=_tcd(t.date);
     var cc="task-card"+(type==="project"?" proj":"")+(cd.cls==="overdue"?" overdue":cd.cls==="due-soon"?" due-soon":"");
     var ti=JSON.stringify(t.id),ty=JSON.stringify(type);
-    h+='<div class="'+cc+'">';
+    h+='<div class="'+cc+'" data-id="'+_te(t.id)+'">';
+    h+='<div class="task-drag" title="Drag to reorder">&#8942;&#8942;</div>';
     h+='<div class="task-arrows"><button class="task-arrow" onclick="_tmv('+ty+','+ti+',-1)">&#9650;</button><button class="task-arrow" onclick="_tmv('+ty+','+ti+',1)">&#9660;</button></div>';
     h+='<div style="flex:1;min-width:0;"><div class="task-title">'+_te(t.name)+"</div>";
     if(t.desc)h+='<div class="task-desc">'+_te(t.desc)+"</div>";
@@ -5220,6 +5227,27 @@ function _tr(type){
     h+="</div></div>";
   });
   el.innerHTML=h;
+  _tinit(type,el);
+}
+function _tinit(type,el){
+  if(typeof Sortable==="undefined")return;
+  if(el._sortable){try{el._sortable.destroy();}catch(e){}}
+  el._sortable=Sortable.create(el,{
+    handle:".task-drag",
+    animation:150,
+    ghostClass:"task-ghost",
+    chosenClass:"task-chosen",
+    forceFallback:true,
+    fallbackTolerance:4,
+    onEnd:function(){
+      var ids=[].slice.call(el.children).map(function(c){return c.getAttribute("data-id");}).filter(Boolean);
+      var arr=type==="todo"?_gtl():_gpl();
+      var byId={};arr.forEach(function(t){byId[t.id]=t;});
+      var reordered=ids.map(function(id){return byId[id];}).filter(Boolean);
+      arr.forEach(function(t){if(ids.indexOf(t.id)===-1)reordered.push(t);});
+      type==="todo"?_stl(reordered):_spl(reordered);
+    }
+  });
 }
 function renderTodos(){_tr("todo");}
 function renderProjects(){_tr("project");}
