@@ -5158,123 +5158,115 @@ window.addEventListener('load',function(){
     </div>
   </div>
 </div>
+
+
 <script>
-var LS_TODOS='lv_todos_v1',LS_PROJECTS='lv_projects_v1';
-var _tmt='todo',_teid=null,_tsub='todos';
-function _lt(){try{return JSON.parse(localStorage.getItem(LS_TODOS))||[];}catch(e){return[];}}
-function _lp(){try{return JSON.parse(localStorage.getItem(LS_PROJECTS))||[];}catch(e){return[];}}
-function _st(a){try{localStorage.setItem(LS_TODOS,JSON.stringify(a));}catch(e){}}
-function _sp(a){try{localStorage.setItem(LS_PROJECTS,JSON.stringify(a));}catch(e){}}
+var _LT="lv_todos_v1",_LP="lv_projects_v1",_tmt="todo",_teid=null;
+function _gtl(){try{return JSON.parse(localStorage.getItem(_LT))||[];}catch(e){return[];}}
+function _gpl(){try{return JSON.parse(localStorage.getItem(_LP))||[];}catch(e){return[];}}
+function _stl(a){try{localStorage.setItem(_LT,JSON.stringify(a));}catch(e){}}
+function _spl(a){try{localStorage.setItem(_LP,JSON.stringify(a));}catch(e){}}
+function _te(s){var d=document.createElement("div");d.textContent=String(s||"");return d.innerHTML;}
 function showTasksTab(){
-  document.getElementById('view-dashboard').classList.remove('active');
-  var vt=document.getElementById('view-tasks');
-  vt.classList.add('active');
-  vt.style.display='flex';
+  var vd=document.getElementById("view-dashboard");
+  if(vd){vd.classList.remove("active");vd.style.display="none";}
+  var vt=document.getElementById("view-tasks");
+  if(vt){vt.classList.add("active");vt.style.display="flex";}
   renderTodos();renderProjects();
-  if(!window._ttick)window._ttick=setInterval(function(){renderTodos();renderProjects();},60000);
 }
 function showDashTab(){
-  document.getElementById('view-tasks').classList.remove('active');
-  document.getElementById('view-dashboard').classList.add('active');
+  var vt=document.getElementById("view-tasks");
+  if(vt){vt.classList.remove("active");vt.style.display="none";}
+  var vd=document.getElementById("view-dashboard");
+  if(vd){vd.classList.add("active");vd.style.display="block";}
 }
 function switchTasksTab(t){
-  _tsub=t;
-  document.getElementById('tn-todos').classList.toggle('active',t==='todos');
-  document.getElementById('tn-projects').classList.toggle('active',t==='projects');
-  document.getElementById('tasks-panel-todos').style.display=t==='todos'?'':'none';
-  document.getElementById('tasks-panel-projects').style.display=t==='projects'?'':'none';
+  document.getElementById("tn-todos").classList.toggle("active",t==="todos");
+  document.getElementById("tn-projects").classList.toggle("active",t==="projects");
+  document.getElementById("tasks-panel-todos").style.display=t==="todos"?"":"none";
+  document.getElementById("tasks-panel-projects").style.display=t==="projects"?"":"none";
 }
 function _tcd(d){
-  if(!d)return{label:'No due date',cls:'no-date'};
-  var due=new Date(d+'T23:59:59'),now=new Date(),diff=due-now;
-  if(diff<0)return{label:'OVERDUE',cls:'overdue'};
+  if(!d)return{label:"No due date",cls:"no-date"};
+  var due=new Date(d+"T23:59:59"),now=new Date(),diff=due-now;
+  if(diff<0)return{label:"OVERDUE",cls:"overdue"};
   var days=Math.floor(diff/86400000),hrs=Math.floor((diff%86400000)/3600000);
-  if(days===0)return{label:hrs+'h left',cls:'due-soon'};
-  if(days<=3)return{label:days+'d '+hrs+'h left',cls:'due-soon'};
-  return{label:days+' days left',cls:'ok'};
+  if(days===0)return{label:hrs+"h left",cls:"due-soon"};
+  if(days<=3)return{label:days+"d "+hrs+"h left",cls:"due-soon"};
+  return{label:days+" days left",cls:"ok"};
 }
-function _tsort(a){
+function _tr(type){
+  var arr=type==="todo"?_gtl():_gpl();
+  var cid=type==="todo"?"todo-list":"project-list";
+  var el=document.getElementById(cid);
+  if(!el)return;
   var od=[],rest=[];
-  a.forEach(function(t){
-    if(t.date&&new Date(t.date+'T23:59:59')<new Date())od.push(t);
-    else rest.push(t);
-  });
-  return od.concat(rest);
-}
-function _rl(items,cid,type){
-  var el=document.getElementById(cid);if(!el)return;
-  var s=_tsort(items);
-  if(!s.length){el.innerHTML='<div class="tasks-empty">Nothing here yet.<br>Tap above to add one.</div>';return;}
-  el.innerHTML=s.map(function(t){
+  arr.forEach(function(t){new Date((t.date||"2099")+"T23:59:59")<new Date()?od.push(t):rest.push(t);});
+  arr=od.concat(rest);
+  if(!arr.length){el.innerHTML="<div style='text-align:center;color:#aaa;padding:40px 20px;font-size:15px;'>Nothing yet. Tap above to add.</div>";return;}
+  var h="";
+  arr.forEach(function(t){
     var cd=_tcd(t.date);
-    var cls='task-card'+(type==='project'?' proj':'')+(cd.cls==='overdue'?' overdue':cd.cls==='due-soon'?' due-soon':'');
-    return '<div class="'+cls+'">'+
-      '<div class="task-arrows">'+
-        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',-1)">▲</button>'+
-        '<button class="task-arrow" onclick="_mv(''+type+'',''+t.id+'',1)">▼</button>'+
-      '</div>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div class="task-title">'+_esc(t.name)+'</div>'+
-        (t.desc?'<div class="task-desc">'+_esc(t.desc)+'</div>':'')+
-        '<span class="task-cd '+cd.cls+'">⏱ '+cd.label+'</span>'+
-      '</div>'+
-      '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">'+
-        '<button style="background:none;border:none;color:#C62828;font-size:16px;cursor:pointer;" onclick="_dt(''+type+'',''+t.id+'')">✕</button>'+
-        '<button style="background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;" onclick="openTaskModalEdit(''+type+'',''+t.id+'')">Edit</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
+    var cc="task-card"+(type==="project"?" proj":"")+(cd.cls==="overdue"?" overdue":cd.cls==="due-soon"?" due-soon":"");
+    var ti=JSON.stringify(t.id),ty=JSON.stringify(type);
+    h+='<div class="'+cc+'">';
+    h+='<div class="task-arrows"><button class="task-arrow" onclick="_tmv('+ty+','+ti+',-1)">&#9650;</button><button class="task-arrow" onclick="_tmv('+ty+','+ti+',1)">&#9660;</button></div>';
+    h+='<div style="flex:1;min-width:0;"><div class="task-title">'+_te(t.name)+"</div>";
+    if(t.desc)h+='<div class="task-desc">'+_te(t.desc)+"</div>";
+    h+='<span class="task-cd '+cd.cls+'">&#9201; '+cd.label+"</span></div>";
+    h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">';
+    h+='<button style="background:none;border:none;color:#C62828;font-size:18px;cursor:pointer;" onclick="_tdl('+ty+','+ti+')">&#10005;</button>';
+    h+='<button style="background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;" onclick="_tedt('+ty+','+ti+')">Edit</button>';
+    h+="</div></div>";
+  });
+  el.innerHTML=h;
 }
-function renderTodos(){_rl(_lt(),'todo-list','todo');}
-function renderProjects(){_rl(_lp(),'project-list','project');}
-function _mv(type,id,dir){
-  var a=type==='todo'?_lt():_lp();
-  var i=a.findIndex(function(t){return t.id===id;});
-  if(i<0)return;var j=i+dir;if(j<0||j>=a.length)return;
-  var tmp=a[i];a[i]=a[j];a[j]=tmp;
-  type==='todo'?_st(a):_sp(a);
-  type==='todo'?renderTodos():renderProjects();
+function renderTodos(){_tr("todo");}
+function renderProjects(){_tr("project");}
+function _tmv(type,id,dir){
+  var arr=type==="todo"?_gtl():_gpl();
+  var i=arr.findIndex(function(x){return x.id===id;});
+  if(i<0)return;var j=i+dir;if(j<0||j>=arr.length)return;
+  var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
+  type==="todo"?_stl(arr):_spl(arr);_tr(type);
 }
-function _dt(type,id){
-  var a=type==='todo'?_lt():_lp();
-  a=a.filter(function(t){return t.id!==id;});
-  type==='todo'?_st(a):_sp(a);
-  type==='todo'?renderTodos():renderProjects();
+function _tdl(type,id){
+  if(!confirm("Delete this item?"))return;
+  var arr=(type==="todo"?_gtl():_gpl()).filter(function(x){return x.id!==id;});
+  type==="todo"?_stl(arr):_spl(arr);_tr(type);
 }
 function openTaskModal(type){
   _tmt=type;_teid=null;
-  document.getElementById('tmod-title').textContent=type==='todo'?'New To-Do':'New Project';
-  document.getElementById('tmod-name').value='';
-  document.getElementById('tmod-desc').value='';
-  document.getElementById('tmod-date').value='';
-  document.getElementById('tmov').style.display='flex';
-  setTimeout(function(){document.getElementById('tmod-name').focus();},100);
+  document.getElementById("tmod-title").textContent=type==="todo"?"New To-Do":"New Project";
+  document.getElementById("tmod-name").value="";
+  document.getElementById("tmod-desc").value="";
+  document.getElementById("tmod-date").value="";
+  document.getElementById("tmov").style.display="flex";
+  setTimeout(function(){document.getElementById("tmod-name").focus();},150);
 }
-function openTaskModalEdit(type,id){
-  var a=type==='todo'?_lt():_lp();
-  var t=a.find(function(x){return x.id===id;});if(!t)return;
+function _tedt(type,id){
+  var arr=type==="todo"?_gtl():_gpl();
+  var t=arr.find(function(x){return x.id===id;});if(!t)return;
   _tmt=type;_teid=id;
-  document.getElementById('tmod-title').textContent=type==='todo'?'Edit To-Do':'Edit Project';
-  document.getElementById('tmod-name').value=t.name;
-  document.getElementById('tmod-desc').value=t.desc||'';
-  document.getElementById('tmod-date').value=t.date||'';
-  document.getElementById('tmov').style.display='flex';
+  document.getElementById("tmod-title").textContent=type==="todo"?"Edit To-Do":"Edit Project";
+  document.getElementById("tmod-name").value=t.name||"";
+  document.getElementById("tmod-desc").value=t.desc||"";
+  document.getElementById("tmod-date").value=t.date||"";
+  document.getElementById("tmov").style.display="flex";
 }
-function closeTaskModal(){document.getElementById('tmov').style.display='none';}
+function closeTaskModal(){document.getElementById("tmov").style.display="none";}
 function saveTaskModal(){
-  var name=document.getElementById('tmod-name').value.trim();
-  if(!name){document.getElementById('tmod-name').focus();return;}
-  var desc=document.getElementById('tmod-desc').value.trim();
-  var date=document.getElementById('tmod-date').value;
-  var a=_tmt==='todo'?_lt():_lp();
-  if(_teid){var t=a.find(function(x){return x.id===_teid;});if(t){t.name=name;t.desc=desc;t.date=date;}}
-  else a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,desc:desc,date:date});
-  _tmt==='todo'?_st(a):_sp(a);
-  closeTaskModal();
-  _tmt==='todo'?renderTodos():renderProjects();
+  var name=(document.getElementById("tmod-name").value||"").trim();
+  if(!name){document.getElementById("tmod-name").focus();return;}
+  var desc=(document.getElementById("tmod-desc").value||"").trim();
+  var date=document.getElementById("tmod-date").value||"";
+  var arr=_tmt==="todo"?_gtl():_gpl();
+  if(_teid){var t=arr.find(function(x){return x.id===_teid;});if(t){t.name=name;t.desc=desc;t.date=date;}}
+  else arr.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,desc:desc,date:date});
+  _tmt==="todo"?_stl(arr):_spl(arr);
+  closeTaskModal();_tr(_tmt);
 }
-document.addEventListener('click',function(e){if(e.target===document.getElementById('tmov'))closeTaskModal();});
+document.addEventListener("click",function(e){if(e.target===document.getElementById("tmov"))closeTaskModal();});
 </script>
-
 </body>
 </html>
