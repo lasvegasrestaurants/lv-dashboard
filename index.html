@@ -5167,7 +5167,9 @@ function _st(a){try{localStorage.setItem(LS_TODOS,JSON.stringify(a));}catch(e){}
 function _sp(a){try{localStorage.setItem(LS_PROJECTS,JSON.stringify(a));}catch(e){}}
 function showTasksTab(){
   document.getElementById('view-dashboard').classList.remove('active');
-  document.getElementById('view-tasks').classList.add('active');
+  var vt=document.getElementById('view-tasks');
+  vt.classList.add('active');
+  vt.style.display='flex';
   renderTodos();renderProjects();
   if(!window._ttick)window._ttick=setInterval(function(){renderTodos();renderProjects();},60000);
 }
