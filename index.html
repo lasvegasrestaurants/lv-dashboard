@@ -5130,11 +5130,11 @@ window.addEventListener('load',function(){
   <div class="hdr" style="padding:10px 12px 0;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button onclick="showDashTab()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
-      <span style="font-size:15px;font-weight:800;color:#111;flex:1;">✅ To-Do &amp; Projects</span>
+      <span id="tasks-view-title" style="font-size:15px;font-weight:800;color:#111;flex:1;">✅ To-Do</span>
       <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒</button>
     </div>
   </div>
-  <div class="tasks-nav">
+  <div class="tasks-nav" style="display:none;">
     <button class="tasks-nav-btn active" id="tn-todos" onclick="switchTasksTab('todos')">✅ To-Do</button>
     <button class="tasks-nav-btn" id="tn-projects" onclick="switchTasksTab('projects')">🚀 Projects</button>
   </div>
@@ -5167,6 +5167,8 @@ window.addEventListener('load',function(){
 .task-drag:active{cursor:grabbing;}
 .task-ghost{opacity:0.4;background:#eef3fb;}
 .task-chosen{box-shadow:0 4px 14px rgba(0,0,0,0.18);}
+#tasks-tab-btn.active-view,#projects-tab-btn.active-view{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(0,0,0,0.25);}
+#tasks-tab-btn:active,#projects-tab-btn:active{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(0,0,0,0.35);transform:scale(0.97);}
 </style>
 <script>
 var _LT="lv_todos_v1",_LP="lv_projects_v1",_tmt="todo",_teid=null;
@@ -5181,9 +5183,17 @@ function showTasksTab(which){
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.add("active");vt.style.display="flex";}
   renderTodos();renderProjects();
-  // If caller specified a sub-tab, switch to it
-  if(which==="projects"){switchTasksTab("projects");}
-  else{switchTasksTab("todos");}
+  // Default to todos if nothing specified
+  var tab = which==="projects" ? "projects" : "todos";
+  switchTasksTab(tab);
+  // Update header to reflect which view we're on
+  var title = document.getElementById("tasks-view-title");
+  if(title){ title.textContent = tab==="projects" ? "🚀 Projects" : "✅ To-Do"; }
+  // Mark which dashboard button is "active" for when user goes back
+  var tbtn = document.getElementById("tasks-tab-btn");
+  var pbtn = document.getElementById("projects-tab-btn");
+  if(tbtn) tbtn.classList.toggle("active-view", tab==="todos");
+  if(pbtn) pbtn.classList.toggle("active-view", tab==="projects");
 }
 function showDashTab(){
   var vt=document.getElementById("view-tasks");
