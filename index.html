@@ -5231,13 +5231,13 @@ function _tr(type){
     var ti=JSON.stringify(t.id),ty=JSON.stringify(type);
     h+='<div class="'+cc+'" data-id="'+_te(t.id)+'">';
     h+='<div class="task-drag" title="Drag to reorder">&#8942;&#8942;</div>';
-    h+='<div class="task-arrows"><button class="task-arrow" onclick="_tmv('+ty+','+ti+',-1)">&#9650;</button><button class="task-arrow" onclick="_tmv('+ty+','+ti+',1)">&#9660;</button></div>';
+    h+="<div class=\"task-arrows\"><button class=\"task-arrow\" onclick='_tmv("+ty+","+ti+",-1)'>&#9650;</button><button class=\"task-arrow\" onclick='_tmv("+ty+","+ti+",1)'>&#9660;</button></div>";
     h+='<div style="flex:1;min-width:0;"><div class="task-title">'+_te(t.name)+"</div>";
     if(t.desc)h+='<div class="task-desc">'+_te(t.desc)+"</div>";
     h+='<span class="task-cd '+cd.cls+'">&#9201; '+cd.label+"</span></div>";
     h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">';
-    h+='<button style="background:none;border:none;color:#C62828;font-size:18px;cursor:pointer;" onclick="_tdl('+ty+','+ti+')">&#10005;</button>';
-    h+='<button style="background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;" onclick="_tedt('+ty+','+ti+')">Edit</button>';
+    h+="<button style=\"background:none;border:none;color:#C62828;font-size:18px;cursor:pointer;\" onclick='_tdl("+ty+","+ti+")'>&#10005;</button>";
+    h+="<button style=\"background:none;border:1.5px solid #ccc;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;\" onclick='_tedt("+ty+","+ti+")'>Edit</button>";
     h+="</div></div>";
   });
   el.innerHTML=h;
