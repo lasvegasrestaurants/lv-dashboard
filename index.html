@@ -283,7 +283,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="exportCSV()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Excel</button>
         <button onclick="pushToGitHub()" id="gh-push-btn" ontouchstart="_ghTouchStart()" ontouchend="_ghTouchEnd()" style="background:#238636;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬆ Deploy</button>
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
-        <button onclick="showTasksTab()" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Tasks</button>
+        <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
+        <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
@@ -5174,12 +5175,15 @@ function _gpl(){try{return JSON.parse(localStorage.getItem(_LP))||[];}catch(e){r
 function _stl(a){try{localStorage.setItem(_LT,JSON.stringify(a));}catch(e){}}
 function _spl(a){try{localStorage.setItem(_LP,JSON.stringify(a));}catch(e){}}
 function _te(s){var d=document.createElement("div");d.textContent=String(s||"");return d.innerHTML;}
-function showTasksTab(){
+function showTasksTab(which){
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.remove("active");vd.style.display="none";}
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.add("active");vt.style.display="flex";}
   renderTodos();renderProjects();
+  // If caller specified a sub-tab, switch to it
+  if(which==="projects"){switchTasksTab("projects");}
+  else{switchTasksTab("todos");}
 }
 function showDashTab(){
   var vt=document.getElementById("view-tasks");
