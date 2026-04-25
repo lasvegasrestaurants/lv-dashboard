@@ -2128,20 +2128,7 @@ function fbLoad() {
 
 // ══════════════════════════════════════════════════════
 function _recordBackup() {}
-function _checkBackupReminder() {
-  try {
-    var last = parseInt(localStorage.getItem('lv_last_backup') || '0', 10);
-    var now = Date.now();
-    var days = Math.floor((now - last) / 86400000);
-    if (last === 0 || days >= 7) {
-      var msg = document.getElementById('fb-msg');
-      if (msg && !isDemo && !isFriend) {
-        msg.style.color = '#FFB300';
-        msg.textContent = last === 0 ? '⚠️ No backup yet — tap Backup' : '⚠️ Backup overdue (' + days + 'd ago)';
-      }
-    }
-  } catch(e) {}
-}
+function _checkBackupReminder() {}
 // EXPORT / IMPORT BACKUP
 // ══════════════════════════════════════════════════════
 function exportBackup() {
@@ -3589,61 +3576,49 @@ function _initPinTouchHandlers() {
 }
 
 function _enterFriendMode() {
-  isFriend = true;
-  isDemo = false;
+  isFriend = true; isDemo = false;
   _setFriendKeys();
   try {
-    sessionStorage.setItem('lv_friend_ok', '1');
+    sessionStorage.setItem('lv_friend_ok','1');
     sessionStorage.removeItem('lv_pin_ok');
     sessionStorage.removeItem('lv_demo_ok');
   } catch(e) {}
-
-  // Wipe ALL friend_* localStorage keys — true clean slate every login
-  var friendKeys = [LS_STATUS,LS_ATTEMPTS,LS_DM,LS_BAD_IG,LS_IG_OVERRIDE,
-    LS_USER_NOTES,LS_NAME_OVERRIDE,LS_FOLLOWUP,LS_INTERESTED,LS_NOT_INTERESTED,
-    LS_DELETED,LS_PROBLEM,LS_CUSTOM_RECORDS,LS_FOODTRADE,LS_FOODTRADE_DONE,
-    LS_GHOSTED,LS_FIELD_OVERRIDE,LS_USER_ATTEMPTS,'friend_todos_v1','friend_projects_v1'];
-  friendKeys.forEach(function(k){ try { localStorage.removeItem(k); } catch(e){} });
-
-  // Reset ALL in-memory maps to empty
-  statusMap = {}; attemptsMap = {}; dmMap = {}; badIGMap = {};
-  igOverrideMap = {}; userNotesMap = {}; nameOverrideMap = {};
-  followupMap = {}; interestedMap = {}; notInterestedMap = {};
-  deletedMap = {}; problemMap = {}; customRecords = [];
-  foodTradeMap = {}; foodTradeDoneMap = {}; ghostedMap = {};
-  fieldOverrideMap = {}; userAttemptsMap = {};
-
-  // Rebuild RESTAURANTS from base list — all 798, all clean
-  _numToIdx = Object.create(null);
-  RESTAURANTS = RESTAURANTS_BASE.filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
-    _numToIdx[r.num] = i;
-    var seed = [{email:r.email, status:'pending', date:null, note:''}];
-    if (r.newEmail && r.newEmail !== r.email) seed.push({email:r.newEmail, status:'pending', date:null, note:'Alt contact'});
-    attemptsMap[r.num] = seed;
-    return {
-      num:r.num, name:r.name, owner:r.owner,
-      instagram:r.instagram, igHandle:r.instagram.replace(/^@/,''),
-      phone:r.phone, phoneLink:r.phone.replace(/\D/g,'').length>=7?r.phone.replace(/\D/g,''):'',
-      cuisine:r.cuisine, notes:r.notes||'', address:r.address||'',
-      defaultStatus:r.defaultStatus, status:'pending',
-      attempts:attemptsMap[r.num], _search:r.name.toLowerCase()
-    };
+  var fk=[LS_STATUS,LS_ATTEMPTS,LS_DM,LS_BAD_IG,LS_IG_OVERRIDE,LS_USER_NOTES,
+    LS_NAME_OVERRIDE,LS_FOLLOWUP,LS_INTERESTED,LS_NOT_INTERESTED,LS_DELETED,
+    LS_PROBLEM,LS_CUSTOM_RECORDS,LS_FOODTRADE,LS_FOODTRADE_DONE,LS_GHOSTED,
+    LS_FIELD_OVERRIDE,LS_USER_ATTEMPTS,'friend_todos_v1','friend_projects_v1'];
+  fk.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+  statusMap={}; attemptsMap={}; dmMap={}; badIGMap={};
+  igOverrideMap={}; userNotesMap={}; nameOverrideMap={};
+  followupMap={}; interestedMap={}; notInterestedMap={};
+  deletedMap={}; problemMap={}; customRecords=[];
+  foodTradeMap={}; foodTradeDoneMap={}; ghostedMap={};
+  fieldOverrideMap={}; userAttemptsMap={};
+  _numToIdx=Object.create(null);
+  RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return !deletedMap[r.num];}).map(function(r,i){
+    _numToIdx[r.num]=i;
+    var seed=[{email:r.email,status:'pending',date:null,note:''}];
+    if(r.newEmail&&r.newEmail!==r.email)seed.push({email:r.newEmail,status:'pending',date:null,note:'Alt contact'});
+    attemptsMap[r.num]=seed;
+    return {num:r.num,name:r.name,owner:r.owner,
+      instagram:r.instagram,igHandle:r.instagram.replace(/^@/,''),
+      phone:r.phone,phoneLink:r.phone.replace(/[^0-9]/g,'').length>=7?r.phone.replace(/[^0-9]/g,''):'',
+      cuisine:r.cuisine,notes:r.notes||'',address:r.address||'',
+      defaultStatus:r.defaultStatus,status:'pending',
+      attempts:attemptsMap[r.num],_search:r.name.toLowerCase()};
   });
-
   document.getElementById('pin-screen').classList.add('hidden');
   document.getElementById('view-dashboard').classList.add('active');
-
-  // Hide admin-only buttons
   ['gh-push-btn','friend-hide-backup','friend-hide-excel','restore-btn'].forEach(function(id){
-    var el = document.getElementById(id); if (el) el.style.display = 'none';
+    var el=document.getElementById(id);if(el)el.style.display='none';
   });
-
-  _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
+  _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
   dashSetFilter('all'); dashUpdateStats();
-  lsStatus('#7B1FA2', '👥 Friend Mode');
+  lsStatus('#7B1FA2','👥 Friend Mode');
   _startSessionTimer();
   fbLoad();
 }
+
 
 function _enterDemoMode() {
   isDemo = true;
