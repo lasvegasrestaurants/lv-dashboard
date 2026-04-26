@@ -1,5 +1,27 @@
 <!DOCTYPE html>
 <!--BUILD_STAMP--><!--/BUILD_STAMP-->
+<!-- auto-reload-check -->
+<script>
+(function(){
+  try {
+    var meta = document.querySelector('meta[name="build-num"]');
+    if (!meta) return;
+    var current = meta.content;
+    if (!current) return;
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 5000);
+    fetch(location.pathname + '?_v=' + Date.now(), {cache:'no-store', signal: ctrl.signal})
+      .then(function(r){ return r.text(); })
+      .then(function(txt){
+        var m = txt.match(/<meta name="build-num" content="(\d+)"/);
+        if (m && m[1] && m[1] !== current) {
+          location.replace(location.pathname + '?v=' + m[1]);
+        }
+      })
+      .catch(function(){});
+  } catch(e){}
+})();
+</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">

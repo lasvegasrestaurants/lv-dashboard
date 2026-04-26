@@ -1,7 +1,7 @@
 name: Deploy to Firebase
 on:
   push:
-    branches: [ main ] 
+    branches: [ main ]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,7 +13,7 @@ jobs:
           BUILD_TIME=$(TZ='America/Los_Angeles' date '+%-I:%M %p PT')
           BUILD_DATE=$(TZ='America/Los_Angeles' date '+%b %-d')
           STAMP="v.${BUILD_NUM} — ${BUILD_DATE} ${BUILD_TIME}"
-          sed -i "s|<!--BUILD_STAMP-->.*<!--/BUILD_STAMP-->|<!--BUILD_STAMP--><div id=\"build-stamp\" style=\"position:fixed;bottom:4px;right:6px;font-size:40px;color:rgba(255,255,255,0.85);font-family:monospace;z-index:2147483647;pointer-events:none;user-select:none;\">${STAMP}</div><!--/BUILD_STAMP-->|g" index.html
+          sed -i "s|<!--BUILD_STAMP-->.*<!--/BUILD_STAMP-->|<!--BUILD_STAMP--><meta name=\"build-num\" content=\"${BUILD_NUM}\"><div id=\"build-stamp\" style=\"position:fixed;bottom:4px;right:6px;font-size:20px;color:rgba(255,255,255,0.85);font-family:monospace;z-index:2147483647;pointer-events:none;user-select:none;\">${STAMP}</div><!--/BUILD_STAMP-->|g" index.html
           echo "Stamped build: ${STAMP}"
       - uses: w9jds/firebase-action@master
         with:
