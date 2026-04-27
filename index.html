@@ -5271,6 +5271,12 @@ window.addEventListener('load',function(){
     <button class="task-add-btn" onclick="openTaskModal('project')">＋ Add Project</button>
     <div id="project-list"></div>
   </div>
+  <div class="scroller" id="tasks-scroller" style="display:none;">
+    <div class="sc-arrow" id="tasks-scUp">▲</div>
+    <div class="sc-track" id="tasks-scTrack"><div class="sc-thumb" id="tasks-scThumb"></div></div>
+    <div class="sc-arrow" id="tasks-scDown">▼</div>
+    <div class="sc-pct" id="tasks-scPct">0%</div>
+  </div>
 </div>
 <div id="tmov" class="tmov" style="display:none;">
   <div class="tmod">
@@ -5319,18 +5325,71 @@ function showTasksTab(which){
   var pbtn = document.getElementById("projects-tab-btn");
   if(tbtn) tbtn.classList.toggle("active-view", tab==="todos");
   if(pbtn) pbtn.classList.toggle("active-view", tab==="projects");
+  var ds=document.getElementById("dash-scroller");if(ds)ds.style.display="none";
+  setTimeout(_wireTasksScroller, 50);
 }
 function showDashTab(){
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.remove("active");vt.style.display="none";}
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.add("active");vd.style.display="block";}
+  var ts=document.getElementById("tasks-scroller");if(ts)ts.style.display="none";
+  var ds=document.getElementById("dash-scroller");if(ds)ds.style.display="";
 }
 function switchTasksTab(t){
   document.getElementById("tn-todos").classList.toggle("active",t==="todos");
   document.getElementById("tn-projects").classList.toggle("active",t==="projects");
   document.getElementById("tasks-panel-todos").style.display=t==="todos"?"":"none";
   document.getElementById("tasks-panel-projects").style.display=t==="projects"?"":"none";
+  setTimeout(_wireTasksScroller, 50);
+}
+function _wireTasksScroller(){
+  var todoP=document.getElementById("tasks-panel-todos");
+  var projP=document.getElementById("tasks-panel-projects");
+  var sc=document.getElementById("tasks-scroller");
+  if(!sc||!todoP||!projP)return;
+  var active = todoP.style.display!=="none" ? todoP : projP;
+  var needsScroll = active.scrollHeight > active.clientHeight + 4;
+  sc.style.display = needsScroll ? "" : "none";
+  if(!needsScroll)return;
+  var track=document.getElementById("tasks-scTrack");
+  var pct=document.getElementById("tasks-scPct");
+  function clone(id){var el=document.getElementById(id);var c=el.cloneNode(true);el.parentNode.replaceChild(c,el);return document.getElementById(id);}
+  var up=clone("tasks-scUp");
+  var down=clone("tasks-scDown");
+  var thumb=clone("tasks-scThumb");
+  function setThumb(){
+    var ratio=active.clientHeight/Math.max(1,active.scrollHeight);
+    var tH=track.clientHeight;
+    var thumbH=Math.max(40,Math.round(ratio*tH));
+    thumb.style.height=thumbH+"px";
+    var max=active.scrollHeight-active.clientHeight;
+    var pVal=max>0?active.scrollTop/max:0;
+    thumb.style.top=Math.round(pVal*(tH-thumbH))+"px";
+    if(pct)pct.textContent=Math.round(pVal*100)+"%";
+  }
+  up.addEventListener("click",function(){active.scrollBy({top:-300,behavior:"smooth"});});
+  down.addEventListener("click",function(){active.scrollBy({top:300,behavior:"smooth"});});
+  if(active._taskScrollFn)active.removeEventListener("scroll",active._taskScrollFn);
+  active._taskScrollFn=setThumb;
+  active.addEventListener("scroll",setThumb,{passive:true});
+  var dragging=false,startY=0,startTop=0;
+  function onStart(y){dragging=true;startY=y;startTop=thumb.offsetTop;}
+  function onMove(y){
+    if(!dragging)return;
+    var dragH=track.clientHeight-thumb.clientHeight;
+    var newTop=Math.max(0,Math.min(dragH,startTop+(y-startY)));
+    var p=dragH>0?newTop/dragH:0;
+    active.scrollTop=p*(active.scrollHeight-active.clientHeight);
+    setThumb();
+  }
+  thumb.addEventListener("mousedown",function(e){onStart(e.clientY);e.preventDefault();});
+  thumb.addEventListener("touchstart",function(e){onStart(e.touches[0].clientY);e.preventDefault();},{passive:false});
+  document.addEventListener("mousemove",function(e){if(dragging)onMove(e.clientY);});
+  document.addEventListener("touchmove",function(e){if(dragging)onMove(e.touches[0].clientY);},{passive:false});
+  document.addEventListener("mouseup",function(){dragging=false;});
+  document.addEventListener("touchend",function(){dragging=false;});
+  setThumb();
 }
 function _tcd(d){
   if(!d)return{label:"No due date",cls:"no-date"};
