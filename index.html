@@ -2337,8 +2337,9 @@ function importBackup(event) {
     if (rec.foodtradedone) { foodTradeDoneMap = rec.foodtradedone; try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} }
     if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
     if (rec.fieldoverride) { fieldOverrideMap  = rec.fieldoverride; try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} }
-    if (rec.customrecords) { customRecords = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
     if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
+    if (rec.todos)         { try { localStorage.setItem(_LT, JSON.stringify(rec.todos)); } catch(e) {} }
+    if (rec.projects)      { try { localStorage.setItem(_LP, JSON.stringify(rec.projects)); } catch(e) {} }
     _numToIdx = Object.create(null);
     RESTAURANTS = (isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE).filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
       _numToIdx[r.num] = i;
@@ -2424,8 +2425,6 @@ var foodTradeMap     = loadFoodTrade();
 var foodTradeDoneMap = loadFoodTradeDone();
 var ghostedMap       = loadGhosted();
 var fieldOverrideMap = loadFieldOverride();
-var fieldOverrideMap  = loadFieldOverride();
-var ghostedMap       = loadGhosted();
 var userAttemptsMap  = (function(){ try { return JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS))||{}; } catch(e) { return {}; } })();
 // Pre-flag known bad IG accounts — use localStorage only, no Firebase trigger on every load
 
@@ -3683,6 +3682,9 @@ function _enterDemoMode() {
   problemMap       = loadProblem();
   customRecords    = loadCustomRecords();
   foodTradeMap     = loadFoodTrade();
+  foodTradeDoneMap = loadFoodTradeDone();
+  ghostedMap       = loadGhosted();
+  fieldOverrideMap = loadFieldOverride();
   try { userAttemptsMap = JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS)) || {}; } catch(e) { userAttemptsMap = {}; }
   // Rebuild RESTAURANTS from demo set
   _numToIdx = Object.create(null);
@@ -3782,6 +3784,7 @@ function _pinCheck() {
 
 function logOut() {
   clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
+  if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
@@ -3799,8 +3802,6 @@ function logOut() {
   _numToIdx = Object.create(null);
   currentFilter = "all";
   currentSearch = "";
-  currentFilter = "all";
-  currentSearch = "";
   // Reload all maps from real localStorage
   statusMap        = loadStatuses();
   attemptsMap      = loadAttempts();
@@ -3816,6 +3817,9 @@ function logOut() {
   problemMap       = loadProblem();
   customRecords    = loadCustomRecords();
   foodTradeMap     = loadFoodTrade();
+  foodTradeDoneMap = loadFoodTradeDone();
+  ghostedMap       = loadGhosted();
+  fieldOverrideMap = loadFieldOverride();
   try { userAttemptsMap = JSON.parse(localStorage.getItem(LS_USER_ATTEMPTS)) || {}; } catch(e) { userAttemptsMap = {}; }
   // Reset all render/cache state
   _statEls = null;
@@ -3834,14 +3838,17 @@ function logOut() {
   document.getElementById('pin-msg').textContent = '';
   // Hide demo banner
   var banner = document.getElementById('demo-banner');
-  // Restore deploy button
-  var ghBtn = document.getElementById('gh-push-btn');
-  if (ghBtn) ghBtn.style.display = '';
+  // Restore ALL admin buttons that Friend mode may have hidden
+  ['gh-push-btn','friend-hide-backup','friend-hide-excel','restore-btn'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = '';
+  });
 }
 
 // ══════════════════════════════════════════════════════
 // SESSION TIMEOUT — 24h for demo, 4h for real
 // ══════════════════════════════════════════════════════
+var _sessionTimer = null;
 var _SESSION_MS = 4 * 60 * 60 * 1000;        // 4 hours real
 var _DEMO_SESSION_MS = 24 * 60 * 60 * 1000;  // max 24h but activity-checked
 var _DEMO_ACTIVITY_CHECK_MS = 10 * 60 * 1000; // prompt every 10 minutes
@@ -3932,12 +3939,14 @@ function _demoSessionEnd() {
 }
 
 function _startSessionTimer() {
+  // Clear any previous session timer to prevent overlap
+  if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
   var ms = isDemo ? _DEMO_SESSION_MS : _SESSION_MS;
   try { sessionStorage.setItem('lv_login_time', Date.now()); } catch(e) {}
   if (isDemo) {
     _scheduleDemoActivityCheck();
   } else {
-    setTimeout(function() {
+    _sessionTimer = setTimeout(function() {
       if (document.getElementById('pin-screen').classList.contains('hidden')) {
         showDMToast('Session expired — please log in again');
         setTimeout(logOut, 2000);
@@ -5157,12 +5166,16 @@ document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') {
     try {
       if (isDemo) return;
-      if (sessionStorage.getItem('lv_pin_ok') === '1' && typeof fetch === 'function') {
-        // Immediate poll when app comes back to foreground
+      var loggedIn = sessionStorage.getItem('lv_pin_ok') === '1' || sessionStorage.getItem('lv_friend_ok') === '1';
+      if (loggedIn && typeof fetch === 'function') {
+        var _expectedSavedBy = isFriend ? 'friend' : 'owner';
         fetch(FB_URL)
           .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
           .then(function(rec){
-            if (rec && rec.savedAt && rec.savedAt > _fbLastSavedAt) {
+            if (!rec) return;
+            // Reject data from wrong user (savedBy guard)
+            if (rec.savedBy && rec.savedBy !== _expectedSavedBy) return;
+            if (rec.savedAt && rec.savedAt > _fbLastSavedAt) {
               _fbLastSavedAt = rec.savedAt;
               _applyFirebaseData(rec);
               lsStatus('#4CAF50', '☁ Updated — ' + lsTs());
@@ -5385,10 +5398,16 @@ function _wireTasksScroller(){
   }
   thumb.addEventListener("mousedown",function(e){onStart(e.clientY);e.preventDefault();});
   thumb.addEventListener("touchstart",function(e){onStart(e.touches[0].clientY);e.preventDefault();},{passive:false});
-  document.addEventListener("mousemove",function(e){if(dragging)onMove(e.clientY);});
-  document.addEventListener("touchmove",function(e){if(dragging)onMove(e.touches[0].clientY);},{passive:false});
-  document.addEventListener("mouseup",function(){dragging=false;});
-  document.addEventListener("touchend",function(){dragging=false;});
+  // Attach global listeners ONCE per page load (not per re-wire)
+  if(!window._taskSliderGlobalsAttached){
+    window._taskSliderGlobalsAttached=true;
+    document.addEventListener("mousemove",function(e){if(window._taskDragMove)window._taskDragMove(e.clientY);});
+    document.addEventListener("touchmove",function(e){if(window._taskDragMove)window._taskDragMove(e.touches[0].clientY);},{passive:false});
+    document.addEventListener("mouseup",function(){if(window._taskDragEnd)window._taskDragEnd();});
+    document.addEventListener("touchend",function(){if(window._taskDragEnd)window._taskDragEnd();});
+  }
+  window._taskDragMove=onMove;
+  window._taskDragEnd=function(){dragging=false;};
   setThumb();
 }
 function _tcd(d){
