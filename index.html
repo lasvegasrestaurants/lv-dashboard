@@ -2630,8 +2630,6 @@ function saveNewRecord() {
 }
 
 function deleteRestaurant(num) {
-  delete _numToIdx[num];
-  delete _numToIdx[num];
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
@@ -3049,6 +3047,11 @@ function saveName() {
   nameOverrideMap[num] = val;
   try { localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); } catch(e) {}
   lsSaved();
+  if (_numToIdx[num] === undefined) {
+    for (var _ri = 0; _ri < RESTAURANTS.length; _ri++) {
+      if (RESTAURANTS[_ri].num === num) { _numToIdx[num] = _ri; break; }
+    }
+  }
   var r = getR(num);
   if (r) { r.name = val; r._search = val.toLowerCase(); }
   closeNameModal();
@@ -5348,6 +5351,10 @@ function showDashTab(){
   if(vd){vd.classList.add("active");vd.style.display="block";}
   var ts=document.getElementById("tasks-scroller");if(ts)ts.style.display="none";
   var ds=document.getElementById("dash-scroller");if(ds)ds.style.display="";
+  var tbtn=document.getElementById("tasks-tab-btn");
+  var pbtn=document.getElementById("projects-tab-btn");
+  if(tbtn)tbtn.classList.remove("active-view");
+  if(pbtn)pbtn.classList.remove("active-view");
 }
 function switchTasksTab(t){
   document.getElementById("tn-todos").classList.toggle("active",t==="todos");
