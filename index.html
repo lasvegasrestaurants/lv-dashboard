@@ -308,6 +308,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
+        <button onclick="showAdvertisersView()" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 Advertisers</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
@@ -5308,6 +5309,36 @@ window.addEventListener('load',function(){
 </div>
 
 
+<!-- ADVERTISERS VIEW -->
+<div class="view" id="view-advertisers" style="display:none;">
+  <div class="hdr">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
+      <button onclick="showDashTab()" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
+      <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;">💼 Advertisers</span>
+    </div>
+  </div>
+  <div style="padding:30px 20px;text-align:center;color:#aaa;">
+    <div style="font-size:48px;margin-bottom:16px;">💼</div>
+    <div style="font-size:16px;font-weight:600;color:#00BCD4;margin-bottom:8px;">Advertisers View</div>
+    <div style="font-size:13px;line-height:1.6;">Skeleton ready.<br>Data and list features coming in Patch 1B.</div>
+  </div>
+</div>
+
+<!-- ADVERTISERS VIEW -->
+<div class="view" id="view-advertisers" style="display:none;">
+  <div class="hdr">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
+      <button onclick="showDashTab()" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
+      <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;">💼 Advertisers</span>
+    </div>
+  </div>
+  <div style="padding:30px 20px;text-align:center;color:#aaa;">
+    <div style="font-size:48px;margin-bottom:16px;">💼</div>
+    <div style="font-size:16px;font-weight:600;color:#00BCD4;margin-bottom:8px;">Advertisers View</div>
+    <div style="font-size:13px;line-height:1.6;">Skeleton ready.<br>Data and list features coming in Patch 1B.</div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
 .task-drag{cursor:grab;padding:0 6px 0 2px;color:#aaa;font-size:20px;line-height:1;user-select:none;touch-action:none;align-self:center;}
@@ -5525,6 +5556,29 @@ function saveTaskModal(){
   closeTaskModal();_tr(_tmt);
 }
 document.addEventListener("click",function(e){if(e.target===document.getElementById("tmov"))closeTaskModal();});
+
+// ADVERTISERS NAVIGATION
+function showAdvertisersView(){
+  var vd=document.getElementById("view-dashboard");
+  if(vd){vd.classList.remove("active");vd.style.display="none";}
+  var vt=document.getElementById("view-tasks");
+  if(vt){vt.classList.remove("active");vt.style.display="none";}
+  var va=document.getElementById("view-advertisers");
+  if(va){va.classList.add("active");va.style.display="block";}
+  var ds=document.getElementById("dash-scroller");
+  if(ds)ds.style.display="none";
+}
+
+(function(){
+  var _orig = window.showDashTab;
+  if(typeof _orig === "function"){
+    window.showDashTab = function(){
+      var va=document.getElementById("view-advertisers");
+      if(va){va.classList.remove("active");va.style.display="none";}
+      return _orig.apply(this, arguments);
+    };
+  }
+})();
 </script>
 </body>
 </html>
