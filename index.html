@@ -677,6 +677,112 @@ var RESTAURANTS_DEMO = [
 ];
 
 // ══════════════════════════════════════════════════════
+// ADVERTISERS DATA
+// ══════════════════════════════════════════════════════
+var ADVERTISERS_BASE = [
+  {num:1001,name:"Bay Law Injury Attorneys",cat:"Lawyer - Personal Injury",phone:"(702) 710-7000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1002,name:"Lerner and Rowe Injury Attorneys",cat:"Lawyer - Personal Injury",phone:"(702) 877-1500",ig:"",email:"",defaultStatus:'pending'},
+  {num:1003,name:"Eric Blank Injury Attorneys",cat:"Lawyer - Personal Injury",phone:"(702) 222-2115",ig:"",email:"",defaultStatus:'pending'},
+  {num:1004,name:"Craig P. Kenny & Associates",cat:"Lawyer - Personal Injury",phone:"(702) 380-2800",ig:"",email:"",defaultStatus:'pending'},
+  {num:1005,name:"De Castroverde Law Group",cat:"Lawyer - Personal Injury",phone:"(888) 570-3649",ig:"",email:"",defaultStatus:'pending'},
+  {num:1006,name:"Benson & Bingham",cat:"Lawyer - Personal Injury",phone:"(702) 382-9797",ig:"",email:"",defaultStatus:'pending'},
+  {num:1007,name:"Henness & Haight",cat:"Lawyer - Personal Injury",phone:"(702) 862-8200",ig:"",email:"",defaultStatus:'pending'},
+  {num:1008,name:"Naqvi Injury Law",cat:"Lawyer - Personal Injury",phone:"(702) 553-1000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1009,name:"Eglet Law",cat:"Lawyer - Personal Injury",phone:"(702) 450-5400",ig:"",email:"",defaultStatus:'pending'},
+  {num:1010,name:"Aldrich Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 853-5490",ig:"",email:"",defaultStatus:'pending'},
+  {num:1011,name:"Law Offices of Benjamin Nadig",cat:"Lawyer - Personal Injury",phone:"(702) 545-7592",ig:"",email:"",defaultStatus:'pending'},
+  {num:1012,name:"Law Offices of Chad A. Bowers",cat:"Lawyer - Personal Injury",phone:"(702) 706-1134",ig:"",email:"",defaultStatus:'pending'},
+  {num:1013,name:"Solomon Dwiggins Freer & Steadman",cat:"Lawyer - Personal Injury",phone:"(800) 671-9908",ig:"",email:"",defaultStatus:'pending'},
+  {num:1014,name:"The Cottle Firm",cat:"Lawyer - Personal Injury",phone:"(702) 722-1717",ig:"",email:"",defaultStatus:'pending'},
+  {num:1015,name:"Heshmati Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 432-1000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1016,name:"Kainen Law Group",cat:"Lawyer - Family/Divorce",phone:"(702) 823-4900",ig:"",email:"",defaultStatus:'pending'},
+  {num:1017,name:"Right Divorce Lawyers",cat:"Lawyer - Family/Divorce",phone:"(702) 914-0400",ig:"",email:"",defaultStatus:'pending'},
+  {num:1018,name:"Willick Law Group",cat:"Lawyer - Family/Divorce",phone:"(702) 438-4100",ig:"",email:"",defaultStatus:'pending'},
+  {num:1019,name:"Law Practice, Ltd.",cat:"Lawyer - Family/Divorce",phone:"(702) 873-5253",ig:"",email:"",defaultStatus:'pending'},
+  {num:1020,name:"The Abrams & Mayo Law Firm",cat:"Lawyer - Family/Divorce",phone:"(702) 222-4021",ig:"",email:"",defaultStatus:'pending'},
+  {num:1021,name:"Gastelum Attorneys",cat:"Lawyer - Family/Divorce",phone:"(702) 979-1455",ig:"",email:"",defaultStatus:'pending'},
+  {num:1022,name:"Ghandi Deeter Blackham",cat:"Lawyer - Family/Divorce",phone:"(702) 878-1115",ig:"",email:"",defaultStatus:'pending'},
+  {num:1023,name:"Kelleher & Kelleher",cat:"Lawyer - Family/Divorce",phone:"(702) 384-7494",ig:"",email:"",defaultStatus:'pending'},
+  {num:1024,name:"Hwang Law Group",cat:"Lawyer - Family/Divorce",phone:"(702) 380-3131",ig:"",email:"",defaultStatus:'pending'},
+  {num:1025,name:"Naimi Family Law Group",cat:"Lawyer - Family/Divorce",phone:"(702) 727-4357",ig:"",email:"",defaultStatus:'pending'},
+  {num:1026,name:"Law Offices of F. Peter James",cat:"Lawyer - Family/Divorce",phone:"(702) 256-4732",ig:"",email:"",defaultStatus:'pending'},
+  {num:1027,name:"Roger A. Giuliani Law Office",cat:"Lawyer - Family/Divorce",phone:"(702) 388-9991",ig:"",email:"",defaultStatus:'pending'},
+  {num:1028,name:"The Defenders",cat:"Lawyer - Criminal/DUI",phone:"(702) 333-3333",ig:"",email:"",defaultStatus:'pending'},
+  {num:1029,name:"DUI Lawyers of Las Vegas",cat:"Lawyer - Criminal/DUI",phone:"(702) 656-0808",ig:"",email:"",defaultStatus:'pending'},
+  {num:1030,name:"Half Price Lawyers",cat:"Lawyer - Criminal/DUI",phone:"(702) 400-0000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1031,name:"Goodman Law Group",cat:"Lawyer - Criminal/DUI",phone:"(702) 825-7854",ig:"",email:"",defaultStatus:'pending'},
+  {num:1032,name:"The Defense Firm",cat:"Lawyer - Criminal/DUI",phone:"(702) 297-3895",ig:"",email:"",defaultStatus:'pending'},
+  {num:1033,name:"Spartacus Law Firm",cat:"Lawyer - Criminal/DUI",phone:"(702) 660-1234",ig:"",email:"",defaultStatus:'pending'},
+  {num:1034,name:"LV Criminal Defense",cat:"Lawyer - Criminal/DUI",phone:"(702) 330-4647",ig:"",email:"",defaultStatus:'pending'},
+  {num:1035,name:"Pariente Law Firm",cat:"Lawyer - Criminal/DUI",phone:"(702) 763-8348",ig:"",email:"",defaultStatus:'pending'},
+  {num:1036,name:"Hendron Law Group",cat:"Lawyer - Criminal/DUI",phone:"(702) 758-5858",ig:"",email:"",defaultStatus:'pending'},
+  {num:1037,name:"Law Offices of Mace J. Yampolsky",cat:"Lawyer - Criminal/DUI",phone:"(702) 385-9777",ig:"",email:"",defaultStatus:'pending'},
+  {num:1038,name:"Pitaro & Fumo",cat:"Lawyer - Criminal/DUI",phone:"(702) 388-1216",ig:"",email:"",defaultStatus:'pending'},
+  {num:1039,name:"Joel M. Mann",cat:"Lawyer - Criminal/DUI",phone:"(702) 745-1219",ig:"",email:"",defaultStatus:'pending'},
+  {num:1040,name:"Draskovich Law Group",cat:"Lawyer - Criminal/DUI",phone:"(702) 474-4222",ig:"",email:"",defaultStatus:'pending'},
+  {num:1041,name:"Garrett Ogata",cat:"Lawyer - Criminal/DUI",phone:"(702) 366-1888",ig:"",email:"",defaultStatus:'pending'},
+  {num:1042,name:"Michael A. Troiano",cat:"Lawyer - Criminal/DUI",phone:"(702) 820-0952",ig:"",email:"",defaultStatus:'pending'},
+  {num:1043,name:"Solomon Dwiggins Freer & Steadman (Estate)",cat:"Lawyer - Business/Estate",phone:"(702) 853-5483",ig:"",email:"",defaultStatus:'pending'},
+  {num:1044,name:"Brownstein Hyatt Farber Schreck",cat:"Lawyer - Business/Estate",phone:"(702) 382-2101",ig:"",email:"",defaultStatus:'pending'},
+  {num:1045,name:"Holland & Hart",cat:"Lawyer - Business/Estate",phone:"(702) 669-4600",ig:"",email:"",defaultStatus:'pending'},
+  {num:1046,name:"Snell & Wilmer",cat:"Lawyer - Business/Estate",phone:"(702) 784-5200",ig:"",email:"",defaultStatus:'pending'},
+  {num:1047,name:"Bailey Kennedy",cat:"Lawyer - Business/Estate",phone:"(702) 562-8820",ig:"",email:"",defaultStatus:'pending'},
+  {num:1048,name:"McDonald Carano",cat:"Lawyer - Business/Estate",phone:"(702) 873-4100",ig:"",email:"",defaultStatus:'pending'},
+  {num:1049,name:"Greenberg Traurig",cat:"Lawyer - Business/Estate",phone:"(702) 792-3773",ig:"",email:"",defaultStatus:'pending'},
+  {num:1050,name:"Kemp Jones",cat:"Lawyer - Business/Estate",phone:"(702) 385-6000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1051,name:"Hankins & Sohn Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 832-0900",ig:"",email:"",defaultStatus:'pending'},
+  {num:1052,name:"Platinum Plastic Surgery (Dr. Costa)",cat:"Doctor - Plastic Surgery",phone:"(702) 430-2000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1053,name:"Desert Hills Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 260-7707",ig:"",email:"",defaultStatus:'pending'},
+  {num:1054,name:"Vegas Plastic Surgery Institute",cat:"Doctor - Plastic Surgery",phone:"(702) 879-3700",ig:"",email:"",defaultStatus:'pending'},
+  {num:1055,name:"Plastic Surgery Vegas (Dr. Higgins)",cat:"Doctor - Plastic Surgery",phone:"(702) 666-8600",ig:"",email:"",defaultStatus:'pending'},
+  {num:1056,name:"Nuance Aesthetics & Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 359-7099",ig:"",email:"",defaultStatus:'pending'},
+  {num:1057,name:"La Femme Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 818-5476",ig:"",email:"",defaultStatus:'pending'},
+  {num:1058,name:"Smith Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 838-7547",ig:"",email:"",defaultStatus:'pending'},
+  {num:1059,name:"Khorsandi Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 444-6224",ig:"",email:"",defaultStatus:'pending'},
+  {num:1060,name:"Pancholi Cosmetic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 363-0240",ig:"",email:"",defaultStatus:'pending'},
+  {num:1061,name:"Roth Plastic Surgery",cat:"Doctor - Plastic Surgery",phone:"(702) 450-0777",ig:"",email:"",defaultStatus:'pending'},
+  {num:1062,name:"Lanfranchi Center",cat:"Doctor - Plastic Surgery",phone:"(702) 207-8779",ig:"",email:"",defaultStatus:'pending'},
+  {num:1063,name:"Las Vegas Dental Group",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 870-5165",ig:"",email:"",defaultStatus:'pending'},
+  {num:1064,name:"Stunning Smiles of Las Vegas",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 766-6198",ig:"",email:"",defaultStatus:'pending'},
+  {num:1065,name:"Willow Springs Dentistry",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 368-0305",ig:"",email:"",defaultStatus:'pending'},
+  {num:1066,name:"True Dentistry (Dr. Willardsen)",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 873-0324",ig:"",email:"",defaultStatus:'pending'},
+  {num:1067,name:"Family Cosmetic Dentistry (Dr. Liu)",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 454-0858",ig:"",email:"",defaultStatus:'pending'},
+  {num:1068,name:"Smile Designers of Las Vegas",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 364-2373",ig:"",email:"",defaultStatus:'pending'},
+  {num:1069,name:"Image Dental & Orthodontics",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 803-1787",ig:"",email:"",defaultStatus:'pending'},
+  {num:1070,name:"Summerlin Dental Solutions (Dr. Cohan)",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 341-9160",ig:"",email:"",defaultStatus:'pending'},
+  {num:1071,name:"Wagner Dental",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 736-0016",ig:"",email:"",defaultStatus:'pending'},
+  {num:1072,name:"Dental Enhanced",cat:"Doctor - Cosmetic Dentistry",phone:"(702) 998-1010",ig:"",email:"",defaultStatus:'pending'},
+  {num:1073,name:"White Coat Aesthetics",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 919-0017",ig:"",email:"",defaultStatus:'pending'},
+  {num:1074,name:"Face Forward Aesthetics",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 919-0017",ig:"",email:"",defaultStatus:'pending'},
+  {num:1075,name:"Las Vegas Dermatology",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 269-2929",ig:"",email:"",defaultStatus:'pending'},
+  {num:1076,name:"Dr. K Beauty",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 906-9555",ig:"",email:"",defaultStatus:'pending'},
+  {num:1077,name:"Renew Medical Spa (Dr. Jin Lee)",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 547-3639",ig:"",email:"",defaultStatus:'pending'},
+  {num:1078,name:"Advanced Aesthetics",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 832-0900",ig:"",email:"",defaultStatus:'pending'},
+  {num:1079,name:"Chic La Vie Med Spa",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 233-8535",ig:"",email:"",defaultStatus:'pending'},
+  {num:1080,name:"Center for Aesthetic Medicine",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 850-2459",ig:"",email:"",defaultStatus:'pending'},
+  {num:1081,name:"Richards Cosmetic Surgery & Med Spa",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 998-3300",ig:"",email:"",defaultStatus:'pending'},
+  {num:1082,name:"Flawless Medspa Las Vegas",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 998-1399",ig:"",email:"",defaultStatus:'pending'},
+  {num:1083,name:"Vivida Dermatology",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 472-3322",ig:"",email:"",defaultStatus:'pending'},
+  {num:1084,name:"Tru Body Wellness",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 478-9330",ig:"",email:"",defaultStatus:'pending'},
+  {num:1085,name:"Cre8tive Aesthetics & Wellness",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 707-5022",ig:"",email:"",defaultStatus:'pending'},
+  {num:1086,name:"Refine Med Spa",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 818-1300",ig:"",email:"",defaultStatus:'pending'},
+  {num:1087,name:"SkinCeuticals SkinLab Las Vegas",cat:"Doctor - Med Spa/Dermatology",phone:"(702) 825-7546",ig:"",email:"",defaultStatus:'pending'},
+  {num:1088,name:"LV Valley Care",cat:"Doctor - Chiropractor",phone:"(702) 873-2307",ig:"",email:"",defaultStatus:'pending'},
+  {num:1089,name:"The Spine Center",cat:"Doctor - Chiropractor",phone:"(702) 432-7777",ig:"",email:"",defaultStatus:'pending'},
+  {num:1090,name:"MaxHealth Center",cat:"Doctor - Chiropractor",phone:"(702) 458-2225",ig:"",email:"",defaultStatus:'pending'},
+  {num:1091,name:"Advanced Chiropractic & Holistic Wellness",cat:"Doctor - Chiropractor",phone:"(702) 432-1000",ig:"",email:"",defaultStatus:'pending'},
+  {num:1092,name:"Akers Chiropractic",cat:"Doctor - Chiropractor",phone:"(702) 871-3030",ig:"",email:"",defaultStatus:'pending'},
+  {num:1093,name:"Chiropractic Healing Center",cat:"Doctor - Chiropractor",phone:"(702) 873-9100",ig:"",email:"",defaultStatus:'pending'},
+  {num:1094,name:"The Las Vegas Chiropractor",cat:"Doctor - Chiropractor",phone:"(702) 360-0001",ig:"",email:"",defaultStatus:'pending'},
+  {num:1095,name:"NuSpine Chiropractic",cat:"Doctor - Chiropractor",phone:"(702) 405-0086",ig:"",email:"",defaultStatus:'pending'},
+  {num:1096,name:"Las Vegas Pain & Wellness Center",cat:"Doctor - Specialty",phone:"(702) 825-9111",ig:"",email:"",defaultStatus:'pending'},
+  {num:1097,name:"Comprehensive Cancer Centers of Nevada",cat:"Doctor - Specialty",phone:"(702) 952-3350",ig:"",email:"",defaultStatus:'pending'},
+  {num:1098,name:"Las Vegas Heart Associates",cat:"Doctor - Specialty",phone:"(702) 731-8224",ig:"",email:"",defaultStatus:'pending'},
+  {num:1099,name:"Nevada Eye Physicians",cat:"Doctor - Specialty",phone:"(702) 815-2020",ig:"",email:"",defaultStatus:'pending'},
+  {num:1100,name:"Center for Aesthetic Medicine and Human Performance",cat:"Doctor - Specialty",phone:"(702) 850-2459",ig:"",email:"",defaultStatus:'pending'},
+];
+
+// ══════════════════════════════════════════════════════
 // RESTAURANT DATA
 // ══════════════════════════════════════════════════════
 var RESTAURANTS_BASE = [
@@ -5317,11 +5423,16 @@ window.addEventListener('load',function(){
       <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;">💼 Advertisers</span>
     </div>
   </div>
-  <div style="padding:30px 20px;text-align:center;color:#aaa;">
-    <div style="font-size:48px;margin-bottom:16px;">💼</div>
-    <div style="font-size:16px;font-weight:600;color:#00BCD4;margin-bottom:8px;">Advertisers View</div>
-    <div style="font-size:13px;line-height:1.6;">Skeleton ready.<br>Data and list features coming in Patch 1B.</div>
+  <div style="padding:8px 12px;">
+    <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #455A64;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
+  <div style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:6px;">
+    <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
+    <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
+    <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
+    <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
+  </div>
+  <div id="adv-list" style="padding:0 12px 80px;"></div>
 </div>
 
 <!-- ADVERTISERS VIEW -->
@@ -5332,11 +5443,16 @@ window.addEventListener('load',function(){
       <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;">💼 Advertisers</span>
     </div>
   </div>
-  <div style="padding:30px 20px;text-align:center;color:#aaa;">
-    <div style="font-size:48px;margin-bottom:16px;">💼</div>
-    <div style="font-size:16px;font-weight:600;color:#00BCD4;margin-bottom:8px;">Advertisers View</div>
-    <div style="font-size:13px;line-height:1.6;">Skeleton ready.<br>Data and list features coming in Patch 1B.</div>
+  <div style="padding:8px 12px;">
+    <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #455A64;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
+  <div style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:6px;">
+    <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
+    <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
+    <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
+    <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
+  </div>
+  <div id="adv-list" style="padding:0 12px 80px;"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -5557,6 +5673,78 @@ function saveTaskModal(){
 }
 document.addEventListener("click",function(e){if(e.target===document.getElementById("tmov"))closeTaskModal();});
 
+// ADVERTISERS STORAGE & RENDER
+var LS_ADV_STATUS = 'lv_adv_status_v1';
+function advLoadStatus(){try{return JSON.parse(localStorage.getItem(LS_ADV_STATUS))||{};}catch(e){return{};}}
+var advStatusMap = advLoadStatus();
+var advFilter = 'all';
+var advSearch = '';
+
+function advBuildList(){
+  var arr = [];
+  for(var i=0;i<ADVERTISERS_BASE.length;i++){
+    var a = ADVERTISERS_BASE[i];
+    var status = advStatusMap[a.num] || a.defaultStatus || 'pending';
+    arr.push({num:a.num,name:a.name,cat:a.cat,phone:a.phone,ig:a.ig,email:a.email,status:status,_search:(a.name+' '+a.cat).toLowerCase()});
+  }
+  return arr;
+}
+
+function advRender(){
+  var all = advBuildList();
+  var counts = {all:all.length,pending:0,sent:0,bounced:0};
+  for(var i=0;i<all.length;i++){
+    if(counts[all[i].status]!==undefined) counts[all[i].status]++;
+  }
+  var ce = document.getElementById('adv-cnt-all'); if(ce) ce.textContent = counts.all;
+  var cp = document.getElementById('adv-cnt-pending'); if(cp) cp.textContent = counts.pending;
+  var cs = document.getElementById('adv-cnt-sent'); if(cs) cs.textContent = counts.sent;
+  var cb = document.getElementById('adv-cnt-bounced'); if(cb) cb.textContent = counts.bounced;
+  var filtered = all.filter(function(a){
+    if(advFilter !== 'all' && a.status !== advFilter) return false;
+    if(advSearch && a._search.indexOf(advSearch) === -1) return false;
+    return true;
+  });
+  var el = document.getElementById('adv-list');
+  if(!el) return;
+  if(filtered.length === 0){
+    el.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px 20px;font-size:14px;">No advertisers match.</div>';
+    return;
+  }
+  var statusColor = {pending:'#FFA726',sent:'#4CAF50',bounced:'#EF5350'};
+  var h = '';
+  for(var j=0;j<filtered.length;j++){
+    var a = filtered[j];
+    var sc = statusColor[a.status] || '#FFA726';
+    h += '<div style="background:#263238;border:1px solid #37474F;border-left:4px solid '+sc+';border-radius:8px;padding:10px 12px;margin-bottom:8px;">';
+    h += '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;">'+_te(a.name)+'</div>';
+    h += '<div style="font-size:11px;color:#90CAF9;margin-bottom:4px;">'+_te(a.cat)+'</div>';
+    if(a.phone) h += '<div style="font-size:13px;color:#ccc;margin-bottom:2px;">\u260E\uFE0F <a href="tel:'+a.phone.replace(/[^0-9]/g,'')+'" style="color:#90CAF9;text-decoration:none;">'+_te(a.phone)+'</a></div>';
+    if(a.email) h += '<div style="font-size:12px;color:#ccc;margin-bottom:2px;">\u2709\uFE0F '+_te(a.email)+'</div>';
+    if(a.ig) h += '<div style="font-size:12px;color:#ccc;margin-bottom:2px;">@'+_te(a.ig)+'</div>';
+    h += '<div style="font-size:11px;color:'+sc+';font-weight:700;text-transform:uppercase;margin-top:4px;">'+a.status+'</div>';
+    h += '</div>';
+  }
+  el.innerHTML = h;
+}
+
+function advSetFilter(f){
+  advFilter = f;
+  var btns = ['all','pending','sent','bounced'];
+  for(var i=0;i<btns.length;i++){
+    var b = document.getElementById('adv-filter-'+btns[i]);
+    if(b){
+      b.style.background = (btns[i] === f) ? '#00838F' : '#455A64';
+    }
+  }
+  advRender();
+}
+
+function advSearchInput(v){
+  advSearch = (v||'').toLowerCase();
+  advRender();
+}
+
 // ADVERTISERS NAVIGATION
 function showAdvertisersView(){
   var vd=document.getElementById("view-dashboard");
@@ -5567,6 +5755,7 @@ function showAdvertisersView(){
   if(va){va.classList.add("active");va.style.display="block";}
   var ds=document.getElementById("dash-scroller");
   if(ds)ds.style.display="none";
+  if(typeof advRender === "function") advRender();
 }
 
 (function(){
