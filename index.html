@@ -6200,6 +6200,88 @@ function _advApplyFirebaseData(rec){
   if(typeof advRender==='function')advRender();
 }
 
+
+// === ADVERTISER SEED DATA (Patch 2E) — runs once per device ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2e_applied') === '1') return;
+    var igSeed = {
+      1051: 'hankins.sohn',
+      1052: 'drcosta_platinum',
+      1054: 'plasticsurgeryvegas',
+      1055: 'higgins_plasticsurgery',
+      1056: 'nuancevegas',
+      1057: 'lafemmeplasticsurgery',
+      1058: 'smithplasticsurgery',
+      1059: 'docvegas',
+      1060: 'pancholicosmeticsurgery',
+      1061: 'lasvegasplasticsurgery',
+      1062: 'thelanfranchicenter',
+      1073: 'whitecoataesthetics',
+      1079: 'chiclaviemedspa'
+    };
+    var emailSeed = {
+      1056: 'info@nuancelasvegas.com',
+      1058: 'info@smithsurgery.com',
+      1073: 'info@whitecoataesthetics.com'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    var atts = {};
+    try { atts = JSON.parse(localStorage.getItem('lv_adv_attempts_v1')) || {}; } catch(e) { atts = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      // Only set if user hasnt already set their own override
+      if (ig[num] === undefined || ig[num] === '') ig[num] = igSeed[num];
+    });
+    Object.keys(emailSeed).forEach(function(num){
+      var existing = atts[num] || [];
+      // Only add if no email exists yet
+      var hasEmail = false;
+      for (var i = 0; i < existing.length; i++) {
+        if (existing[i].email) { hasEmail = true; break; }
+      }
+      if (!hasEmail) {
+        existing.push({
+          email: emailSeed[num],
+          status: 'pending',
+          date: '',
+          note: 'Seeded from research'
+        });
+        atts[num] = existing;
+      }
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_attempts_v1', JSON.stringify(atts));
+    localStorage.setItem('lv_adv_seed_2e_applied', '1');
+    // Update the in-memory maps so they reflect immediately
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (advIGOverrideMap[num] === undefined || advIGOverrideMap[num] === '') advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+    if (typeof advAttemptsMap !== 'undefined') {
+      Object.keys(emailSeed).forEach(function(num){
+        var existing = advAttemptsMap[num] || [];
+        var hasEmail = false;
+        for (var i = 0; i < existing.length; i++) {
+          if (existing[i].email) { hasEmail = true; break; }
+        }
+        if (!hasEmail) {
+          existing.push({
+            email: emailSeed[num],
+            status: 'pending',
+            date: '',
+            note: 'Seeded from research'
+          });
+          advAttemptsMap[num] = existing;
+        }
+      });
+    }
+    // Trigger Firebase save so other devices see the seeded data
+    if (typeof advFbSave === 'function') setTimeout(advFbSave, 3000);
+  } catch(e) {}
+})();
+
 // Auto-load on app start (delay 1.5s to let auth check finish)
 setTimeout(advFbLoad, 1500);
 
