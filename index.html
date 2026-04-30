@@ -6282,6 +6282,73 @@ function _advApplyFirebaseData(rec){
   } catch(e) {}
 })();
 
+
+// === ADVERTISER SEED DATA (Patch 2F) — runs once per device ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2f_applied') === '1') return;
+    var igSeed = {
+      1076: 'dr.kbeauty',
+      1082: 'flawlessmedspas',
+      1083: 'vivida.dermatology',
+      1084: 'trubodywellnessllc'
+    };
+    var emailSeed = {
+      1083: 'info@vivida.com'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    var atts = {};
+    try { atts = JSON.parse(localStorage.getItem('lv_adv_attempts_v1')) || {}; } catch(e) { atts = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (ig[num] === undefined || ig[num] === '') ig[num] = igSeed[num];
+    });
+    Object.keys(emailSeed).forEach(function(num){
+      var existing = atts[num] || [];
+      var hasEmail = false;
+      for (var i = 0; i < existing.length; i++) {
+        if (existing[i].email) { hasEmail = true; break; }
+      }
+      if (!hasEmail) {
+        existing.push({
+          email: emailSeed[num],
+          status: 'pending',
+          date: '',
+          note: 'Seeded from research'
+        });
+        atts[num] = existing;
+      }
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_attempts_v1', JSON.stringify(atts));
+    localStorage.setItem('lv_adv_seed_2f_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (advIGOverrideMap[num] === undefined || advIGOverrideMap[num] === '') advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+    if (typeof advAttemptsMap !== 'undefined') {
+      Object.keys(emailSeed).forEach(function(num){
+        var existing = advAttemptsMap[num] || [];
+        var hasEmail = false;
+        for (var i = 0; i < existing.length; i++) {
+          if (existing[i].email) { hasEmail = true; break; }
+        }
+        if (!hasEmail) {
+          existing.push({
+            email: emailSeed[num],
+            status: 'pending',
+            date: '',
+            note: 'Seeded from research'
+          });
+          advAttemptsMap[num] = existing;
+        }
+      });
+    }
+    if (typeof advFbSave === 'function') setTimeout(advFbSave, 3000);
+  } catch(e) {}
+})();
+
 // Auto-load on app start (delay 1.5s to let auth check finish)
 setTimeout(advFbLoad, 1500);
 
