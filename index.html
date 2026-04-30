@@ -5826,15 +5826,120 @@ function advOpenDM(num){alert('DM coming in Patch 2D');}
 function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
 function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
 function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
-function advOpenNoteModal(num){alert('Note modal coming in Patch 2C');}
+// === EDIT MODALS (Patch 2C) ===
+// State: which advertiser is being edited
+var _advEditNum = null;
+
+// Generic prompt-based editor (simple but works on iPhone)
+function _advPromptEdit(num,fieldName,currentVal,onSave){
+  var v = prompt('Edit '+fieldName+':', currentVal||'');
+  if(v===null)return;
+  v = v.trim();
+  onSave(v);
+  _advRefreshCard(num);
+}
+
+function advOpenNameModal(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  var current=advNameOverrideMap[num]||a.name;
+  _advPromptEdit(num,'Name',current,function(v){
+    if(v){advNameOverrideMap[num]=v;}else{delete advNameOverrideMap[num];}
+    _advSaveMap('lv_adv_nameoverride_v1',advNameOverrideMap);
+  });
+}
+
+function advOpenEditIG(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  var current=advIGOverrideMap[num]!==undefined?advIGOverrideMap[num]:(a.ig||'');
+  _advPromptEdit(num,'Instagram handle (no @)',current,function(v){
+    // Strip @ if user adds one
+    v = v.replace(/^@/,'');
+    advIGOverrideMap[num]=v;
+    _advSaveMap('lv_adv_igoverride_v1',advIGOverrideMap);
+  });
+}
+
+function advOpenEditEmail(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  // Find existing pending email if any
+  var atts = advAttemptsMap[num] || [];
+  var current = '';
+  for(var i2=0;i2<atts.length;i2++){if(atts[i2].status==='pending'&&atts[i2].email){current=atts[i2].email;break;}}
+  if(!current){for(var i3=atts.length-1;i3>=0;i3--){if(atts[i3].email){current=atts[i3].email;break;}}}
+  if(!current && a.email) current = a.email;
+  _advPromptEdit(num,'Email',current,function(v){
+    if(!v) return;
+    if(!atts.length || atts[atts.length-1].email !== v){
+      atts.push({email:v,status:'pending',date:new Date().toISOString().slice(0,10),note:''});
+      advAttemptsMap[num]=atts;
+      _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+    }
+  });
+}
+
+function advOpenEditPhone(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  var current=_advPhone(a);
+  _advPromptEdit(num,'Phone',current,function(v){
+    if(!advFieldOverrideMap[num])advFieldOverrideMap[num]={};
+    advFieldOverrideMap[num].phone=v;
+    _advSaveMap('lv_adv_fieldoverride_v1',advFieldOverrideMap);
+  });
+}
+
+function advOpenEditAddress(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  var current=_advAddr(a);
+  _advPromptEdit(num,'Address',current,function(v){
+    if(!advFieldOverrideMap[num])advFieldOverrideMap[num]={};
+    advFieldOverrideMap[num].address=v;
+    _advSaveMap('lv_adv_fieldoverride_v1',advFieldOverrideMap);
+  });
+}
+
+function advOpenNoteModal(num){
+  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  if(!a)return;
+  var current=advNotesMap[num]||'';
+  // Use prompt for now (multi-line not great but works); upgrade to modal later
+  var v=prompt('Notes for '+(advNameOverrideMap[num]||a.name)+':',current);
+  if(v===null)return;
+  v=v.trim();
+  if(v){advNotesMap[num]=v;}else{delete advNotesMap[num];}
+  _advSaveMap('lv_adv_notes_v1',advNotesMap);
+  _advRefreshCard(num);
+}
+
+function advOpenWebsiteModal(num){
+  var current=advWebsiteMap[num]||'';
+  _advPromptEdit(num,'Website URL',current,function(v){
+    if(v && !v.match(/^https?:\/\//))v='https://'+v;
+    if(v){advWebsiteMap[num]=v;}else{delete advWebsiteMap[num];}
+    _advSaveMap('lv_adv_website_v1',advWebsiteMap);
+  });
+}
+
+function advOpenQuoteModal(num){
+  var current=advQuoteMap[num]||'';
+  _advPromptEdit(num,'Quote/Rate (e.g. $200/post or $1500/month)',current,function(v){
+    if(v){advQuoteMap[num]=v;}else{delete advQuoteMap[num];}
+    _advSaveMap('lv_adv_quote_v1',advQuoteMap);
+  });
+}
+
+// === STILL STUBBED (coming in 2D) ===
+function advOpenEmail(num){alert('Email modal coming in Patch 2D');}
+function advManualMarkSent(num){alert('Mark sent coming in Patch 2D');}
+function advOpenDM(num){alert('DM coming in Patch 2D');}
+function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
+function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
+function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
 function advDeleteRecord(num){alert('Delete coming in Patch 2D');}
-function advOpenEditEmail(num){alert('Edit email coming in Patch 2C');}
-function advOpenNameModal(num){alert('Edit name coming in Patch 2C');}
-function advOpenEditIG(num){alert('Edit IG coming in Patch 2C');}
-function advOpenWebsiteModal(num){alert('Website modal coming in Patch 2C');}
-function advOpenQuoteModal(num){alert('Quote modal coming in Patch 2C');}
-function advOpenEditPhone(num){alert('Edit phone coming in Patch 2C');}
-function advOpenEditAddress(num){alert('Edit address coming in Patch 2C');}
 
 function advRender(){
   var all=ADVERTISERS_BASE.filter(function(a){return !advDeletedMap[a.num];});
