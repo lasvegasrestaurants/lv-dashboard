@@ -5758,6 +5758,68 @@ function _buildAdvCard(a,displayNum){
   return h;
 }
 
+// Helper: save a map to localStorage
+function _advSaveMap(key,obj){try{localStorage.setItem(key,JSON.stringify(obj));}catch(e){}}
+
+// Refresh a single advertiser card (or full re-render for simplicity)
+function _advRefreshCard(num){if(typeof advRender==='function')advRender();}
+
+// === TOGGLE FLAGS (Patch 2B) ===
+function advToggleInterested(num){
+  if(advInterestedMap[num]){delete advInterestedMap[num];}else{advInterestedMap[num]=true;delete advNotInterestedMap[num];_advSaveMap('lv_adv_notinterested_v1',advNotInterestedMap);}
+  _advSaveMap('lv_adv_interested_v1',advInterestedMap);
+  _advRefreshCard(num);
+}
+function advToggleNotInterested(num){
+  if(advNotInterestedMap[num]){delete advNotInterestedMap[num];}else{advNotInterestedMap[num]=true;delete advInterestedMap[num];_advSaveMap('lv_adv_interested_v1',advInterestedMap);}
+  _advSaveMap('lv_adv_notinterested_v1',advNotInterestedMap);
+  _advRefreshCard(num);
+}
+function advToggleFollowup(num){
+  if(advFollowupMap[num]){
+    delete advFollowupMap[num];
+  }else{
+    var d=new Date();d.setDate(d.getDate()+7);
+    var iso=d.toISOString();
+    var input=prompt('Follow up date (YYYY-MM-DD):',iso.slice(0,10));
+    if(!input)return;
+    advFollowupMap[num]=input+'T12:00:00.000Z';
+  }
+  _advSaveMap('lv_adv_followup_v1',advFollowupMap);
+  _advRefreshCard(num);
+}
+function advToggleBadIG(num){
+  if(advBadIGMap[num]){delete advBadIGMap[num];}else{advBadIGMap[num]=true;}
+  _advSaveMap('lv_adv_badig_v1',advBadIGMap);
+  _advRefreshCard(num);
+}
+function advToggleProblem(num){
+  if(advProblemMap[num]){delete advProblemMap[num];}else{advProblemMap[num]=true;}
+  _advSaveMap('lv_adv_problem_v1',advProblemMap);
+  _advRefreshCard(num);
+}
+function advToggleGhosted(num){
+  if(advGhostedMap[num]){delete advGhostedMap[num];}else{advGhostedMap[num]=true;}
+  _advSaveMap('lv_adv_ghosted_v1',advGhostedMap);
+  _advRefreshCard(num);
+}
+function advToggleTrade(num){
+  if(advTradeMap[num]){delete advTradeMap[num];}else{advTradeMap[num]=true;delete advTradeDoneMap[num];_advSaveMap('lv_adv_tradedone_v1',advTradeDoneMap);}
+  _advSaveMap('lv_adv_trade_v1',advTradeMap);
+  _advRefreshCard(num);
+}
+function advToggleTradeDone(num){
+  if(advTradeDoneMap[num]){delete advTradeDoneMap[num];}else{advTradeDoneMap[num]=true;delete advTradeMap[num];_advSaveMap('lv_adv_trade_v1',advTradeMap);}
+  _advSaveMap('lv_adv_tradedone_v1',advTradeDoneMap);
+  _advRefreshCard(num);
+}
+function advTogglePriority(num){
+  if(advPriorityMap[num]){delete advPriorityMap[num];}else{advPriorityMap[num]=true;}
+  _advSaveMap('lv_adv_priority_v1',advPriorityMap);
+  _advRefreshCard(num);
+}
+
+// === STILL STUBBED (coming later) ===
 function advOpenEmail(num){alert('Email modal coming in Patch 2D');}
 function advManualMarkSent(num){alert('Mark sent coming in Patch 2D');}
 function advOpenDM(num){alert('DM coming in Patch 2D');}
@@ -5765,19 +5827,10 @@ function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
 function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
 function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
 function advOpenNoteModal(num){alert('Note modal coming in Patch 2C');}
-function advToggleTrade(num){alert('Toggle trade coming in Patch 2B');}
-function advToggleTradeDone(num){alert('Toggle trade done coming in Patch 2B');}
-function advToggleGhosted(num){alert('Toggle ghosted coming in Patch 2B');}
-function advToggleProblem(num){alert('Toggle problem coming in Patch 2B');}
-function advTogglePriority(num){alert('Toggle priority coming in Patch 2B');}
 function advDeleteRecord(num){alert('Delete coming in Patch 2D');}
 function advOpenEditEmail(num){alert('Edit email coming in Patch 2C');}
 function advOpenNameModal(num){alert('Edit name coming in Patch 2C');}
-function advToggleBadIG(num){alert('Toggle bad IG coming in Patch 2B');}
 function advOpenEditIG(num){alert('Edit IG coming in Patch 2C');}
-function advToggleInterested(num){alert('Toggle interested coming in Patch 2B');}
-function advToggleNotInterested(num){alert('Toggle not interested coming in Patch 2B');}
-function advToggleFollowup(num){alert('Toggle followup coming in Patch 2B');}
 function advOpenWebsiteModal(num){alert('Website modal coming in Patch 2C');}
 function advOpenQuoteModal(num){alert('Quote modal coming in Patch 2C');}
 function advOpenEditPhone(num){alert('Edit phone coming in Patch 2C');}
