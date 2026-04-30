@@ -6216,7 +6216,7 @@ function _advApplyFirebaseData(rec){
 // === ADVERTISER SEED DATA (Patch 2E) — runs once per device ===
 (function(){
   try {
-    if (localStorage.getItem('lv_adv_seed_2e_applied') === '1') return;
+    if (localStorage.getItem('lv_adv_seed_2e_v2_applied') === '1') return;
     var igSeed = {
       1051: 'hankins.sohn',
       1052: 'drcosta_platinum',
@@ -6264,7 +6264,7 @@ function _advApplyFirebaseData(rec){
     });
     localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
     localStorage.setItem('lv_adv_attempts_v1', JSON.stringify(atts));
-    localStorage.setItem('lv_adv_seed_2e_applied', '1');
+    localStorage.setItem('lv_adv_seed_2e_v2_applied', '1');
     // Update the in-memory maps so they reflect immediately
     if (typeof advIGOverrideMap !== 'undefined') {
       Object.keys(igSeed).forEach(function(num){
@@ -6298,7 +6298,7 @@ function _advApplyFirebaseData(rec){
 // === ADVERTISER SEED DATA (Patch 2F) — runs once per device ===
 (function(){
   try {
-    if (localStorage.getItem('lv_adv_seed_2f_applied') === '1') return;
+    if (localStorage.getItem('lv_adv_seed_2f_v2_applied') === '1') return;
     var igSeed = {
       1076: 'dr.kbeauty',
       1082: 'flawlessmedspas',
@@ -6333,7 +6333,7 @@ function _advApplyFirebaseData(rec){
     });
     localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
     localStorage.setItem('lv_adv_attempts_v1', JSON.stringify(atts));
-    localStorage.setItem('lv_adv_seed_2f_applied', '1');
+    localStorage.setItem('lv_adv_seed_2f_v2_applied', '1');
     if (typeof advIGOverrideMap !== 'undefined') {
       Object.keys(igSeed).forEach(function(num){
         if (advIGOverrideMap[num] === undefined || advIGOverrideMap[num] === '') advIGOverrideMap[num] = igSeed[num];
