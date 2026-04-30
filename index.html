@@ -5762,7 +5762,10 @@ function _buildAdvCard(a,displayNum){
 function _advSaveMap(key,obj){try{localStorage.setItem(key,JSON.stringify(obj));}catch(e){}}
 
 // Refresh a single advertiser card (or full re-render for simplicity)
-function _advRefreshCard(num){if(typeof advRender==='function')advRender();}
+function _advRefreshCard(num){
+  if(typeof advRender==='function')advRender();
+  if(typeof advFbSave==='function')advFbSave();
+}
 
 // === TOGGLE FLAGS (Patch 2B) ===
 function advToggleInterested(num){
@@ -5819,13 +5822,6 @@ function advTogglePriority(num){
   _advRefreshCard(num);
 }
 
-// === STILL STUBBED (coming later) ===
-function advOpenEmail(num){alert('Email modal coming in Patch 2D');}
-function advManualMarkSent(num){alert('Mark sent coming in Patch 2D');}
-function advOpenDM(num){alert('DM coming in Patch 2D');}
-function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
-function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
-function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
 // === EDIT MODALS (Patch 2C) ===
 // State: which advertiser is being edited
 var _advEditNum = null;
@@ -5932,14 +5928,116 @@ function advOpenQuoteModal(num){
   });
 }
 
-// === STILL STUBBED (coming in 2D) ===
-function advOpenEmail(num){alert('Email modal coming in Patch 2D');}
-function advManualMarkSent(num){alert('Mark sent coming in Patch 2D');}
-function advOpenDM(num){alert('DM coming in Patch 2D');}
-function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
-function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
-function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
-function advDeleteRecord(num){alert('Delete coming in Patch 2D');}
+// === EMAIL/DM/MARK FUNCTIONS (Patch 2D) ===
+
+function _advGetA(num){
+  for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num)return ADVERTISERS_BASE[i];}
+  return null;
+}
+
+function _advGetEmail(num){
+  var atts=advAttemptsMap[num]||[];
+  for(var i=0;i<atts.length;i++){if(atts[i].status==='pending'&&atts[i].email)return atts[i].email;}
+  for(var j=atts.length-1;j>=0;j--){if(atts[j].email)return atts[j].email;}
+  var a=_advGetA(num);return a?(a.email||''):'';
+}
+
+function advOpenEmail(num){
+  var a=_advGetA(num);if(!a)return;
+  var email=_advGetEmail(num);
+  if(!email){
+    if(confirm('No email on file for this advertiser. Add one now?'))advOpenEditEmail(num);
+    return;
+  }
+  var name=advNameOverrideMap[num]||a.name;
+  var subject='Partnership Opportunity with @lasvegas_restaurants';
+  var body='Hi,\n\nI run @lasvegas_restaurants on Instagram (131K followers, focused on the LV food and lifestyle scene). I would love to discuss featuring '+name+' to my audience.\n\nLet me know if you would be open to a quick call.\n\nShane Christensen\n@lasvegas_restaurants\nShane@LasVegasRestaurants.net';
+  var url='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  window.location.href=url;
+}
+
+function advManualMarkSent(num){
+  var atts=advAttemptsMap[num]||[];
+  if(!atts.length){alert('No email on file. Add an email first using Edit Email.');return;}
+  var today=new Date().toISOString().slice(0,10);
+  var marked=false;
+  for(var i=atts.length-1;i>=0;i--){
+    if(atts[i].status==='pending'){atts[i].status='sent';atts[i].date=today;marked=true;break;}
+  }
+  if(!marked){
+    // No pending — mark the most recent as sent (toggle off)
+    var last=atts[atts.length-1];
+    if(last.status==='sent'){last.status='pending';}else{last.status='sent';last.date=today;}
+  }
+  advAttemptsMap[num]=atts;
+  _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+  // Auto-stamp Last Contacted
+  advLastContactedMap[num]=today;
+  _advSaveMap('lv_adv_lastcontacted_v1',advLastContactedMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
+}
+
+function advMarkBounced(num){
+  var atts=advAttemptsMap[num]||[];
+  if(!atts.length){alert('No email on file.');return;}
+  var today=new Date().toISOString().slice(0,10);
+  var last=atts[atts.length-1];
+  last.status='bounced';
+  last.date=today;
+  advAttemptsMap[num]=atts;
+  _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
+}
+
+function advUnmarkBounced(num){
+  var atts=advAttemptsMap[num]||[];
+  if(!atts.length)return;
+  var last=atts[atts.length-1];
+  if(last.status==='bounced'){last.status='pending';}
+  advAttemptsMap[num]=atts;
+  _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
+}
+
+function advOpenDM(num){
+  var a=_advGetA(num);if(!a)return;
+  var ig=advIGOverrideMap[num]!==undefined?advIGOverrideMap[num]:(a.ig||'');
+  if(!ig){
+    if(confirm('No Instagram handle on file. Add one now?'))advOpenEditIG(num);
+    return;
+  }
+  var today=new Date().toISOString().slice(0,10)+'T12:00:00.000Z';
+  advDmMap[num]=today;
+  _advSaveMap('lv_adv_dm_v1',advDmMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
+  // Open IG (try app first, fall back to web)
+  window.location.href='https://instagram.com/'+ig.replace(/^@/,'');
+}
+
+function advCopyDM(num){
+  var a=_advGetA(num);if(!a)return;
+  var name=advNameOverrideMap[num]||a.name;
+  var msg='Hi! I run @lasvegas_restaurants (131K followers in the LV market). Loved what I saw from '+name+' and wanted to connect about a potential partnership. Open to chatting?';
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(msg).then(function(){alert('DM message copied to clipboard!');},function(){prompt('Copy this DM:',msg);});
+  }else{
+    prompt('Copy this DM:',msg);
+  }
+}
+
+function advDeleteRecord(num){
+  var a=_advGetA(num);if(!a)return;
+  var name=advNameOverrideMap[num]||a.name;
+  if(!confirm('Delete '+name+'?\n\nThis hides them from your list. Records can be restored from backup if needed.'))return;
+  advDeletedMap[num]=true;
+  _advSaveMap('lv_adv_deleted_v1',advDeletedMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
+}
 
 function advRender(){
   var all=ADVERTISERS_BASE.filter(function(a){return !advDeletedMap[a.num];});
@@ -5991,6 +6089,9 @@ function advSearchInput(v){
 
 // ADVERTISERS NAVIGATION
 function showAdvertisersView(){
+  // Block Friend and Demo modes — owner only
+  if(typeof isFriend!=="undefined" && isFriend) return;
+  if(typeof isDemo!=="undefined" && isDemo) return;
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.remove("active");vd.style.display="none";}
   var vt=document.getElementById("view-tasks");
@@ -6001,6 +6102,109 @@ function showAdvertisersView(){
   if(ds)ds.style.display="none";
   if(typeof advRender === "function") advRender();
 }
+
+
+// === FIREBASE SYNC FOR ADVERTISERS (Patch 2D) ===
+var ADV_FB_URL = "https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_advertisers.json";
+var _advFbSaveTimer = null;
+var _advFbLastSavedAt = 0;
+var _advFbSyncing = false;
+
+function advFbSave(){
+  // Owner only — friend/demo never write
+  if(typeof isFriend!=="undefined" && isFriend) return;
+  if(typeof isDemo!=="undefined" && isDemo) return;
+  if(_advFbSaveTimer)clearTimeout(_advFbSaveTimer);
+  _advFbSaveTimer = setTimeout(_advFbDoPush, 2000);
+}
+
+function _advFbDoPush(){
+  if(_advFbSyncing) return;
+  _advFbSyncing = true;
+  var payload = {
+    savedAt: Date.now(),
+    savedBy: 'owner',
+    attempts: advAttemptsMap,
+    dm: advDmMap,
+    badig: advBadIGMap,
+    interested: advInterestedMap,
+    notinterested: advNotInterestedMap,
+    followup: advFollowupMap,
+    problem: advProblemMap,
+    ghosted: advGhostedMap,
+    trade: advTradeMap,
+    tradedone: advTradeDoneMap,
+    notes: advNotesMap,
+    nameoverride: advNameOverrideMap,
+    igoverride: advIGOverrideMap,
+    fieldoverride: advFieldOverrideMap,
+    priority: advPriorityMap,
+    website: advWebsiteMap,
+    lastcontacted: advLastContactedMap,
+    quote: advQuoteMap,
+    deleted: advDeletedMap
+  };
+  _advFbLastSavedAt = payload.savedAt;
+  fetch(ADV_FB_URL, {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    _advFbSyncing = false;
+  }).catch(function(){
+    _advFbSyncing = false;
+  });
+}
+
+function advFbLoad(){
+  // Skip for friend/demo
+  if(typeof isFriend!=="undefined" && isFriend) return;
+  if(typeof isDemo!=="undefined" && isDemo) return;
+  fetch(ADV_FB_URL)
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(rec){
+      if(!rec) return;
+      // savedBy guard
+      if(rec.savedBy && rec.savedBy !== 'owner') return;
+      if(rec.savedAt && rec.savedAt <= _advFbLastSavedAt) return;
+      _advFbLastSavedAt = rec.savedAt || Date.now();
+      _advApplyFirebaseData(rec);
+    })
+    .catch(function(){});
+}
+
+function _advApplyFirebaseData(rec){
+  if(rec.attempts){advAttemptsMap=rec.attempts;_advSaveMap('lv_adv_attempts_v1',advAttemptsMap);}
+  if(rec.dm){advDmMap=rec.dm;_advSaveMap('lv_adv_dm_v1',advDmMap);}
+  if(rec.badig){advBadIGMap=rec.badig;_advSaveMap('lv_adv_badig_v1',advBadIGMap);}
+  if(rec.interested){advInterestedMap=rec.interested;_advSaveMap('lv_adv_interested_v1',advInterestedMap);}
+  if(rec.notinterested){advNotInterestedMap=rec.notinterested;_advSaveMap('lv_adv_notinterested_v1',advNotInterestedMap);}
+  if(rec.followup){advFollowupMap=rec.followup;_advSaveMap('lv_adv_followup_v1',advFollowupMap);}
+  if(rec.problem){advProblemMap=rec.problem;_advSaveMap('lv_adv_problem_v1',advProblemMap);}
+  if(rec.ghosted){advGhostedMap=rec.ghosted;_advSaveMap('lv_adv_ghosted_v1',advGhostedMap);}
+  if(rec.trade){advTradeMap=rec.trade;_advSaveMap('lv_adv_trade_v1',advTradeMap);}
+  if(rec.tradedone){advTradeDoneMap=rec.tradedone;_advSaveMap('lv_adv_tradedone_v1',advTradeDoneMap);}
+  if(rec.notes){advNotesMap=rec.notes;_advSaveMap('lv_adv_notes_v1',advNotesMap);}
+  if(rec.nameoverride){advNameOverrideMap=rec.nameoverride;_advSaveMap('lv_adv_nameoverride_v1',advNameOverrideMap);}
+  if(rec.igoverride){advIGOverrideMap=rec.igoverride;_advSaveMap('lv_adv_igoverride_v1',advIGOverrideMap);}
+  if(rec.fieldoverride){advFieldOverrideMap=rec.fieldoverride;_advSaveMap('lv_adv_fieldoverride_v1',advFieldOverrideMap);}
+  if(rec.priority){advPriorityMap=rec.priority;_advSaveMap('lv_adv_priority_v1',advPriorityMap);}
+  if(rec.website){advWebsiteMap=rec.website;_advSaveMap('lv_adv_website_v1',advWebsiteMap);}
+  if(rec.lastcontacted){advLastContactedMap=rec.lastcontacted;_advSaveMap('lv_adv_lastcontacted_v1',advLastContactedMap);}
+  if(rec.quote){advQuoteMap=rec.quote;_advSaveMap('lv_adv_quote_v1',advQuoteMap);}
+  if(rec.deleted){advDeletedMap=rec.deleted;_advSaveMap('lv_adv_deleted_v1',advDeletedMap);}
+  if(typeof advRender==='function')advRender();
+}
+
+// Auto-load on app start (delay 1.5s to let auth check finish)
+setTimeout(advFbLoad, 1500);
+
+// Poll every 60s when tab visible (lighter than restaurants since less critical)
+setInterval(function(){
+  if(document.visibilityState==='visible' && (typeof isFriend==='undefined' || !isFriend) && (typeof isDemo==='undefined' || !isDemo)){
+    advFbLoad();
+  }
+}, 60000);
 
 (function(){
   var _orig = window.showDashTab;
