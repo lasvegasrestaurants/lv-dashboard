@@ -5849,9 +5849,9 @@ function advOpenEditIG(num){
   var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
   if(!a)return;
   var current=advIGOverrideMap[num]!==undefined?advIGOverrideMap[num]:(a.ig||'');
-  _advPromptEdit(num,'Instagram handle (no @)',current,function(v){
-    // Strip @ if user adds one
-    v = v.replace(/^@/,'');
+  var displayVal = current ? '@'+current : '@';
+  _advPromptEdit(num,'Instagram handle',displayVal,function(v){
+    v = v.replace(/^@/,'').trim();
     advIGOverrideMap[num]=v;
     _advSaveMap('lv_adv_igoverride_v1',advIGOverrideMap);
   });
@@ -6009,13 +6009,17 @@ function advOpenDM(num){
     if(confirm('No Instagram handle on file. Add one now?'))advOpenEditIG(num);
     return;
   }
-  var today=new Date().toISOString().slice(0,10)+'T12:00:00.000Z';
-  advDmMap[num]=today;
-  _advSaveMap('lv_adv_dm_v1',advDmMap);
-  if(typeof advFbSave==='function')advFbSave();
+  if(advBadIGMap[num]){alert('Bad IG flagged — fix the handle first');return;}
+  var handle = ig.replace(/^@/,'').trim();
+  // Only stamp if not already stamped — preserve original DM date
+  if(!advDmMap[num] || advDmMap[num] === 'pending'){
+    advDmMap[num]=new Date().toISOString().slice(0,10)+'T12:00:00.000Z';
+    _advSaveMap('lv_adv_dm_v1',advDmMap);
+    if(typeof advFbSave==='function')advFbSave();
+  }
   _advRefreshCard(num);
-  // Open IG (try app first, fall back to web)
-  window.location.href='https://instagram.com/'+ig.replace(/^@/,'');
+  // ig.me/m/ opens DIRECTLY to DM (Instagram official deep link)
+  setTimeout(function(){window.location.href='https://ig.me/m/'+handle;}, 50);
 }
 
 function advCopyDM(num){
