@@ -5435,26 +5435,6 @@ window.addEventListener('load',function(){
   <div id="adv-list" style="padding:0 12px 80px;"></div>
 </div>
 
-<!-- ADVERTISERS VIEW -->
-<div class="view" id="view-advertisers" style="display:none;">
-  <div class="hdr">
-    <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
-      <button onclick="showDashTab()" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
-      <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;">💼 Advertisers</span>
-    </div>
-  </div>
-  <div style="padding:8px 12px;">
-    <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #455A64;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
-  </div>
-  <div style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:6px;">
-    <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
-    <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
-    <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
-    <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
-  </div>
-  <div id="adv-list" style="padding:0 12px 80px;"></div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
 .task-drag{cursor:grab;padding:0 6px 0 2px;color:#aaa;font-size:20px;line-height:1;user-select:none;touch-action:none;align-self:center;}
@@ -5690,42 +5670,148 @@ function advBuildList(){
   return arr;
 }
 
+var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
+var advDmMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_dm_v1'))||{};}catch(e){return{};}})();
+var advBadIGMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_badig_v1'))||{};}catch(e){return{};}})();
+var advInterestedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_interested_v1'))||{};}catch(e){return{};}})();
+var advNotInterestedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_notinterested_v1'))||{};}catch(e){return{};}})();
+var advFollowupMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_followup_v1'))||{};}catch(e){return{};}})();
+var advProblemMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_problem_v1'))||{};}catch(e){return{};}})();
+var advGhostedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_ghosted_v1'))||{};}catch(e){return{};}})();
+var advTradeMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_trade_v1'))||{};}catch(e){return{};}})();
+var advTradeDoneMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_tradedone_v1'))||{};}catch(e){return{};}})();
+var advNotesMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_notes_v1'))||{};}catch(e){return{};}})();
+var advNameOverrideMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_nameoverride_v1'))||{};}catch(e){return{};}})();
+var advIGOverrideMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_igoverride_v1'))||{};}catch(e){return{};}})();
+var advFieldOverrideMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_fieldoverride_v1'))||{};}catch(e){return{};}})();
+var advPriorityMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_priority_v1'))||{};}catch(e){return{};}})();
+var advWebsiteMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_website_v1'))||{};}catch(e){return{};}})();
+var advLastContactedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_lastcontacted_v1'))||{};}catch(e){return{};}})();
+var advQuoteMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_quote_v1'))||{};}catch(e){return{};}})();
+var advDeletedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_deleted_v1'))||{};}catch(e){return{};}})();
+
+function _advPhone(a){var f=advFieldOverrideMap[a.num]||{};return f.phone!==undefined?f.phone:a.phone;}
+function _advAddr(a){var f=advFieldOverrideMap[a.num]||{};return f.address!==undefined?f.address:(a.address||'');}
+function _advOwner(a){var f=advFieldOverrideMap[a.num]||{};return f.owner!==undefined?f.owner:(a.owner||'');}
+
+function _advSentDate(num){
+  var atts=advAttemptsMap[num]||[];
+  for(var i=atts.length-1;i>=0;i--){if(atts[i].status==='sent'&&atts[i].date)return atts[i].date;}
+  return null;
+}
+
+function _advBuildAttemptHistory(num){
+  var attempts=advAttemptsMap[num]||[];
+  if(!attempts.length)return '';
+  var best=null;
+  for(var i=0;i<attempts.length;i++){if(attempts[i].status==='sent'&&attempts[i].email){best=attempts[i];}}
+  if(!best){for(var i2=0;i2<attempts.length;i2++){if(attempts[i2].status==='pending'&&attempts[i2].email){best=attempts[i2];break;}}}
+  if(!best){for(var i3=attempts.length-1;i3>=0;i3--){if(attempts[i3].email){best=attempts[i3];break;}}}
+  if(!best||!best.email)return '';
+  var sc=best.status==='bounced'?'s-bounced':best.status==='sent'?'s-sent':'s-pending';
+  var ec=best.status==='bounced'?'bounced-em':best.status==='sent'?'sent-em':'pending-em';
+  var icon=best.status==='bounced'?'Bounced':best.status==='sent'?'Sent':'Pending';
+  return '<div class="attempts-section"><div class="attempt-row"><span style="font-size:10px;font-weight:700;color:#888">'+icon+'</span><span class="attempt-email '+ec+'">'+_esc(best.email)+'</span> <span class="attempt-status '+sc+'">'+best.status.toUpperCase()+'</span>'+(best.date?' <span class="attempt-date">'+best.date+'</span>':'')+'</div>'+(best.note&&best.note!=='Alt contact'?'<div class="attempt-note">'+best.note+'</div>':'')+'</div>';
+}
+
+function _buildAdvCard(a,displayNum){
+  var atts=advAttemptsMap[a.num]||[];
+  var hasSent=false,hasPending=false,hasBounced=false;
+  for(var k=0;k<atts.length;k++){if(atts[k].status==='sent')hasSent=true;else if(atts[k].status==='pending')hasPending=true;else if(atts[k].status==='bounced')hasBounced=true;}
+  var status=hasSent?'sent':(hasPending?'pending':(hasBounced?'bounced':(a.defaultStatus||'pending')));
+  var isSent=status==='sent',isBounced=status==='bounced';
+  var sentDate=_advSentDate(a.num);
+  var dmDate=advDmMap[a.num]||null;
+  var isBadIG=!!advBadIGMap[a.num];
+  var isInterested=!!advInterestedMap[a.num];
+  var isNotInterested=!!advNotInterestedMap[a.num];
+  var isPriority=!!advPriorityMap[a.num];
+  var cls=isSent?'sent':isBounced?'bounced':'pending';
+  var phone=_advPhone(a);
+  var phoneLink=(phone||'').replace(/\D/g,'');
+  var phoneLine=phoneLink?'<div class="info"><a href="tel:'+phoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">\ud83d\udcde '+_esc(phone)+'</a></div>':(phone?'<div class="info">\ud83d\udcde '+_esc(phone)+'</div>':'');
+  var ig=advIGOverrideMap[a.num]!==undefined?advIGOverrideMap[a.num]:(a.ig||'');
+  var name=advNameOverrideMap[a.num]||a.name;
+  var owner=_advOwner(a);
+  var addr=_advAddr(a);
+  var website=advWebsiteMap[a.num]||'';
+  var quote=advQuoteMap[a.num]||'';
+  var lastContact=advLastContactedMap[a.num]||'';
+  var btns='<span class="card-num">#'+(displayNum!=null?displayNum:a.num)+'</span>';
+  if(isPriority)btns+='<span style="color:#FFD700;font-size:16px;margin:0 4px;">\u2b50</span>';
+  btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')">\u2709\ufe0f Email</button>';
+  btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
+  btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
+  btns+='<button class="btn btn-copy-dm" onclick="advCopyDM('+a.num+')">Copy DM</button>';
+  if(dmDate&&dmDate!=='pending')btns+='<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
+  else if(!isBadIG)btns+='<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
+  btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')">Bounced</button>';
+  btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
+  btns+='<button class="btn btn-foodtrade'+(advTradeMap[a.num]?' flagged':'')+'" onclick="advToggleTrade('+a.num+')">Trade</button>';
+  btns+='<button class="btn btn-foodtradedone'+(advTradeDoneMap[a.num]?' flagged':'')+'" onclick="advToggleTradeDone('+a.num+')">Trade Done</button>';
+  btns+='<button class="btn btn-ghosted'+(advGhostedMap[a.num]?' flagged':'')+'" onclick="advToggleGhosted('+a.num+')">\ud83d\udc7b Ghosted</button>';
+  btns+='<button class="btn btn-problem'+(advProblemMap[a.num]?' flagged':'')+'" onclick="advToggleProblem('+a.num+')">Problem</button>';
+  btns+='<button class="btn" style="background:'+(isPriority?'#FFD700':'#546E7A')+';color:'+(isPriority?'#000':'#fff')+';" onclick="advTogglePriority('+a.num+')">\u2b50 Priority</button>';
+  btns+='<button class="btn btn-delete" onclick="advDeleteRecord('+a.num+')">Delete</button>';
+  btns+='<button class="btn btn-add-email" onclick="advOpenEditEmail('+a.num+')" style="background:#546E7A;">Edit Email</button>';
+  var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(a.cat)+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+(isBadIG?' (bad IG)':'')+'</span> <button onclick="advToggleBadIG('+a.num+')" class="btn btn-bad-ig'+(isBadIG?' flagged':'')+'" style="margin-left:4px;">Bad IG</button> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button><button onclick="advOpenQuoteModal('+a.num+')" class="btn" style="background:#6A1B9A;">'+(quote?'\ud83d\udcb0 '+_esc(quote.slice(0,15)):'+ Quote')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:3px 7px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:3px 7px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:11px;padding:4px 8px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
+  return h;
+}
+
+function advOpenEmail(num){alert('Email modal coming in Patch 2D');}
+function advManualMarkSent(num){alert('Mark sent coming in Patch 2D');}
+function advOpenDM(num){alert('DM coming in Patch 2D');}
+function advCopyDM(num){alert('Copy DM coming in Patch 2D');}
+function advMarkBounced(num){alert('Mark bounced coming in Patch 2D');}
+function advUnmarkBounced(num){alert('Unmark bounced coming in Patch 2D');}
+function advOpenNoteModal(num){alert('Note modal coming in Patch 2C');}
+function advToggleTrade(num){alert('Toggle trade coming in Patch 2B');}
+function advToggleTradeDone(num){alert('Toggle trade done coming in Patch 2B');}
+function advToggleGhosted(num){alert('Toggle ghosted coming in Patch 2B');}
+function advToggleProblem(num){alert('Toggle problem coming in Patch 2B');}
+function advTogglePriority(num){alert('Toggle priority coming in Patch 2B');}
+function advDeleteRecord(num){alert('Delete coming in Patch 2D');}
+function advOpenEditEmail(num){alert('Edit email coming in Patch 2C');}
+function advOpenNameModal(num){alert('Edit name coming in Patch 2C');}
+function advToggleBadIG(num){alert('Toggle bad IG coming in Patch 2B');}
+function advOpenEditIG(num){alert('Edit IG coming in Patch 2C');}
+function advToggleInterested(num){alert('Toggle interested coming in Patch 2B');}
+function advToggleNotInterested(num){alert('Toggle not interested coming in Patch 2B');}
+function advToggleFollowup(num){alert('Toggle followup coming in Patch 2B');}
+function advOpenWebsiteModal(num){alert('Website modal coming in Patch 2C');}
+function advOpenQuoteModal(num){alert('Quote modal coming in Patch 2C');}
+function advOpenEditPhone(num){alert('Edit phone coming in Patch 2C');}
+function advOpenEditAddress(num){alert('Edit address coming in Patch 2C');}
+
 function advRender(){
-  var all = advBuildList();
-  var counts = {all:all.length,pending:0,sent:0,bounced:0};
+  var all=ADVERTISERS_BASE.filter(function(a){return !advDeletedMap[a.num];});
+  var counts={all:all.length,pending:0,sent:0,bounced:0};
+  var enriched=[];
   for(var i=0;i<all.length;i++){
-    if(counts[all[i].status]!==undefined) counts[all[i].status]++;
+    var a=all[i];
+    var atts=advAttemptsMap[a.num]||[];
+    var hasSent=false,hasPending=false,hasBounced=false;
+    for(var k=0;k<atts.length;k++){if(atts[k].status==='sent')hasSent=true;else if(atts[k].status==='pending')hasPending=true;else if(atts[k].status==='bounced')hasBounced=true;}
+    var st=hasSent?'sent':(hasPending?'pending':(hasBounced?'bounced':(a.defaultStatus||'pending')));
+    if(counts[st]!==undefined)counts[st]++;
+    var name=advNameOverrideMap[a.num]||a.name;
+    enriched.push({a:a,status:st,_search:(name+' '+a.cat+' '+(advNotesMap[a.num]||'')).toLowerCase()});
   }
-  var ce = document.getElementById('adv-cnt-all'); if(ce) ce.textContent = counts.all;
-  var cp = document.getElementById('adv-cnt-pending'); if(cp) cp.textContent = counts.pending;
-  var cs = document.getElementById('adv-cnt-sent'); if(cs) cs.textContent = counts.sent;
-  var cb = document.getElementById('adv-cnt-bounced'); if(cb) cb.textContent = counts.bounced;
-  var filtered = all.filter(function(a){
-    if(advFilter !== 'all' && a.status !== advFilter) return false;
-    if(advSearch && a._search.indexOf(advSearch) === -1) return false;
+  var ce=document.getElementById('adv-cnt-all');if(ce)ce.textContent=counts.all;
+  var cp=document.getElementById('adv-cnt-pending');if(cp)cp.textContent=counts.pending;
+  var cs=document.getElementById('adv-cnt-sent');if(cs)cs.textContent=counts.sent;
+  var cb=document.getElementById('adv-cnt-bounced');if(cb)cb.textContent=counts.bounced;
+  var filtered=enriched.filter(function(e){
+    if(advFilter!=='all'&&e.status!==advFilter)return false;
+    if(advSearch&&e._search.indexOf(advSearch)===-1)return false;
     return true;
   });
-  var el = document.getElementById('adv-list');
-  if(!el) return;
-  if(filtered.length === 0){
-    el.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px 20px;font-size:14px;">No advertisers match.</div>';
-    return;
-  }
-  var statusColor = {pending:'#FFA726',sent:'#4CAF50',bounced:'#EF5350'};
-  var h = '';
-  for(var j=0;j<filtered.length;j++){
-    var a = filtered[j];
-    var sc = statusColor[a.status] || '#FFA726';
-    h += '<div style="background:#263238;border:1px solid #37474F;border-left:4px solid '+sc+';border-radius:8px;padding:10px 12px;margin-bottom:8px;">';
-    h += '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;">'+_te(a.name)+'</div>';
-    h += '<div style="font-size:11px;color:#90CAF9;margin-bottom:4px;">'+_te(a.cat)+'</div>';
-    if(a.phone) h += '<div style="font-size:13px;color:#ccc;margin-bottom:2px;">\u260E\uFE0F <a href="tel:'+a.phone.replace(/[^0-9]/g,'')+'" style="color:#90CAF9;text-decoration:none;">'+_te(a.phone)+'</a></div>';
-    if(a.email) h += '<div style="font-size:12px;color:#ccc;margin-bottom:2px;">\u2709\uFE0F '+_te(a.email)+'</div>';
-    if(a.ig) h += '<div style="font-size:12px;color:#ccc;margin-bottom:2px;">@'+_te(a.ig)+'</div>';
-    h += '<div style="font-size:11px;color:'+sc+';font-weight:700;text-transform:uppercase;margin-top:4px;">'+a.status+'</div>';
-    h += '</div>';
-  }
-  el.innerHTML = h;
+  var el=document.getElementById('adv-list');
+  if(!el)return;
+  if(filtered.length===0){el.innerHTML='<div style="text-align:center;color:#aaa;padding:40px 20px;font-size:14px;">No advertisers match.</div>';return;}
+  var h='';
+  for(var j=0;j<filtered.length;j++){h+=_buildAdvCard(filtered[j].a,j+1);}
+  el.innerHTML=h;
 }
 
 function advSetFilter(f){
