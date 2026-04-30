@@ -5431,6 +5431,7 @@ window.addEventListener('load',function(){
     <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#455A64;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
+    <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button>
   </div>
   <div id="adv-list" style="padding:0 12px 80px;"></div>
 </div>
@@ -6045,7 +6046,7 @@ function advDeleteRecord(num){
 
 function advRender(){
   var all=ADVERTISERS_BASE.filter(function(a){return !advDeletedMap[a.num];});
-  var counts={all:all.length,pending:0,sent:0,bounced:0};
+  var counts={all:all.length,pending:0,sent:0,bounced:0,needdm:0};
   var enriched=[];
   for(var i=0;i<all.length;i++){
     var a=all[i];
@@ -6055,14 +6056,20 @@ function advRender(){
     var st=hasSent?'sent':(hasPending?'pending':(hasBounced?'bounced':(a.defaultStatus||'pending')));
     if(counts[st]!==undefined)counts[st]++;
     var name=advNameOverrideMap[a.num]||a.name;
-    enriched.push({a:a,status:st,_search:(name+' '+a.cat+' '+(advNotesMap[a.num]||'')).toLowerCase()});
+    // Compute "need DM" — has IG, not yet DM'd, not bad IG
+    var ig=advIGOverrideMap[a.num]!==undefined?advIGOverrideMap[a.num]:(a.ig||'');
+    var needsDM = !!ig && !advDmMap[a.num] && !advBadIGMap[a.num];
+    if(needsDM) counts.needdm++;
+    enriched.push({a:a,status:st,needdm:needsDM,_search:(name+' '+a.cat+' '+(advNotesMap[a.num]||'')).toLowerCase()});
   }
   var ce=document.getElementById('adv-cnt-all');if(ce)ce.textContent=counts.all;
   var cp=document.getElementById('adv-cnt-pending');if(cp)cp.textContent=counts.pending;
   var cs=document.getElementById('adv-cnt-sent');if(cs)cs.textContent=counts.sent;
   var cb=document.getElementById('adv-cnt-bounced');if(cb)cb.textContent=counts.bounced;
+  var cn=document.getElementById('adv-cnt-needdm');if(cn)cn.textContent=counts.needdm;
   var filtered=enriched.filter(function(e){
-    if(advFilter!=='all'&&e.status!==advFilter)return false;
+    if(advFilter==='needdm'){if(!e.needdm)return false;}
+    else if(advFilter!=='all'&&e.status!==advFilter)return false;
     if(advSearch&&e._search.indexOf(advSearch)===-1)return false;
     return true;
   });
@@ -6076,11 +6083,16 @@ function advRender(){
 
 function advSetFilter(f){
   advFilter = f;
-  var btns = ['all','pending','sent','bounced'];
+  var btns = ['all','pending','sent','bounced','needdm'];
   for(var i=0;i<btns.length;i++){
     var b = document.getElementById('adv-filter-'+btns[i]);
     if(b){
-      b.style.background = (btns[i] === f) ? '#00838F' : '#455A64';
+      // Active color depends on which button: needdm uses dark teal, others use cyan
+      if(btns[i] === f){
+        b.style.background = (f === 'needdm') ? '#00695C' : '#00838F';
+      } else {
+        b.style.background = (btns[i] === 'needdm') ? '#004D40' : '#455A64';
+      }
     }
   }
   advRender();
