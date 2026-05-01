@@ -5526,7 +5526,7 @@ window.addEventListener('load',function(){
     <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
+    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#FF6F00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
@@ -5771,9 +5771,9 @@ function advBuildList(){
   return arr;
 }
 
-var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'lawyer';if(v==='lawdoc')v='lawyer';return v;}catch(e){return 'lawyer';}})();
+var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
-  if(t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='lawdoc')return;
+  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='lawdoc')return;
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
   advViewType=t;
@@ -5782,6 +5782,7 @@ function advSetViewType(t){
   if(hdr){
     if(t==='dealer')hdr.textContent='\ud83d\ude97 Dealerships';
     else if(t==='doctor')hdr.textContent='\ud83e\ude7a Doctors';
+    else if(t==='lawyer')hdr.textContent='Lawyers';
     else hdr.textContent='\ud83d\udcbc ADS';
   }
   var b1=document.getElementById('advertisers-tab-btn');
@@ -5796,6 +5797,8 @@ function advSetViewType(t){
   if(s1){s1.style.background=(t==='lawyer'?'#00838F':'#1B2E4A');s1.classList.toggle('ads-active',t==='lawyer');}
   if(s2){s2.style.background=(t==='doctor'?'#7B1FA2':'#1B2E4A');s2.classList.toggle('ads-active',t==='doctor');}
   if(s3){s3.style.background=(t==='dealer'?'#FF6F00':'#1B2E4A');s3.classList.toggle('ads-active',t==='dealer');}
+  var s0=document.getElementById('ads-sub-all');
+  if(s0){s0.style.background=(t==='all'?'#FFFFFF':'#1B2E4A');s0.style.color=(t==='all'?'#000':'#fff');s0.classList.toggle('ads-active',t==='all');}
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
@@ -6187,6 +6190,7 @@ function advRender(){
     var _sl=document.getElementById('ads-sub-cnt-lawyers'); if(_sl) _sl.textContent=_subCounts.lawyer;
     var _sd=document.getElementById('ads-sub-cnt-doctors'); if(_sd) _sd.textContent=_subCounts.doctor;
     var _sde=document.getElementById('ads-sub-cnt-dealers'); if(_sde) _sde.textContent=_subCounts.dealer;
+    var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=(_subCounts.lawyer+_subCounts.doctor+_subCounts.dealer);
   } catch(_e) { console.warn('subcount loop failed:', _e); }
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
@@ -6194,6 +6198,7 @@ function advRender(){
     var isDealer=(c==='Dealership');
     var isDoc=(c.indexOf('Doctor')===0);
     var isLaw=(c.indexOf('Lawyer')===0);
+    if(advViewType==='all')return true;
     if(advViewType==='dealer')return isDealer;
     if(advViewType==='doctor')return isDoc;
     return isLaw;
@@ -6318,6 +6323,12 @@ function showLawyersView(){
   if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('lawyer');
+  showAdvertisersView();
+}
+function showAllAdsView(){
+  if(typeof isFriend!=='undefined' && isFriend) return;
+  if(typeof isDemo!=='undefined' && isDemo) return;
+  advSetViewType('all');
   showAdvertisersView();
 }
 function showAdvertisersView(){
