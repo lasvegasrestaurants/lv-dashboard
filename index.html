@@ -6481,6 +6481,39 @@ function _advApplyFirebaseData(rec){
   } catch(e) { console.warn('Adv seed 2K failed:', e); }
 })();
 
+// === ADVERTISER SEED DATA (Patch 2LM — Lawyers + Cosmetic Dentistry batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2lm_v1_applied') === '1') return;
+    var igSeed = {
+      1020: 'theabramslawfirm',
+      1021: 'jgastelumlaw',
+      1022: 'ghandilaw',
+      1028: 'thedefenderslasvegas',
+      1030: 'halfpricelawyers',
+      1063: 'lasvegasdentalgroup',
+      1064: 'stunningsmilesoflasvegas',
+      1065: 'willowspringsdentalmcrae',
+      1066: 'truedentistry',
+      1070: 'summerlindentalsolutions',
+      1071: 'wagnerdentallv'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_2lm_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2LM failed:', e); }
+})();
+
+
 
 // Auto-load on app start (delay 1.5s to let auth check finish)
 setTimeout(advFbLoad, 1500);
