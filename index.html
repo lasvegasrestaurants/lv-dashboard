@@ -866,7 +866,17 @@ var ADVERTISERS_BASE = [
   {num:1182,name:"Van Law Firm Injury & Accident Attorneys",cat:"Lawyer - Personal Injury",phone:"(725) 900-2644",ig:"",email:"",website:"vanlawfirm.com"},
   {num:1183,name:"Laub Law",cat:"Lawyer - Personal Injury",phone:"(702) 463-4422",ig:"",email:"",website:"laublawnv.com"},
   {num:1184,name:"Rosenblum Law Offices",cat:"Lawyer - Personal Injury",phone:"(702) 433-2889",ig:"",email:"",website:"rosenblumlawoffices.com"},
-  {num:1185,name:"Gonzalez Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 778-3030",ig:"",email:"",website:"gonzalezfirmnv.com"}
+  {num:1185,name:"Gonzalez Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 778-3030",ig:"",email:"",website:"gonzalezfirmnv.com"},
+  {num:2001,name:"Findlay Toyota",cat:"Dealership",phone:"(702) 566-2573",ig:"",email:"",website:"findlaytoyota.com"},
+  {num:2002,name:"Findlay Chevrolet",cat:"Dealership",phone:"(702) 982-4000",ig:"",email:"",website:"findlaychevy.com"},
+  {num:2003,name:"Findlay Honda Centennial Hills",cat:"Dealership",phone:"(702) 982-4100",ig:"",email:"",website:"findlayhonda.com"},
+  {num:2004,name:"Findlay Honda Henderson",cat:"Dealership",phone:"(702) 982-4180",ig:"",email:"",website:"findlayhondahenderson.com"},
+  {num:2005,name:"Findlay Volkswagen",cat:"Dealership",phone:"(702) 558-9300",ig:"",email:"",website:"findlayvw.com"},
+  {num:2006,name:"Findlay Mazda",cat:"Dealership",phone:"(702) 982-4000",ig:"",email:"",website:"findlaymazda.com"},
+  {num:2007,name:"Findlay Nissan Henderson",cat:"Dealership",phone:"(702) 564-7777",ig:"",email:"",website:"findlaynissanhenderson.com"},
+  {num:2008,name:"Findlay Lincoln",cat:"Dealership",phone:"(702) 558-8888",ig:"",email:"",website:"findlaylincolnofhenderson.com"},
+  {num:2009,name:"Lexus of Henderson",cat:"Dealership",phone:"(702) 228-7736",ig:"",email:"",website:"lexusofhenderson.com"},
+  {num:2010,name:"Mercedes-Benz of Henderson",cat:"Dealership",phone:"(702) 919-5114",ig:"",email:"",website:"mbofhenderson.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -6863,6 +6873,38 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 2U failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 3A - Dealership batch 1) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_3a_v1_applied') === '1') return;
+    var igSeed = {
+      2001: 'findlaytoyota',
+      2002: 'findlaychevy',
+      2003: 'findlayhonda_centennialhills',
+      2004: 'findlayhondahenderson',
+      2005: 'findlayvolkswagen',
+      2006: 'findlaymazda',
+      2007: 'findlaynissanhenderson',
+      2008: 'findlay.lincoln',
+      2009: 'lexusofhenderson',
+      2010: 'mbofhenderson'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_3a_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 3A failed:', e); }
+})();
+
 
 
 
