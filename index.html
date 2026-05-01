@@ -6513,6 +6513,52 @@ function _advApplyFirebaseData(rec){
   } catch(e) { console.warn('Adv seed 2LM failed:', e); }
 })();
 
+// === ADVERTISER SEED DATA (Patch 2N - Med Spa/Dermatology batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2n_v1_applied') === '1') return;
+    var igSeed = {
+      1074: 'faceforwardaesthetics',
+      1075: 'lvderm',
+      1078: 'advancedaestheticslvnv',
+      1080: 'aestheticmedicine_lv',
+      1081: 'richards_cosmetic_surgery'
+    };
+    var emailSeed = {
+      1075: 'info' + String.fromCharCode(64) + 'lvderm.com',
+      1077: 'renewmedicalspalv' + String.fromCharCode(64) + 'gmail.com'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+
+    var fld = {};
+    try { fld = JSON.parse(localStorage.getItem('lv_adv_fieldoverride_v1')) || {}; } catch(e) { fld = {}; }
+    Object.keys(emailSeed).forEach(function(num){
+      if (!fld[num]) fld[num] = {};
+      if (!fld[num].email) fld[num].email = emailSeed[num];
+    });
+    localStorage.setItem('lv_adv_fieldoverride_v1', JSON.stringify(fld));
+
+    localStorage.setItem('lv_adv_seed_2n_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+    if (typeof advFieldOverrideMap !== 'undefined') {
+      Object.keys(emailSeed).forEach(function(num){
+        if (!advFieldOverrideMap[num]) advFieldOverrideMap[num] = {};
+        if (!advFieldOverrideMap[num].email) advFieldOverrideMap[num].email = emailSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2N failed:', e); }
+})();
+
+
 
 
 // Auto-load on app start (delay 1.5s to let auth check finish)
