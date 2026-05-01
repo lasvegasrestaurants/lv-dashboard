@@ -310,7 +310,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
-        <button onclick="showLawyersView()" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 Advertisers</button><button onclick="showDoctorsView()" id="doctors-tab-btn" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🩺 Doctors</button><button onclick="showDealershipsView()" id="dealerships-tab-btn" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚗 Dealerships</button>
+        <button onclick="showLawyersView()" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
@@ -5027,7 +5027,7 @@ function crmBuildCard(c) {
   html += '<button class="crm-btn" style="background:#4527A0;" onclick="crmLogVisit('+c.id+')">✓ Visit</button>';
   html += '<button class="crm-btn" style="background:#E65100;" onclick="crmAddPoints('+c.id+')">+ Points</button>';
   html += '<button class="crm-btn'+(c.followup?' '+'btn-followup flagged':'')+'" style="background:'+(c.followup?'#00695C':'#546E7A')+';" onclick="crmToggleFollowup('+c.id+')">🔔 Follow Up</button>';
-  html += '<button class="crm-btn" style="background:#455A64;" onclick="openCrmNote('+c.id+')">'+(c.notes?'📝 Note ✓':'📝 Note')+'</button>';
+  html += '<button class="crm-btn" style="background:#1B2E4A;" onclick="openCrmNote('+c.id+')">'+(c.notes?'📝 Note ✓':'📝 Note')+'</button>';
   html += '<button class="crm-btn" style="background:#37474F;" onclick="openEditCustomer('+c.id+')">✏️ Edit</button>';
   html += '<button class="crm-btn" style="background:#B71C1C;" onclick="crmDelete('+c.id+')">🗑 Delete</button>';
   html += '</div>';
@@ -5513,18 +5513,19 @@ window.addEventListener('load',function(){
 
 
 <!-- ADVERTISERS VIEW -->
-<div class="view" id="view-advertisers" style="display:none;">
+<div class="view" id="view-advertisers" style="display:none;"><div class="scroller" id="adv-scroller" style="display:none;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
-      <button onclick="showDashTab()" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
-      <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;"><span id="adv-view-header">💼 Advertisers</span></span>
+      <button onclick="showDashTab()" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
+      <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;"><span id="adv-view-header">💼 ADS</span></span>
     </div>
   </div>
   <div style="padding:8px 12px;background:#1B2E4A;">
-    <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #455A64;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
+    <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
+    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showLawyersView()" id="ads-sub-lawyers" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">💼 Lawyers</button><button onclick="showDoctorsView()" id="ads-sub-doctors" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🩺 Doctors</button><button onclick="showDealershipsView()" id="ads-sub-dealers" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🚗 Dealerships</button></div>
+<button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#FF6F00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
@@ -5779,14 +5780,20 @@ function advSetViewType(t){
   if(hdr){
     if(t==='dealer')hdr.textContent='\ud83d\ude97 Dealerships';
     else if(t==='doctor')hdr.textContent='\ud83e\ude7a Doctors';
-    else hdr.textContent='\ud83d\udcbc Advertisers';
+    else hdr.textContent='\ud83d\udcbc ADS';
   }
   var b1=document.getElementById('advertisers-tab-btn');
   var b2=document.getElementById('dealerships-tab-btn');
   var b3=document.getElementById('doctors-tab-btn');
-  if(b1)b1.style.background=(t==='lawyer'?'#00838F':'#455A64');
-  if(b2)b2.style.background=(t==='dealer'?'#FF6F00':'#455A64');
-  if(b3)b3.style.background=(t==='doctor'?'#7B1FA2':'#455A64');
+  if(b1)b1.style.background=(t==='lawyer'?'#00838F':'#1B2E4A');
+  if(b2)b2.style.background=(t==='dealer'?'#FF6F00':'#1B2E4A');
+  if(b3)b3.style.background=(t==='doctor'?'#7B1FA2':'#1B2E4A');
+  var s1=document.getElementById('ads-sub-lawyers');
+  var s2=document.getElementById('ads-sub-doctors');
+  var s3=document.getElementById('ads-sub-dealers');
+  if(s1)s1.style.background=(t==='lawyer'?'#00838F':'#1B2E4A');
+  if(s2)s2.style.background=(t==='doctor'?'#7B1FA2':'#1B2E4A');
+  if(s3)s3.style.background=(t==='dealer'?'#FF6F00':'#1B2E4A');
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
@@ -6264,7 +6271,7 @@ function advSetFilter(f){
       if(btns[i] === f){
         b.style.background = (f === 'needdm') ? '#00695C' : '#00838F';
       } else {
-        b.style.background = (btns[i] === 'needdm') ? '#004D40' : '#455A64';
+        b.style.background = (btns[i] === 'needdm') ? '#004D40' : '#1B2E4A';
       }
     }
   }
