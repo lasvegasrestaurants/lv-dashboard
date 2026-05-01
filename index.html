@@ -6558,6 +6558,56 @@ function _advApplyFirebaseData(rec){
   } catch(e) { console.warn('Adv seed 2N failed:', e); }
 })();
 
+// === ADVERTISER SEED DATA (Patch 2O - Chiropractor + Specialty batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2o_v1_applied') === '1') return;
+    var igSeed = {
+      1088: 'lvvalleycare',
+      1090: 'maxhealthlv',
+      1092: 'akerschiro',
+      1093: 'lasvegaschiro',
+      1094: 'lvchiropractic',
+      1095: 'nuspinelv',
+      1097: 'cccnevada',
+      1098: 'lvheartassociates',
+      1099: 'nevadaeyephysicians',
+      1100: 'aestheticmedicine_lv'
+    };
+    var emailSeed = {
+      1090: 'info' + String.fromCharCode(64) + 'mhclv.com'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+
+    var fld = {};
+    try { fld = JSON.parse(localStorage.getItem('lv_adv_fieldoverride_v1')) || {}; } catch(e) { fld = {}; }
+    Object.keys(emailSeed).forEach(function(num){
+      if (!fld[num]) fld[num] = {};
+      if (!fld[num].email) fld[num].email = emailSeed[num];
+    });
+    localStorage.setItem('lv_adv_fieldoverride_v1', JSON.stringify(fld));
+
+    localStorage.setItem('lv_adv_seed_2o_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+    if (typeof advFieldOverrideMap !== 'undefined') {
+      Object.keys(emailSeed).forEach(function(num){
+        if (!advFieldOverrideMap[num]) advFieldOverrideMap[num] = {};
+        if (!advFieldOverrideMap[num].email) advFieldOverrideMap[num].email = emailSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2O failed:', e); }
+})();
+
+
 
 
 
