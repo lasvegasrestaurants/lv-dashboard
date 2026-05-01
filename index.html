@@ -6173,18 +6173,21 @@ function advDeleteRecord(num){
 
 function advRender(){
   // Compute sub-tab counts from full database
-  var _subCounts = {lawyer:0, doctor:0, dealer:0};
-  for(var _ix=0; _ix<ADVERTISERS_BASE.length; _ix++){
-    var _ar = ADVERTISERS_BASE[_ix];
-    if(advDeletedMap[_ar.num]) continue;
-    var _ac = _ar.cat||'';
-    if(_ac==='Dealership') _subCounts.dealer++;
-    else if(_ac.indexOf('Doctor')===0) _subCounts.doctor++;
-    else if(_ac.indexOf('Lawyer')===0) _subCounts.lawyer++;
-  }
-  var _sl=document.getElementById('ads-sub-cnt-lawyers'); if(_sl) _sl.textContent=_subCounts.lawyer;
-  var _sd=document.getElementById('ads-sub-cnt-doctors'); if(_sd) _sd.textContent=_subCounts.doctor;
-  var _sde=document.getElementById('ads-sub-cnt-dealers'); if(_sde) _sde.textContent=_subCounts.dealer;
+  try {
+    var _subCounts = {lawyer:0, doctor:0, dealer:0};
+    for(var _ix=0; _ix<ADVERTISERS_BASE.length; _ix++){
+      var _ar = ADVERTISERS_BASE[_ix];
+      if(!_ar || _ar.num===undefined) continue;
+      if(advDeletedMap && advDeletedMap[_ar.num]) continue;
+      var _ac = (_ar.cat || '');
+      if(_ac==='Dealership') _subCounts.dealer++;
+      else if(_ac.indexOf('Doctor')===0) _subCounts.doctor++;
+      else if(_ac.indexOf('Lawyer')===0) _subCounts.lawyer++;
+    }
+    var _sl=document.getElementById('ads-sub-cnt-lawyers'); if(_sl) _sl.textContent=_subCounts.lawyer;
+    var _sd=document.getElementById('ads-sub-cnt-doctors'); if(_sd) _sd.textContent=_subCounts.doctor;
+    var _sde=document.getElementById('ads-sub-cnt-dealers'); if(_sde) _sde.textContent=_subCounts.dealer;
+  } catch(_e) { console.warn('subcount loop failed:', _e); }
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
     var c=a.cat||'';
