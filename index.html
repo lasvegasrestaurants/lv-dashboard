@@ -5951,8 +5951,8 @@ function advOpenEmail(num){
     return;
   }
   var name=advNameOverrideMap[num]||a.name;
-  var subject='Partnership Opportunity with @lasvegas_restaurants';
-  var body='Hi,\n\nI run @lasvegas_restaurants on Instagram (131K followers, focused on the LV food and lifestyle scene). I would love to discuss featuring '+name+' to my audience.\n\nLet me know if you would be open to a quick call.\n\nShane Christensen\n@lasvegas_restaurants\nShane@LasVegasRestaurants.net';
+  var subject='Sponsorship spot on @lasvegas_restaurants';
+  var body='Hi '+name+',\n\nI run @lasvegas_restaurants on Instagram (131K followers). I am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nIf you are interested or have questions, just reply here.\n\nShane Christensen\n@lasvegas_restaurants';
   var url='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   window.location.href=url;
 }
@@ -6026,7 +6026,7 @@ function advOpenDM(num){
 function advCopyDM(num){
   var a=_advGetA(num);if(!a)return;
   var name=advNameOverrideMap[num]||a.name;
-  var msg='Hi! I run @lasvegas_restaurants (131K followers in the LV market). Loved what I saw from '+name+' and wanted to connect about a potential partnership. Open to chatting?';
+  var msg='Hi! I run @lasvegas_restaurants on Instagram (131K followers). I am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nIf you are interested or have questions, just reply here.\n\nShane Christensen\n@lasvegas_restaurants';
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(msg).then(function(){alert('DM message copied to clipboard!');},function(){prompt('Copy this DM:',msg);});
   }else{
