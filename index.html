@@ -310,7 +310,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button id="restore-btn" style="background:#00695C;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;" ontouchstart="this._t=Date.now();this._fired=false;" ontouchend="if(!this._fired&&Date.now()-this._t<500){this._fired=true;document.getElementById('import-file-input').click();}" onclick="if(!this._fired)document.getElementById('import-file-input').click();this._fired=false;">⬆ Restore</button>
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
-        <button onclick="showAdvertisersView()" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 Advertisers</button><button onclick="showDealershipsView()" id="dealerships-tab-btn" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚗 Dealerships</button>
+        <button onclick="showLawyersView()" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 Advertisers</button><button onclick="showDoctorsView()" id="doctors-tab-btn" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🩺 Doctors</button><button onclick="showDealershipsView()" id="dealerships-tab-btn" style="background:#455A64;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚗 Dealerships</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
 
@@ -5768,19 +5768,25 @@ function advBuildList(){
   return arr;
 }
 
-var advViewType = (function(){try{return localStorage.getItem('lv_adv_viewtype_v1')||'lawdoc';}catch(e){return 'lawdoc';}})();
+var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'lawyer';if(v==='lawdoc')v='lawyer';return v;}catch(e){return 'lawyer';}})();
 function advSetViewType(t){
-  if(t!=='lawdoc'&&t!=='dealer')return;
+  if(t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='lawdoc')return;
+  // Migrate legacy 'lawdoc' to 'lawyer'
+  if(t==='lawdoc')t='lawyer';
   advViewType=t;
   try{localStorage.setItem('lv_adv_viewtype_v1',t);}catch(e){}
-  // Update header text
   var hdr=document.getElementById('adv-view-header');
-  if(hdr)hdr.textContent=(t==='dealer'?'\ud83d\ude97 Dealerships':'\ud83d\udcbc Advertisers');
-  // Update which tab btn is active
+  if(hdr){
+    if(t==='dealer')hdr.textContent='\ud83d\ude97 Dealerships';
+    else if(t==='doctor')hdr.textContent='\ud83e\ude7a Doctors';
+    else hdr.textContent='\ud83d\udcbc Advertisers';
+  }
   var b1=document.getElementById('advertisers-tab-btn');
   var b2=document.getElementById('dealerships-tab-btn');
-  if(b1)b1.style.background=(t==='lawdoc'?'#00838F':'#455A64');
+  var b3=document.getElementById('doctors-tab-btn');
+  if(b1)b1.style.background=(t==='lawyer'?'#00838F':'#455A64');
   if(b2)b2.style.background=(t==='dealer'?'#FF6F00':'#455A64');
+  if(b3)b3.style.background=(t==='doctor'?'#7B1FA2':'#455A64');
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
@@ -6159,9 +6165,13 @@ function advDeleteRecord(num){
 function advRender(){
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
-    var isDealer=(a.cat==='Dealership');
+    var c=a.cat||'';
+    var isDealer=(c==='Dealership');
+    var isDoc=(c.indexOf('Doctor')===0);
+    var isLaw=(c.indexOf('Lawyer')===0);
     if(advViewType==='dealer')return isDealer;
-    return !isDealer;
+    if(advViewType==='doctor')return isDoc;
+    return isLaw;
   });
   var counts={all:all.length,pending:0,sent:0,bounced:0,needdm:0,noemail:0,badig:0,interested:0,notes:0,followup:0,problem:0,trade:0,priority:0,noig:0};
   var enriched=[];
@@ -6271,6 +6281,18 @@ function showDealershipsView(){
   if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('dealer');
+  showAdvertisersView();
+}
+function showDoctorsView(){
+  if(typeof isFriend!=='undefined' && isFriend) return;
+  if(typeof isDemo!=='undefined' && isDemo) return;
+  advSetViewType('doctor');
+  showAdvertisersView();
+}
+function showLawyersView(){
+  if(typeof isFriend!=='undefined' && isFriend) return;
+  if(typeof isDemo!=='undefined' && isDemo) return;
+  advSetViewType('lawyer');
   showAdvertisersView();
 }
 function showAdvertisersView(){
