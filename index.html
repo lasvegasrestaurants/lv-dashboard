@@ -6687,6 +6687,34 @@ function _advApplyFirebaseData(rec){
   } catch(e) { console.warn('Adv seed 2O failed:', e); }
 })();
 
+// === ADVERTISER SEED DATA (Patch 2P - New PI Lawyers IG batch 1) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2p_v1_applied') === '1') return;
+    var igSeed = {
+      1101: 'askadamkutner',
+      1103: 'claggettsykes',
+      1104: 'battleborninjury',
+      1106: 'haleinjurylaw',
+      1108: 'shookstonelaw',
+      1112: 'valientemottinjury'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_2p_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2P failed:', e); }
+})();
+
+
 
 
 
