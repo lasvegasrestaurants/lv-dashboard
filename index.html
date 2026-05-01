@@ -861,7 +861,9 @@ var ADVERTISERS_BASE = [
   {num:1177,name:"Crockett Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 871-1000",ig:"",email:"",website:"crockettlawfirm.com"},
   {num:1178,name:"Pyatt Silvestri",cat:"Lawyer - Personal Injury",phone:"(702) 383-6000",ig:"",email:"",website:"pyattsilvestri.com"},
   {num:1179,name:"Mott Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 623-2323",ig:"",email:"",website:"mottlawfirm.com"},
-  {num:1180,name:"Boyer Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 982-1110",ig:"",email:"",website:"boyerlawnv.com"}
+  {num:1180,name:"Boyer Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 982-1110",ig:"",email:"",website:"boyerlawnv.com"},
+  {num:1181,name:"Ladah Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 252-0055",ig:"",email:"",website:"ladahlaw.com"},
+  {num:1182,name:"Van Law Firm Injury & Accident Attorneys",cat:"Lawyer - Personal Injury",phone:"(725) 900-2644",ig:"",email:"",website:"vanlawfirm.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -6713,6 +6715,62 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 2P failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 2Q - PI Lawyers IG batch 2) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2q_v1_applied') === '1') return;
+    var igSeed = {
+      1008: 'naqviinjurylaw',
+      1115: 'samandashlaw',
+      1135: 'steve.dimopoulos',
+      1140: 'sweetjameslaw',
+      1181: 'ladah_law_firm',
+      1182: 'vanlawfirm'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_2q_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2Q failed:', e); }
+})();
+
+
+// === ADVERTISER SEED DATA (Patch 2Q - PI Lawyers IG batch 2) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2q_v1_applied') === '1') return;
+    var igSeed = {
+      1008: 'naqviinjurylaw',
+      1115: 'samandashlaw',
+      1135: 'steve.dimopoulos',
+      1140: 'sweetjameslaw',
+      1181: 'ladah_law_firm',
+      1182: 'vanlawfirm'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_2q_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2Q failed:', e); }
+})();
+
 
 
 
