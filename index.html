@@ -6405,6 +6405,79 @@ function _advApplyFirebaseData(rec){
   } catch(e) {}
 })();
 
+// === ADVERTISER SEED DATA (Patch 2K — Personal Injury Lawyers batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2k_v1_applied') === '1') return;
+    var igSeed = {
+      1001: 'baylawinjuryattorneys',
+      1002: 'lernerandrowe',
+      1003: 'ericblankinjuryattorneys',
+      1004: 'cpk_law',
+      1005: 'decastroverdelawgroup',
+      1006: 'bensonandbingham',
+      1007: 'hennessandhaightinjurylaw',
+      1008: 'naqviinjurylaw',
+      1009: 'egletlaw',
+      1010: 'aldrichlawltd',
+      1011: 'bennadiglaw'
+    };
+    var emailSeed = {
+      1003: 'Intake@ericblanklaw.com'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    var atts = {};
+    try { atts = JSON.parse(localStorage.getItem('lv_adv_attempts_v1')) || {}; } catch(e) { atts = {}; }
+    Object.keys(emailSeed).forEach(function(num){
+      var existing = atts[num] || [];
+      var hasEmail = false;
+      for (var i = 0; i < existing.length; i++) {
+        if (existing[i].email) { hasEmail = true; break; }
+      }
+      if (!hasEmail) {
+        existing.push({
+          email: emailSeed[num],
+          status: 'pending',
+          date: '',
+          note: 'Seeded from research'
+        });
+        atts[num] = existing;
+      }
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_attempts_v1', JSON.stringify(atts));
+    localStorage.setItem('lv_adv_seed_2k_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+    if (typeof advAttemptsMap !== 'undefined') {
+      Object.keys(emailSeed).forEach(function(num){
+        var existing = advAttemptsMap[num] || [];
+        var hasEmail = false;
+        for (var i = 0; i < existing.length; i++) {
+          if (existing[i].email) { hasEmail = true; break; }
+        }
+        if (!hasEmail) {
+          existing.push({
+            email: emailSeed[num],
+            status: 'pending',
+            date: '',
+            note: 'Seeded from research'
+          });
+          advAttemptsMap[num] = existing;
+        }
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2K failed:', e); }
+})();
+
+
 // Auto-load on app start (delay 1.5s to let auth check finish)
 setTimeout(advFbLoad, 1500);
 
