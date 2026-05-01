@@ -69,6 +69,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .badge.active-badge { outline: 3px solid #fff !important; box-shadow: 0 0 0 3px rgba(255,255,255,0.5) !important; opacity: 1 !important; }
 .adv-fbtn { margin: 3px !important; }
 .adv-fbtn.adv-active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(0,0,0,0.25) !important; }
+.ads-subtab.ads-active{box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(0,0,0,0.25);}
+
 .b-total    { background: #2E4057; }
 .b-verified { background: #1B5E20; }
 .b-noemail  { background: #283593; }
@@ -5524,7 +5526,7 @@ window.addEventListener('load',function(){
     <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showLawyersView()" id="ads-sub-lawyers" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">💼 Lawyers</button><button onclick="showDoctorsView()" id="ads-sub-doctors" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🩺 Doctors</button><button onclick="showDealershipsView()" id="ads-sub-dealers" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🚗 Dealerships</button></div>
+    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#FF6F00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
@@ -5791,9 +5793,9 @@ function advSetViewType(t){
   var s1=document.getElementById('ads-sub-lawyers');
   var s2=document.getElementById('ads-sub-doctors');
   var s3=document.getElementById('ads-sub-dealers');
-  if(s1)s1.style.background=(t==='lawyer'?'#00838F':'#1B2E4A');
-  if(s2)s2.style.background=(t==='doctor'?'#7B1FA2':'#1B2E4A');
-  if(s3)s3.style.background=(t==='dealer'?'#FF6F00':'#1B2E4A');
+  if(s1){s1.style.background=(t==='lawyer'?'#00838F':'#1B2E4A');s1.classList.toggle('ads-active',t==='lawyer');}
+  if(s2){s2.style.background=(t==='doctor'?'#7B1FA2':'#1B2E4A');s2.classList.toggle('ads-active',t==='doctor');}
+  if(s3){s3.style.background=(t==='dealer'?'#FF6F00':'#1B2E4A');s3.classList.toggle('ads-active',t==='dealer');}
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
@@ -6170,6 +6172,19 @@ function advDeleteRecord(num){
 }
 
 function advRender(){
+  // Compute sub-tab counts from full database
+  var _subCounts = {lawyer:0, doctor:0, dealer:0};
+  for(var _ix=0; _ix<ADVERTISERS_BASE.length; _ix++){
+    var _ar = ADVERTISERS_BASE[_ix];
+    if(advDeletedMap[_ar.num]) continue;
+    var _ac = _ar.cat||'';
+    if(_ac==='Dealership') _subCounts.dealer++;
+    else if(_ac.indexOf('Doctor')===0) _subCounts.doctor++;
+    else if(_ac.indexOf('Lawyer')===0) _subCounts.lawyer++;
+  }
+  var _sl=document.getElementById('ads-sub-cnt-lawyers'); if(_sl) _sl.textContent=_subCounts.lawyer;
+  var _sd=document.getElementById('ads-sub-cnt-doctors'); if(_sd) _sd.textContent=_subCounts.doctor;
+  var _sde=document.getElementById('ads-sub-cnt-dealers'); if(_sde) _sde.textContent=_subCounts.dealer;
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
     var c=a.cat||'';
