@@ -865,7 +865,8 @@ var ADVERTISERS_BASE = [
   {num:1181,name:"Ladah Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 252-0055",ig:"",email:"",website:"ladahlaw.com"},
   {num:1182,name:"Van Law Firm Injury & Accident Attorneys",cat:"Lawyer - Personal Injury",phone:"(725) 900-2644",ig:"",email:"",website:"vanlawfirm.com"},
   {num:1183,name:"Laub Law",cat:"Lawyer - Personal Injury",phone:"(702) 463-4422",ig:"",email:"",website:"laublawnv.com"},
-  {num:1184,name:"Rosenblum Law Offices",cat:"Lawyer - Personal Injury",phone:"(702) 433-2889",ig:"",email:"",website:"rosenblumlawoffices.com"}
+  {num:1184,name:"Rosenblum Law Offices",cat:"Lawyer - Personal Injury",phone:"(702) 433-2889",ig:"",email:"",website:"rosenblumlawoffices.com"},
+  {num:1185,name:"Gonzalez Law Firm",cat:"Lawyer - Personal Injury",phone:"(702) 778-3030",ig:"",email:"",website:"gonzalezfirmnv.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -6838,6 +6839,31 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 2T failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 2U - PI Lawyers IG batch 6) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_2u_v1_applied') === '1') return;
+    var igSeed = {
+      1149: 'hanrattylawgroup',
+      1173: 'hennessandhaightinjurylaw',
+      1185: 'gonzalezfirmnv'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_2u_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 2U failed:', e); }
+})();
+
 
 
 
