@@ -950,7 +950,15 @@ var ADVERTISERS_BASE = [
   {num:4004,name:"The Hair Standard",cat:"Salon",phone:"(702) 478-3333",ig:"",email:"",website:"thehairstandard.com"},
   {num:4005,name:"Floyd\'s 99 Las Vegas",cat:"Salon",phone:"(702) 538-7800",ig:"",email:"",website:"floyds99.com"},
   {num:4006,name:"Drybar UnCommons",cat:"Salon",phone:"(702) 945-2729",ig:"",email:"",website:"thedrybar.com"},
-  {num:4007,name:"Drybar Cosmopolitan",cat:"Salon",phone:"(725) 567-9500",ig:"",email:"",website:"thedrybar.com"}
+  {num:4007,name:"Drybar Cosmopolitan",cat:"Salon",phone:"(725) 567-9500",ig:"",email:"",website:"thedrybar.com"},
+  {num:5001,name:"Michele Sullivan - Douglas Elliman",cat:"Realtor",phone:"(702) 250-2266",ig:"",email:"",website:"msluxuryhomes.com"},
+  {num:5002,name:"Crystal Miller - Living N Las Vegas",cat:"Realtor",phone:"(702) 555-0188",ig:"",email:"",website:"livingnlasvegas.com"},
+  {num:5003,name:"Courtney Bentley - IS Luxury",cat:"Realtor",phone:"(702) 215-8460",ig:"",email:"",website:"isluxury.com"},
+  {num:5004,name:"Las Vegas REALTORS Association",cat:"Realtor",phone:"(702) 784-5000",ig:"",email:"",website:"lasvegasrealtor.com"},
+  {num:5005,name:"Olga Moreno - Las Vegas Realtor",cat:"Realtor",phone:"(702) 555-0190",ig:"",email:"",website:"olgamorenolv.com"},
+  {num:5006,name:"Las Vegas Sotheby\'s International Realty",cat:"Realtor",phone:"(702) 360-1414",ig:"",email:"",website:"lasvegassothebysrealty.com"},
+  {num:5007,name:"Las Vegas Realty Group LLC",cat:"Realtor",phone:"(702) 592-7253",ig:"",email:"",website:"lasvegasrealtygroup.com"},
+  {num:5008,name:"The Stark Team - Henderson Luxury",cat:"Realtor",phone:"(702) 236-8364",ig:"",email:"",website:"hendersonluxuryresidences.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -5598,7 +5606,7 @@ window.addEventListener('load',function(){
     <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
+    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('pending')" id="adv-filter-pending" class="adv-fbtn" style="background:#FF6F00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Pending <span id="adv-cnt-pending">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
@@ -5845,7 +5853,7 @@ function advBuildList(){
 
 var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
-  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='lawdoc')return;
+  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='lawdoc')return;
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
   advViewType=t;
@@ -5856,6 +5864,7 @@ function advSetViewType(t){
     else if(t==='doctor')hdr.textContent='\ud83e\ude7a Doctors';
     else if(t==='spa')hdr.textContent='Spas';
     else if(t==='salon')hdr.textContent='Salons';
+    else if(t==='realtor')hdr.textContent='Realtors';
     else if(t==='lawyer')hdr.textContent='Lawyers';
     else hdr.textContent='\ud83d\udcbc ADS';
   }
@@ -5875,6 +5884,8 @@ function advSetViewType(t){
   if(s4){s4.style.background=(t==='spa'?'#E91E63':'#1B2E4A');s4.classList.toggle('ads-active',t==='spa');}
   var s5=document.getElementById('ads-sub-salons');
   if(s5){s5.style.background=(t==='salon'?'#9C27B0':'#1B2E4A');s5.classList.toggle('ads-active',t==='salon');}
+  var s6=document.getElementById('ads-sub-realtors');
+  if(s6){s6.style.background=(t==='realtor'?'#2E7D32':'#1B2E4A');s6.classList.toggle('ads-active',t==='realtor');}
   var s0=document.getElementById('ads-sub-all');
   if(s0){s0.style.background=(t==='all'?'#FFFFFF':'#1B2E4A');s0.style.color=(t==='all'?'#000':'#fff');s0.classList.toggle('ads-active',t==='all');}
   if(typeof advRender==='function')advRender();
@@ -6255,7 +6266,7 @@ function advDeleteRecord(num){
 function advRender(){
   // Compute sub-tab counts from full database
   try {
-    var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0};
+    var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0, realtor:0};
     for(var _ix=0; _ix<ADVERTISERS_BASE.length; _ix++){
       var _ar = ADVERTISERS_BASE[_ix];
       if(!_ar || _ar.num===undefined) continue;
@@ -6264,6 +6275,7 @@ function advRender(){
       if(_ac==='Dealership') _subCounts.dealer++;
       else if(_ac==='Spa') _subCounts.spa++;
       else if(_ac==='Salon') _subCounts.salon++;
+      else if(_ac==='Realtor') _subCounts.realtor++;
       else if(_ac.indexOf('Doctor')===0) _subCounts.doctor++;
       else if(_ac.indexOf('Lawyer')===0) _subCounts.lawyer++;
     }
@@ -6272,7 +6284,8 @@ function advRender(){
     var _sde=document.getElementById('ads-sub-cnt-dealers'); if(_sde) _sde.textContent=_subCounts.dealer;
     var _ssp=document.getElementById('ads-sub-cnt-spas'); if(_ssp) _ssp.textContent=_subCounts.spa;
     var _ssal=document.getElementById('ads-sub-cnt-salons'); if(_ssal) _ssal.textContent=_subCounts.salon;
-    var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=(_subCounts.lawyer+_subCounts.doctor+_subCounts.dealer+_subCounts.spa+_subCounts.salon);
+    var _sre=document.getElementById('ads-sub-cnt-realtors'); if(_sre) _sre.textContent=_subCounts.realtor;
+    var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=(_subCounts.lawyer+_subCounts.doctor+_subCounts.dealer+_subCounts.spa+_subCounts.salon+_subCounts.realtor);
   } catch(_e) { console.warn('subcount loop failed:', _e); }
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
@@ -6282,11 +6295,13 @@ function advRender(){
     var isLaw=(c.indexOf('Lawyer')===0);
     var isSpa=(c==='Spa');
     var isSalon=(c==='Salon');
+    var isRealtor=(c==='Realtor');
     if(advViewType==='all')return true;
     if(advViewType==='dealer')return isDealer;
     if(advViewType==='doctor')return isDoc;
     if(advViewType==='spa')return isSpa;
     if(advViewType==='salon')return isSalon;
+    if(advViewType==='realtor')return isRealtor;
     return isLaw;
   });
   var counts={all:all.length,pending:0,sent:0,bounced:0,needdm:0,noemail:0,badig:0,interested:0,notes:0,followup:0,problem:0,trade:0,priority:0,noig:0};
@@ -6409,6 +6424,12 @@ function showSalonsView(){
   if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('salon');
+  showAdvertisersView();
+}
+function showRealtorsView(){
+  if(typeof isFriend!=='undefined' && isFriend) return;
+  if(typeof isDemo!=='undefined' && isDemo) return;
+  advSetViewType('realtor');
   showAdvertisersView();
 }
 function showDoctorsView(){
@@ -7164,6 +7185,36 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 5A failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 6A - Realtors batch 1) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_6a_v1_applied') === '1') return;
+    var igSeed = {
+      5001: 'msluxuryhomes',
+      5002: 'livingnlasvegas',
+      5003: 'luxuryrealestatelv',
+      5004: 'lvrmembers',
+      5005: 'olga.moreno_',
+      5006: 'lasvegassothebysrealty',
+      5007: 'lasvegasrealtygroup',
+      5008: 'thestarkteamrealestate'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_6a_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 6A failed:', e); }
+})();
+
 
 
 
