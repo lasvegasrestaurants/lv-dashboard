@@ -906,7 +906,31 @@ var ADVERTISERS_BASE = [
   {num:2020,name:"Towbin Dodge-RAM",cat:"Dealership",phone:"(702) 558-7669",ig:"",email:"",website:"towbindodge.net"},
   {num:2021,name:"Towbin Kia",cat:"Dealership",phone:"(702) 538-7000",ig:"",email:"",website:"Towbinkia.com"},
   {num:2022,name:"Chapman Chrysler Jeep",cat:"Dealership",phone:"(702) 380-0500",ig:"",email:"",website:"chapmanchryslerjeep.com"},
-  {num:2023,name:"Ford Country Las Vegas",cat:"Dealership",phone:"(702) 558-9300",ig:"",email:"",website:"fordcountrylv.com"}
+  {num:2023,name:"Ford Country Las Vegas",cat:"Dealership",phone:"(702) 558-9300",ig:"",email:"",website:"fordcountrylv.com"},
+  {num:2024,name:"Henderson Chevrolet",cat:"Dealership",phone:"(702) 982-4000",ig:"",email:"",website:"hendersonchevy.com"},
+  {num:2025,name:"Findlay Subaru of Las Vegas",cat:"Dealership",phone:"(702) 495-2100",ig:"",email:"",website:"subaruoflasvegas.com"},
+  {num:2026,name:"Centennial Subaru",cat:"Dealership",phone:"(702) 472-9595",ig:"",email:"",website:"centennialsubaru.com"},
+  {num:2027,name:"AutoNation Toyota Las Vegas",cat:"Dealership",phone:"(844) 845-8426",ig:"",email:"",website:"autonationtoyotalasvegas.com"},
+  {num:2028,name:"AutoNation Honda East Las Vegas",cat:"Dealership",phone:"(844) 853-4336",ig:"",email:"",website:"autonationhondaeastlasvegas.com"},
+  {num:2029,name:"AutoNation Volkswagen Las Vegas",cat:"Dealership",phone:"(844) 836-2541",ig:"",email:"",website:"autonationvolkswagenlasvegas.com"},
+  {num:2030,name:"MINI of Las Vegas",cat:"Dealership",phone:"(888) 703-1592",ig:"",email:"",website:"miniofuslasvegas.com"},
+  {num:2031,name:"AutoNation Buick GMC Henderson",cat:"Dealership",phone:"(702) 850-0000",ig:"",email:"",website:"autonationbuickgmchenderson.com"},
+  {num:2032,name:"United Nissan",cat:"Dealership",phone:"(702) 967-1100",ig:"",email:"",website:"unitednissan.com"},
+  {num:2033,name:"Planet Nissan",cat:"Dealership",phone:"(702) 302-4019",ig:"",email:"",website:"planet-nissan.com"},
+  {num:2034,name:"Centennial Hyundai",cat:"Dealership",phone:"(702) 483-2200",ig:"",email:"",website:"centennialhyundai.com"},
+  {num:2035,name:"Hyundai of Las Vegas",cat:"Dealership",phone:"(702) 938-1400",ig:"",email:"",website:"planetlv.com"},
+  {num:2036,name:"Gaudin Ford",cat:"Dealership",phone:"(702) 796-2762",ig:"",email:"",website:"gaudinford.com"},
+  {num:2037,name:"Centennial Toyota",cat:"Dealership",phone:"(702) 252-1600",ig:"",email:"",website:"centennialtoyota.com"},
+  {num:2038,name:"Friendly Ford Las Vegas",cat:"Dealership",phone:"(702) 870-7221",ig:"",email:"",website:"friendlyfordlasvegas.com"},
+  {num:2039,name:"Honda West",cat:"Dealership",phone:"(702) 367-1919",ig:"",email:"",website:"hondawest.net"},
+  {num:2040,name:"Findlay Kia Las Vegas",cat:"Dealership",phone:"(702) 982-4180",ig:"",email:"",website:"findlaykia.com"},
+  {num:2041,name:"Rolls-Royce Motor Cars Las Vegas",cat:"Dealership",phone:"(702) 253-7000",ig:"",email:"",website:"towbinrollsroyce.com"},
+  {num:2042,name:"Towbin Motorcars",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"towbinmotorcars.com"},
+  {num:2043,name:"Ferrari of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"ferrarimaseratioflasvegas.com"},
+  {num:2044,name:"Bentley of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"bentleylasvegas.com"},
+  {num:2045,name:"Aston Martin Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"astonmartinlasvegas.com"},
+  {num:2046,name:"INFINITI of Las Vegas",cat:"Dealership",phone:"(725) 285-0835",ig:"",email:"",website:"infinitioflasvegas.com"},
+  {num:2047,name:"Maserati of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"ferrarimaseratioflasvegas.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -7104,6 +7128,45 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 3B failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 3C - Dealerships mega-batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_3c_v1_applied') === '1') return;
+    var igSeed = {
+      2024: 'hendersonchevy',
+      2025: 'subaru_lv',
+      2032: 'unitednissan',
+      2033: 'planetnissan',
+      2034: 'centennialhyundailv',
+      2035: 'hyundaioflasvegas',
+      2036: 'gaudinford',
+      2037: 'centennial_toyota',
+      2038: 'friendlyfordlasvegas',
+      2039: 'hondawestlasvegas',
+      2040: 'findlaykia_lasvegas',
+      2041: 'rollsroycelasvegas',
+      2042: 'towbinmotorcars',
+      2043: 'ferrarioflasvegas',
+      2044: 'bentleylasvegas',
+      2045: 'astonmartinlasvegas',
+      2046: 'infinitioflasvegas'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_3c_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 3C failed:', e); }
+})();
+
 
 
 
