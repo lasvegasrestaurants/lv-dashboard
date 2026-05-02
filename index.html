@@ -7260,6 +7260,34 @@ function _advApplyFirebaseData(rec){
   } catch(e) { console.warn('Adv seed 7A failed:', e); }
 })();
 
+// === ADVERTISER SEED DATA (Patch 8A - Spa + Dealership cleanup) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_8a_v1_applied') === '1') return;
+    var igSeed = {
+      3011: 'spamio_m_resort',
+      2017: 'findlay_acura',
+      2018: 'findlaycadillac',
+      2021: 'towbinkia',
+      2022: 'chapmandcjrlasvegas',
+      2047: 'maseratilasvegas'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_8a_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 8A failed:', e); }
+})();
+
+
 
 
 
