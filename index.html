@@ -930,7 +930,20 @@ var ADVERTISERS_BASE = [
   {num:2044,name:"Bentley of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"bentleylasvegas.com"},
   {num:2045,name:"Aston Martin Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"astonmartinlasvegas.com"},
   {num:2046,name:"INFINITI of Las Vegas",cat:"Dealership",phone:"(725) 285-0835",ig:"",email:"",website:"infinitioflasvegas.com"},
-  {num:2047,name:"Maserati of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"ferrarimaseratioflasvegas.com"}
+  {num:2047,name:"Maserati of Las Vegas",cat:"Dealership",phone:"(702) 659-6600",ig:"",email:"",website:"ferrarimaseratioflasvegas.com"},
+  {num:3016,name:"A Touch of Las Vegas Spa",cat:"Spa",phone:"(702) 380-8888",ig:"",email:"",website:"massage1.com"},
+  {num:3017,name:"Pura Vida Fitness and Spa",cat:"Spa",phone:"(702) 850-2080",ig:"",email:"",website:"puravidafitnessandspa.com"},
+  {num:3018,name:"Beauty Factory Med Spa",cat:"Spa",phone:"(702) 819-1100",ig:"",email:"",website:"beautyfactorymedspa.com"},
+  {num:3019,name:"Oasis Spa Las Vegas",cat:"Spa",phone:"(702) 919-7775",ig:"",email:"",website:"oasisspalv.com"},
+  {num:3020,name:"Aethereal Medical Spa & Wellness",cat:"Spa",phone:"(702) 527-3779",ig:"",email:"",website:"aetherealmedspa.com"},
+  {num:3021,name:"Massage Envy Las Vegas",cat:"Spa",phone:"(702) 873-3689",ig:"",email:"",website:"massageenvy.com"},
+  {num:3022,name:"Hand & Stone Henderson",cat:"Spa",phone:"(702) 829-5460",ig:"",email:"",website:"handandstonehenderson.com"},
+  {num:3023,name:"Skin Bar Medspa Henderson",cat:"Spa",phone:"(702) 558-7456",ig:"",email:"",website:"skinbarlv.com"},
+  {num:3024,name:"GLO BAR Med Spa",cat:"Spa",phone:"(702) 728-1820",ig:"",email:"",website:"globarmedspa.com"},
+  {num:3025,name:"LOAM Wellness & Spa",cat:"Spa",phone:"(702) 522-5663",ig:"",email:"",website:"loamwellness.com"},
+  {num:3026,name:"EverGlo Studios",cat:"Spa",phone:"(725) 306-1492",ig:"",email:"",website:"everglostudios.com"},
+  {num:3027,name:"Vibe Salon Las Vegas",cat:"Spa",phone:"(702) 553-3505",ig:"",email:"",website:"vibesalonlv.com"},
+  {num:3028,name:"The Glam Vibe Las Vegas",cat:"Spa",phone:"(702) 405-7707",ig:"",email:"",website:"theglamvibe.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -7069,6 +7082,41 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 4A failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 4B - Spas mega-batch) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_4b_v1_applied') === '1') return;
+    var igSeed = {
+      3016: 'massage1byatouchoflasvegasspa',
+      3017: 'puravidafitnessandspa',
+      3018: 'beautyfactorymedspa',
+      3019: 'oasisspalv',
+      3020: 'aethereal_med_spa',
+      3021: 'massageenvylv',
+      3022: 'handandstone_henderson',
+      3023: 'skinbarmedspa',
+      3024: 'globarmedspa',
+      3025: 'loamwellness.spa',
+      3026: 'everglostudios',
+      3027: 'vibesalonlv',
+      3028: 'the_glam_vibe_lasvegas'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_4b_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 4B failed:', e); }
+})();
+
 
 
 
