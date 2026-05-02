@@ -878,7 +878,22 @@ var ADVERTISERS_BASE = [
   {num:2007,name:"Findlay Nissan Henderson",cat:"Dealership",phone:"(702) 564-7777",ig:"",email:"",website:"findlaynissanhenderson.com"},
   {num:2008,name:"Findlay Lincoln",cat:"Dealership",phone:"(702) 558-8888",ig:"",email:"",website:"findlaylincolnofhenderson.com"},
   {num:2009,name:"Lexus of Henderson",cat:"Dealership",phone:"(702) 228-7736",ig:"",email:"",website:"lexusofhenderson.com"},
-  {num:2010,name:"Mercedes-Benz of Henderson",cat:"Dealership",phone:"(702) 919-5114",ig:"",email:"",website:"mbofhenderson.com"}
+  {num:2010,name:"Mercedes-Benz of Henderson",cat:"Dealership",phone:"(702) 919-5114",ig:"",email:"",website:"mbofhenderson.com"},
+  {num:3001,name:"Canyon Ranch Spa + Fitness Las Vegas",cat:"Spa",phone:"(877) 220-2688",ig:"",email:"",website:"canyonranch.com"},
+  {num:3002,name:"Lapis Spa & Wellness Fontainebleau",cat:"Spa",phone:"(702) 730-2000",ig:"",email:"",website:"fontainebleaulasvegas.com"},
+  {num:3003,name:"The Spa at Wynn",cat:"Spa",phone:"(702) 770-3900",ig:"",email:"",website:"wynnlasvegas.com"},
+  {num:3004,name:"Awana Spa Resorts World",cat:"Spa",phone:"(702) 676-7000",ig:"",email:"",website:"rwlasvegas.com"},
+  {num:3005,name:"Bellagio Spa & Salon",cat:"Spa",phone:"(702) 693-7472",ig:"",email:"",website:"bellagio.com"},
+  {num:3006,name:"Sahra Spa & Hammam Cosmopolitan",cat:"Spa",phone:"(702) 698-7171",ig:"",email:"",website:"cosmopolitanlasvegas.com"},
+  {num:3007,name:"The Spa at ARIA",cat:"Spa",phone:"(702) 590-9600",ig:"",email:"",website:"aria.com"},
+  {num:3008,name:"Encore Spa",cat:"Spa",phone:"(702) 770-5800",ig:"",email:"",website:"wynnlasvegas.com"},
+  {num:3009,name:"Qua Baths & Spa Caesars Palace",cat:"Spa",phone:"(866) 782-0655",ig:"",email:"",website:"caesars.com"},
+  {num:3010,name:"Waldorf Astoria Spa Las Vegas",cat:"Spa",phone:"(702) 590-8888",ig:"",email:"",website:"waldorfastorialasvegas.com"},
+  {num:3011,name:"Spa Mio M Resort",cat:"Spa",phone:"(702) 797-1000",ig:"",email:"",website:"themresort.com"},
+  {num:3012,name:"Green Valley Ranch Spa Well & Being",cat:"Spa",phone:"(702) 617-7777",ig:"",email:"",website:"greenvalleyranch.com"},
+  {num:3013,name:"Lapis & Oak Spa Henderson",cat:"Spa",phone:"(702) 605-7088",ig:"",email:"",website:"lapisandoak.com"},
+  {num:3014,name:"Spa at Red Rock Casino",cat:"Spa",phone:"(702) 797-7878",ig:"",email:"",website:"redrockcasino.com"},
+  {num:3015,name:"Reliquary Spa Hard Rock",cat:"Spa",phone:"(702) 693-5000",ig:"",email:"",website:"hardrockhotel.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -6994,6 +7009,30 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 2V failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 4A - Spas batch 1) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_4a_v1_applied') === '1') return;
+    var igSeed = {
+      3001: 'canyonranch',
+      3013: 'lapisandoakspa'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_4a_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 4A failed:', e); }
+})();
+
 
 
 // === ADVERTISER SEED DATA (Patch 3A - Dealership batch 1) ===
