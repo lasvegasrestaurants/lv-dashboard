@@ -893,7 +893,20 @@ var ADVERTISERS_BASE = [
   {num:3012,name:"Green Valley Ranch Spa Well & Being",cat:"Spa",phone:"(702) 617-7777",ig:"",email:"",website:"greenvalleyranch.com"},
   {num:3013,name:"Lapis & Oak Spa Henderson",cat:"Spa",phone:"(702) 605-7088",ig:"",email:"",website:"lapisandoak.com"},
   {num:3014,name:"Spa at Red Rock Casino",cat:"Spa",phone:"(702) 797-7878",ig:"",email:"",website:"redrockcasino.com"},
-  {num:3015,name:"Reliquary Spa Hard Rock",cat:"Spa",phone:"(702) 693-5000",ig:"",email:"",website:"hardrockhotel.com"}
+  {num:3015,name:"Reliquary Spa Hard Rock",cat:"Spa",phone:"(702) 693-5000",ig:"",email:"",website:"hardrockhotel.com"},
+  {num:2011,name:"Audi Henderson",cat:"Dealership",phone:"(702) 558-1700",ig:"",email:"",website:"audihenderson.com"},
+  {num:2012,name:"BMW of Henderson",cat:"Dealership",phone:"(702) 558-1700",ig:"",email:"",website:"bmwhenderson.com"},
+  {num:2013,name:"Porsche Henderson",cat:"Dealership",phone:"(702) 530-0480",ig:"",email:"",website:"dealer.porsche.com/us/henderson/en-US"},
+  {num:2014,name:"Land Rover Henderson",cat:"Dealership",phone:"(702) 955-5700",ig:"",email:"",website:"landroverofhenderson.com"},
+  {num:2015,name:"Lamborghini Las Vegas",cat:"Dealership",phone:"(702) 570-2257",ig:"",email:"",website:"lamborghinilasvegas.com"},
+  {num:2016,name:"Jaguar Henderson",cat:"Dealership",phone:"(702) 558-1700",ig:"",email:"",website:"jaguarhenderson.com"},
+  {num:2017,name:"Findlay Acura",cat:"Dealership",phone:"(702) 982-4100",ig:"",email:"",website:"findlayacura.com"},
+  {num:2018,name:"Findlay Cadillac",cat:"Dealership",phone:"(702) 982-4180",ig:"",email:"",website:"findlaycadillac.com"},
+  {num:2019,name:"Findlay INEOS Grenadier",cat:"Dealership",phone:"(702) 982-4180",ig:"",email:"",website:"findlayineosgrenadier.com"},
+  {num:2020,name:"Towbin Dodge-RAM",cat:"Dealership",phone:"(702) 558-7669",ig:"",email:"",website:"towbindodge.net"},
+  {num:2021,name:"Towbin Kia",cat:"Dealership",phone:"(702) 538-7000",ig:"",email:"",website:"Towbinkia.com"},
+  {num:2022,name:"Chapman Chrysler Jeep",cat:"Dealership",phone:"(702) 380-0500",ig:"",email:"",website:"chapmanchryslerjeep.com"},
+  {num:2023,name:"Ford Country Las Vegas",cat:"Dealership",phone:"(702) 558-9300",ig:"",email:"",website:"fordcountrylv.com"}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -7065,6 +7078,33 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 3A failed:', e); }
 })();
+
+// === ADVERTISER SEED DATA (Patch 3B - Dealerships batch 2) ===
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_3b_v1_applied') === '1') return;
+    var igSeed = {
+      2011: 'audihenderson',
+      2012: 'bmwhenderson',
+      2013: 'porschehendersonnv',
+      2014: 'landroverhenderson',
+      2015: 'lamborghinilasvegas'
+    };
+    var ig = {};
+    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
+    Object.keys(igSeed).forEach(function(num){
+      if (!ig[num]) ig[num] = igSeed[num];
+    });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_3b_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 3B failed:', e); }
+})();
+
 
 
 
