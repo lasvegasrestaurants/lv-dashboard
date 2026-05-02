@@ -5993,7 +5993,6 @@ function _buildAdvCard(a,displayNum){
   var quote=advQuoteMap[a.num]||'';
   var lastContact=advLastContactedMap[a.num]||'';
   var btns='<span class="card-num">#'+(displayNum!=null?displayNum:a.num)+'</span>';
-  if(isPriority)btns+='<span style="color:#FFD700;font-size:16px;margin:0 4px;">\u2b50</span>';
   btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')">\u2709\ufe0f Email</button>';
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
   btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
@@ -6006,7 +6005,6 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-foodtradedone'+(advTradeDoneMap[a.num]?' flagged':'')+'" onclick="advToggleTradeDone('+a.num+')">Trade Done</button>';
   btns+='<button class="btn btn-ghosted'+(advGhostedMap[a.num]?' flagged':'')+'" onclick="advToggleGhosted('+a.num+')">\ud83d\udc7b Ghosted</button>';
   btns+='<button class="btn btn-problem'+(advProblemMap[a.num]?' flagged':'')+'" onclick="advToggleProblem('+a.num+')">Problem</button>';
-  btns+='<button class="btn" style="background:'+(isPriority?'#FFD700':'#546E7A')+';color:'+(isPriority?'#000':'#fff')+';" onclick="advTogglePriority('+a.num+')">\u2b50 Priority</button>';
   btns+='<button class="btn btn-delete" onclick="advDeleteRecord('+a.num+')">Delete</button>';
   btns+='<button class="btn btn-add-email" onclick="advOpenEditEmail('+a.num+')" style="background:#546E7A;">Edit Email</button>';
   var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(a.cat)+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:4px 8px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+(isBadIG?' (bad IG)':'')+'</span> <button onclick="advToggleBadIG('+a.num+')" class="btn btn-bad-ig'+(isBadIG?' flagged':'')+'" style="margin-left:4px;">Bad IG</button> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:11px;padding:5px 9px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button><button onclick="advOpenQuoteModal('+a.num+')" class="btn" style="background:#6A1B9A;">'+(quote?'\ud83d\udcb0 '+_esc(quote.slice(0,15)):'+ Quote')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:3px 7px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:10px;padding:3px 7px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:11px;padding:4px 8px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
@@ -6399,7 +6397,6 @@ function advRender(){
   var cFu=document.getElementById('adv-cnt-followup');if(cFu)cFu.textContent=counts.followup;
   var cPr=document.getElementById('adv-cnt-problem');if(cPr)cPr.textContent=counts.problem;
   var cTr=document.getElementById('adv-cnt-trade');if(cTr)cTr.textContent=counts.trade;
-  var cPy=document.getElementById('adv-cnt-priority');if(cPy)cPy.textContent=counts.priority;
   var cNI=document.getElementById('adv-cnt-noig');if(cNI)cNI.textContent=counts.noig;
   var cMA=document.getElementById('adv-cnt-metaads');if(cMA)cMA.textContent=counts.metaads;
   var cp=document.getElementById('adv-cnt-pending');if(cp)cp.textContent=counts.pending;
@@ -6432,7 +6429,7 @@ function advRender(){
 
 function advSetFilter(f){
   advFilter = f;
-  var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','priority','noig','metaads'];
+  var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
   for(var _i=0;_i<_allBtns.length;_i++){var _b=document.getElementById('adv-filter-'+_allBtns[_i]);if(_b)_b.classList.remove('adv-active');}
   var _act=document.getElementById('adv-filter-'+f);if(_act)_act.classList.add('adv-active');
   var btns = ['all','pending','sent','bounced','needdm'];
