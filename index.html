@@ -7286,6 +7286,26 @@ function _advApplyFirebaseData(rec){
     }
   } catch(e) { console.warn('Adv seed 8A failed:', e); }
 })();
+(function(){
+  try {
+    if (localStorage.getItem('lv_adv_seed_9_v1_applied') === '1') return;
+    var igSeed = {
+      2019: 'findlayineosgrenadier',
+      2020: 'towbinauto',
+      2023: 'fordcountrylv',
+      2026: 'centennial_subaru'
+    };
+    var ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {};
+    Object.keys(igSeed).forEach(function(num){ if (!ig[num]) ig[num] = igSeed[num]; });
+    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
+    localStorage.setItem('lv_adv_seed_9_v1_applied', '1');
+    if (typeof advIGOverrideMap !== 'undefined') {
+      Object.keys(igSeed).forEach(function(num){
+        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
+      });
+    }
+  } catch(e) { console.warn('Adv seed 9 failed:', e); }
+})();
 
 
 
