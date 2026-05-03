@@ -5998,7 +5998,9 @@ function _buildAdvCard(a,displayNum){
   var quote=advQuoteMap[a.num]||'';
   var lastContact=advLastContactedMap[a.num]||'';
   var btns='<span class="card-num">#'+(displayNum!=null?displayNum:a.num)+'</span>';
-  btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')">\u2709\ufe0f Email</button>';
+  var _eLabel=isSent?('\u2709\ufe0f Sent'+(sentDate?' '+sentDate.slice(5).replace('-','/'):'')):'\u2709\ufe0f Email';
+  var _eBg=isSent?'background:#1B5E20;color:#fff;border-color:#1B5E20;':'';
+  btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')" style="'+_eBg+'">'+_eLabel+'</button>';
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
   btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
   btns+='<button class="btn btn-copy-dm" onclick="advCopyDM('+a.num+')">Copy DM</button>';
@@ -6216,6 +6218,27 @@ function advOpenEmail(num){
   var subject='Sponsorship spot on @lasvegas_restaurants';
   var body='Hello '+name+',\n\nMy name is Shane Christensen. I run @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. Twice a month, every two weeks, I will choose a strong piece of content from your existing posts and repost it to my Stories. I curate what fits my audience to keep engagement high.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\nIf you are interested or have questions, just reply here.\n\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
   var url='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  // === EMAIL TIMESTAMP TOGGLE ===
+  var _atts=advAttemptsMap[num]||[];
+  var _isSentNow=_atts.length&&_atts[_atts.length-1].status==='sent';
+  if(_isSentNow){
+    _atts[_atts.length-1].status='pending';
+    delete _atts[_atts.length-1].date;
+    advAttemptsMap[num]=_atts;
+    _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+    if(typeof advFbSave==='function')advFbSave();
+    _advRefreshCard(num);
+    return;
+  }
+  var _today=new Date().toISOString().slice(0,10);
+  if(!_atts.length){_atts.push({email:email,status:'sent',date:_today});}
+  else{_atts[_atts.length-1].status='sent';_atts[_atts.length-1].date=_today;}
+  advAttemptsMap[num]=_atts;
+  _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
+  advLastContactedMap[num]=_today;
+  _advSaveMap('lv_adv_lastcontacted_v1',advLastContactedMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
   window.location.href=url;
 }
 
