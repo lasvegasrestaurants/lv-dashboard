@@ -6053,7 +6053,7 @@ function advBuildList(){
   for(var i=0;i<ADVERTISERS_BASE.length;i++){
     var a = ADVERTISERS_BASE[i];
     var status = advStatusMap[a.num] || a.defaultStatus || 'pending';
-    arr.push({num:a.num,name:a.name,cat:a.cat,phone:a.phone,ig:a.ig,email:a.email,status:status,_search:(a.name+' '+a.cat).toLowerCase()});
+    arr.push({num:a.num,name:a.name,cat:a.cat||a.category,phone:a.phone,ig:a.ig,email:a.email,status:status,_search:(a.name+' '+(a.cat||a.category)).toLowerCase()});
   }
   return arr;
 }
@@ -6518,7 +6518,7 @@ function advRender(){
       var _ar = ADVERTISERS_BASE[_ix];
       if(!_ar || _ar.num===undefined) continue;
       if(advDeletedMap && advDeletedMap[_ar.num]) continue;
-      var _ac = (_ar.cat || '');
+      var _ac = (_ar.cat || _ar.category || '');
       if(_ac==='Dealership') _subCounts.dealer++;
       else if(_ac==='Spa') _subCounts.spa++;
       else if(_ac==='Salon') _subCounts.salon++;
@@ -6538,7 +6538,7 @@ function advRender(){
   } catch(_e) { console.warn('subcount loop failed:', _e); }
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
-    var c=a.cat||'';
+    var c=a.cat||a.category||'';
     var isDealer=(c==='Dealership');
     var isDoc=(c.indexOf('Doctor')===0);
     var isLaw=(c.indexOf('Lawyer')===0);
@@ -6592,7 +6592,7 @@ function advRender(){
     if(fPriority) counts.priority++;
     var fNoIG = !ig || !!advBadIGMap[a.num];
     if(fNoIG) counts.noig++;
-    enriched.push({a:a,status:st,needdm:needsDM,noemail:fNoEmail,badig:fBadIG,interested:fInterested,notes:fNotes,followup:fFollowup,problem:fProblem,trade:fTrade,priority:fPriority,noig:fNoIG,metaads:fMetaAds,_search:(name+' '+a.cat+' '+(advNotesMap[a.num]||'')).toLowerCase()});
+    enriched.push({a:a,status:st,needdm:needsDM,noemail:fNoEmail,badig:fBadIG,interested:fInterested,notes:fNotes,followup:fFollowup,problem:fProblem,trade:fTrade,priority:fPriority,noig:fNoIG,metaads:fMetaAds,_search:(name+' '+(a.cat||a.category)+' '+(advNotesMap[a.num]||'')).toLowerCase()});
   }
   var ce=document.getElementById('adv-cnt-all');if(ce)ce.textContent=counts.all;
   var cP=document.getElementById('adv-cnt-pending');if(cP)cP.textContent=counts.pending;
