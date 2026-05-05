@@ -299,17 +299,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 <div class="view" id="view-dashboard">
 
 
-  <div class="hdr">
-    <div id="fb-bar" style="padding:4px 0 0;">
-      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+  <div class="hdr" style="padding:8px 16px 10px;">
+    <div id="fb-bar">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
         <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;">Ready</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
         <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
-
       </div>
     </div>
   </div>
@@ -2372,7 +2373,7 @@ function lsTs() {
   return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ap;
 }
 function lsSaved() {
-  lsStatus('#4CAF50', 'Saved ' + lsTs());
+  lsStatus('#4CAF50', lsTs());
   fbSave(); // push to Firebase
 }
 
@@ -2427,7 +2428,7 @@ function _fbDoPush() {
   })
   .then(function(r) {
     _fbSyncing = false;
-    if (r.ok) { _fbLastSavedAt = Date.now(); lsStatus('#4CAF50', '✓ ' + lsTs()); }
+    if (r.ok) { _fbLastSavedAt = Date.now(); lsStatus('#4CAF50', lsTs()); }
     else { lsStatus('#EF5350', 'Sync error ' + r.status); }
   })
   .catch(function() { _fbSyncing = false; lsStatus('#FF9800', 'Offline — saved locally'); });
@@ -2442,7 +2443,7 @@ function _applyFirebaseData(rec) {
         _fbDoPush();
         _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
         dashSetFilter('all'); dashUpdateStats();
-        lsStatus('#4CAF50', '✓ ' + lsTs());
+        lsStatus('#4CAF50', lsTs());
         return;
       }
       // Apply Firebase data if it exists
@@ -2501,7 +2502,7 @@ function _applyFirebaseData(rec) {
       }
       _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
       dashSetFilter('all'); dashUpdateStats();
-      lsStatus('#4CAF50', '✓ ' + lsTs());
+      lsStatus('#4CAF50', lsTs());
 }
 
 var _fbPollTimer = null;
@@ -2521,7 +2522,7 @@ function fbLoad() {
           _fbDoPush();
           _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
           dashSetFilter('all'); dashUpdateStats();
-          lsStatus('#4CAF50', '✓ ' + lsTs());
+          lsStatus('#4CAF50', lsTs());
           return;
         }
         _fbLastSavedAt = rec.savedAt || 0;
@@ -2531,7 +2532,7 @@ function fbLoad() {
         _fbDoPush();
         _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
         dashSetFilter('all'); dashUpdateStats();
-        lsStatus('#4CAF50', '✓ ' + lsTs());
+        lsStatus('#4CAF50', lsTs());
       }
       _checkBackupReminder();
     })
@@ -2555,7 +2556,7 @@ function fbLoad() {
         if (rec.savedAt && rec.savedAt > _fbLastSavedAt) {
           _fbLastSavedAt = rec.savedAt;
           _applyFirebaseData(rec);
-          lsStatus('#4CAF50', '✓ ' + lsTs());
+          lsStatus('#4CAF50', lsTs());
         }
       })
       .catch(function(){});
