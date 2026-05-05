@@ -5820,6 +5820,10 @@ function _te(s){var d=document.createElement("div");d.textContent=String(s||"");
 function showTasksTab(which){
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.remove("active");vd.style.display="none";}
+  var va=document.getElementById("view-advertisers");
+  if(va){va.classList.remove("active");va.style.display="none";}
+  var vc=document.getElementById("view-crm");
+  if(vc){vc.classList.remove("active");vc.style.display="none";}
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.add("active");vt.style.display="flex";}
   renderTodos();renderProjects();
@@ -5840,6 +5844,10 @@ function showTasksTab(which){
 function showDashTab(){
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.remove("active");vt.style.display="none";}
+  var va=document.getElementById("view-advertisers");
+  if(va){va.classList.remove("active");va.style.display="none";}
+  var vc=document.getElementById("view-crm");
+  if(vc){vc.classList.remove("active");vc.style.display="none";}
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.add("active");vd.style.display="block";}
   var ts=document.getElementById("tasks-scroller");if(ts)ts.style.display="none";
@@ -6699,6 +6707,8 @@ function showAdvertisersView(){
   if(vd){vd.classList.remove("active");vd.style.display="none";}
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.remove("active");vt.style.display="none";}
+  var vc=document.getElementById("view-crm");
+  if(vc){vc.classList.remove("active");vc.style.display="none";}
   var va=document.getElementById("view-advertisers");
   if(va){va.classList.add("active");va.style.display="block";}
   var ds=document.getElementById("dash-scroller");
