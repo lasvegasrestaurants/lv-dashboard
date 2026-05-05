@@ -6367,11 +6367,12 @@ function _advGetEmail(num){
 
 function updateAdvStats(data) {
   var arr = data || ADVERTISERS_BASE;
-  document.getElementById('stat-total').textContent = arr.length;
-  document.getElementById('stat-sent').textContent = arr.filter(a => a.status === 'sent').length;
-  document.getElementById('stat-dmd').textContent = arr.filter(a => a.status === 'need dm' || a.status === 'dmd').length;
-  document.getElementById('stat-trade').textContent = arr.filter(a => a.status === 'trade').length;
-  document.getElementById('stat-interested').textContent = arr.filter(a => a.status === 'interested').length;
+  var el;
+  el=document.getElementById('stat-total'); if(el) el.textContent = arr.length;
+  el=document.getElementById('stat-sent'); if(el) el.textContent = arr.filter(function(a){return a.status==='sent';}).length;
+  el=document.getElementById('stat-dmd'); if(el) el.textContent = arr.filter(function(a){return a.status==='need dm'||a.status==='dmd';}).length;
+  el=document.getElementById('stat-trade'); if(el) el.textContent = arr.filter(function(a){return a.status==='trade';}).length;
+  el=document.getElementById('stat-interested'); if(el) el.textContent = arr.filter(function(a){return a.status==='interested';}).length;
 }
 
 function advOpenEmail(num){
