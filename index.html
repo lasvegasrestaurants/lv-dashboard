@@ -5781,13 +5781,13 @@ window.addEventListener('load',function(){
 <div class="view" id="view-advertisers" style="display:none;">
     <!-- STATS PANEL -->
     <div class="scroller" id="adv-scroller" style="display:flex;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
-  <div class="hdr" style="padding:8px 16px 0;">
-    <div style="display:flex;align-items:center;gap:8px;padding:6px 0 0;">
+  <div class="hdr">
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0 4px;">
       <button onclick="showDashTab()" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
       <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;"><span id="adv-view-header">💼 ADS</span></span>
     </div>
   </div>
-  <div style="padding:0 12px 6px;background:#1B2E4A;">
+  <div style="padding:4px 12px 6px;background:#1B2E4A;">
     <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
@@ -6384,7 +6384,7 @@ function advOpenEmail(num){
   }
   var name=advNameOverrideMap[num]||a.name;
   var subject='Sponsorship spot on @lasvegas_restaurants';
-  var body='Hello '+name+',\n\nMy name is Shane Christensen. I run @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\nIf you are interested or have questions, just reply here.\n\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
   var url='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   // === EMAIL TIMESTAMP TOGGLE ===
   var _atts=advAttemptsMap[num]||[];
@@ -6479,7 +6479,7 @@ function advOpenDM(num){
 function advCopyDM(num){
   var a=_advGetA(num);if(!a)return;
   var name=advNameOverrideMap[num]||a.name;
-  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I run @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\nIf you are interested or have questions, just reply here.\n\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(msg).then(function(){alert('DM message copied to clipboard!');},function(){prompt('Copy this DM:',msg);});
   }else{
