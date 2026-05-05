@@ -5749,7 +5749,31 @@ window.addEventListener('load',function(){
 
 
 <!-- ADVERTISERS VIEW -->
-<div class="view" id="view-advertisers" style="display:none;"><div class="scroller" id="adv-scroller" style="display:flex;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
+<div class="view" id="view-advertisers" style="display:none;">
+    <!-- STATS PANEL -->
+    <div id="adv-stats-panel" style="display:flex;gap:12px;padding:12px 16px 4px 16px;flex-wrap:wrap;">
+      <div class="adv-stat-box" style="background:#0D1B2E;border:1px solid #1B2E4A;border-radius:8px;padding:10px 18px;min-width:90px;text-align:center;">
+        <div id="stat-total" style="font-size:22px;font-weight:700;color:#00BCD4;"></div>
+        <div style="font-size:11px;color:#7A90A8;margin-top:2px;">TOTAL</div>
+      </div>
+      <div class="adv-stat-box" style="background:#0D1B2E;border:1px solid #1B2E4A;border-radius:8px;padding:10px 18px;min-width:90px;text-align:center;">
+        <div id="stat-sent" style="font-size:22px;font-weight:700;color:#43A047;"></div>
+        <div style="font-size:11px;color:#7A90A8;margin-top:2px;">SENT</div>
+      </div>
+      <div class="adv-stat-box" style="background:#0D1B2E;border:1px solid #1B2E4A;border-radius:8px;padding:10px 18px;min-width:90px;text-align:center;">
+        <div id="stat-dmd" style="font-size:22px;font-weight:700;color:#AB47BC;"></div>
+        <div style="font-size:11px;color:#7A90A8;margin-top:2px;">DM'D</div>
+      </div>
+      <div class="adv-stat-box" style="background:#0D1B2E;border:1px solid #1B2E4A;border-radius:8px;padding:10px 18px;min-width:90px;text-align:center;">
+        <div id="stat-trade" style="font-size:22px;font-weight:700;color:#FFA726;"></div>
+        <div style="font-size:11px;color:#7A90A8;margin-top:2px;">TRADE</div>
+      </div>
+      <div class="adv-stat-box" style="background:#0D1B2E;border:1px solid #1B2E4A;border-radius:8px;padding:10px 18px;min-width:90px;text-align:center;">
+        <div id="stat-interested" style="font-size:22px;font-weight:700;color:#EF5350;"></div>
+        <div style="font-size:11px;color:#7A90A8;margin-top:2px;">INTERESTED</div>
+      </div>
+    </div>
+    <div class="scroller" id="adv-scroller" style="display:flex;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
       <button onclick="showDashTab()" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
@@ -6325,6 +6349,16 @@ function _advGetEmail(num){
   var a=_advGetA(num);return a?(a.email||''):'';
 }
 
+
+function updateAdvStats(data) {
+  var arr = data || ADVERTISERS_BASE;
+  document.getElementById('stat-total').textContent = arr.length;
+  document.getElementById('stat-sent').textContent = arr.filter(a => a.status === 'sent').length;
+  document.getElementById('stat-dmd').textContent = arr.filter(a => a.status === 'need dm' || a.status === 'dmd').length;
+  document.getElementById('stat-trade').textContent = arr.filter(a => a.status === 'trade').length;
+  document.getElementById('stat-interested').textContent = arr.filter(a => a.status === 'interested').length;
+}
+
 function advOpenEmail(num){
   var a=_advGetA(num);if(!a)return;
   var email=_advGetEmail(num);
@@ -6648,6 +6682,7 @@ function showAllAdsView(){
   showAdvertisersView();
 }
 function showAdvertisersView(){
+  updateAdvStats(ADVERTISERS_BASE);
   // Refresh header + nav highlight based on current viewType
   setTimeout(function(){advSetViewType(advViewType);},10);
   // Block Friend and Demo modes — owner only
