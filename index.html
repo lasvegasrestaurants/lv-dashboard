@@ -6094,8 +6094,8 @@ function _buildAdvCard(a,displayNum){
   var _eBg=isSent?'background:#1B5E20;color:#fff;border-color:#1B5E20;':'';
   btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')" style="font-size:11px;padding:5px 9px;'+_eBg+'">'+_eLabel+'</button>';
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')" style="font-size:11px;padding:5px 9px;">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
-  if(dmDate&&dmDate!=='pending'){var _d=new Date(dmDate);var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});btns+='<button class="btn btn-dm marked" onclick="advUnmarkDM('+a.num+')">DM\'d '+_ds+'</button>';}
-  else{btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';}
+  if(dmDate&&dmDate!=='pending'){var _d=new Date(dmDate);var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Los_Angeles'});btns+='<button class="btn btn-dm marked" style="font-size:11px;padding:5px 9px;" onclick="advUnmarkDM('+a.num+')">DM\'d '+_ds+'</button>';}
+  else{btns+='<button class="btn btn-dm" style="font-size:11px;padding:5px 9px;" onclick="advOpenDM('+a.num+')">DM</button>';}
   btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')" style="font-size:11px;padding:5px 9px;">Bounced</button>';
   btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
   btns+='<button class="btn btn-foodtrade'+(advTradeMap[a.num]?' flagged':'')+'" onclick="advToggleTrade('+a.num+')">Trade</button>';
