@@ -6181,7 +6181,7 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
   btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
   btns+='<button class="btn btn-copy-dm" onclick="advCopyDM('+a.num+')">Copy DM</button>';
-  if(dmDate&&dmDate!=='pending')btns+='<span class="btn btn-dm marked" style="cursor:default;">DM\'d</span>';
+  if(dmDate&&dmDate!=='pending')btns+='<button class="btn btn-dm marked" onclick="advUnmarkDM('+a.num+')">DM\'d</button>';
   else if(!isBadIG)btns+='<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
   btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')">Bounced</button>';
   btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
@@ -6494,6 +6494,13 @@ function advOpenDM(num){
   _advRefreshCard(num);
   // ig.me/m/ opens DIRECTLY to DM (Instagram official deep link)
   setTimeout(function(){window.location.href='https://ig.me/m/'+handle;}, 50);
+}
+
+function advUnmarkDM(num){
+  delete advDmMap[num];
+  _advSaveMap('lv_adv_dm_v1',advDmMap);
+  if(typeof advFbSave==='function')advFbSave();
+  _advRefreshCard(num);
 }
 
 function advCopyDM(num){
