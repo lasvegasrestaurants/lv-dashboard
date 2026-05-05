@@ -6315,7 +6315,7 @@ function advOpenEmail(num){
   var name=advNameOverrideMap[num]||a.name;
   var subject='Sponsorship spot on @lasvegas_restaurants';
   var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
-  var url='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(email)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  var url='googlegmail://co?to='+encodeURIComponent(email)+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   // === EMAIL TIMESTAMP TOGGLE ===
   var _atts=advAttemptsMap[num]||[];
   var _isSentNow=_atts.length&&_atts[_atts.length-1].status==='sent';
@@ -6337,7 +6337,7 @@ function advOpenEmail(num){
   _advSaveMap('lv_adv_lastcontacted_v1',advLastContactedMap);
   if(typeof advFbSave==='function')advFbSave();
   _advRefreshCard(num);
-  window.open(url,'_blank');
+  window.location.href=url;
 }
 
 function advManualMarkSent(num){
