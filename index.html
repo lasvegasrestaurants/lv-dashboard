@@ -6095,7 +6095,6 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')" style="'+_eBg+'">'+_eLabel+'</button>';
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
   btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
-  btns+='<button class="btn btn-copy-dm" onclick="advCopyDM('+a.num+')">Copy DM</button>';
   if(dmDate&&dmDate!=='pending')btns+='<button class="btn btn-dm marked" onclick="advUnmarkDM('+a.num+')">DM\'d</button>';
   else if(!isBadIG)btns+='<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
   btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')">Bounced</button>';
@@ -6400,15 +6399,18 @@ function advOpenDM(num){
   }
   if(advBadIGMap[num]){alert('Bad IG flagged — fix the handle first');return;}
   var handle = ig.replace(/^@/,'').trim();
-  // Only stamp if not already stamped — preserve original DM date
+  // Copy message to clipboard automatically
+  var name=advNameOverrideMap[num]||a.name;
+  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  try{ navigator.clipboard.writeText(msg); }catch(e){}
+  // Only stamp if not already stamped
   if(!advDmMap[num] || advDmMap[num] === 'pending'){
     advDmMap[num]=new Date().toISOString().slice(0,10)+'T12:00:00.000Z';
     _advSaveMap('lv_adv_dm_v1',advDmMap);
     if(typeof advFbSave==='function')advFbSave();
   }
   _advRefreshCard(num);
-  // ig.me/m/ opens DIRECTLY to DM (Instagram official deep link)
-  setTimeout(function(){window.location.href='https://ig.me/m/'+handle;}, 50);
+  setTimeout(function(){window.location.href='https://ig.me/m/'+handle;}, 100);
 }
 
 function advUnmarkDM(num){
@@ -6418,16 +6420,6 @@ function advUnmarkDM(num){
   _advRefreshCard(num);
 }
 
-function advCopyDM(num){
-  var a=_advGetA(num);if(!a)return;
-  var name=advNameOverrideMap[num]||a.name;
-  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(msg).then(function(){alert('DM message copied to clipboard!');},function(){prompt('Copy this DM:',msg);});
-  }else{
-    prompt('Copy this DM:',msg);
-  }
-}
 
 function advDeleteRecord(num){
   var a=_advGetA(num);if(!a)return;
