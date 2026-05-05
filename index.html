@@ -1072,6 +1072,26 @@ var ADVERTISERS_BASE = [
   {num:5017,name:"Jesse Vargas Henderson Realtor",cat:"Realtor",phone:"",ig:"vargassellsvegas",email:"",website:"vargassellsvegas.com"},
   {num:5018,name:"Becky Ashby Homes Las Vegas",cat:"Realtor",phone:"(702) 816-6292",ig:"beckyashbyhomes",email:"",website:"beckyashbyhomes.com"},
   {num:5019,name:"Natasha Napoli LV Luxury Realtor",cat:"Realtor",phone:"(702) 499-2449",ig:"natashasellsluxury",email:"",website:"natashasellsluxury.com"},
+  { num: 5020, name: "Ivan Sher Group", ig: "ivanshergroup", category: "Realtor", email: "", phone: "(702) 840-4280", status: "pending", notes: "" },
+  { num: 5021, name: "Shapiro & Sher Group", ig: "shapiroandsher", category: "Realtor", email: "", phone: "(702) 315-0223", status: "pending", notes: "" },
+  { num: 5022, name: "Kevin Lawerence Las Vegas Realtor", ig: "kevinlawrencerealestate", category: "Realtor", email: "", phone: "(702) 743-4545", status: "pending", notes: "" },
+  { num: 5023, name: "Kristen Routh-Silberman", ig: "kristenrouthsilberman", category: "Realtor", email: "", phone: "(702) 379-9266", status: "pending", notes: "" },
+  { num: 5024, name: "The Hughes Group LV", ig: "thehughesgrouplv", category: "Realtor", email: "", phone: "(702) 460-5455", status: "pending", notes: "" },
+  { num: 5025, name: "Signature Real Estate Group", ig: "signaturerealestategrp", category: "Realtor", email: "", phone: "(702) 233-6515", status: "pending", notes: "" },
+  { num: 5026, name: "Urban Nest Realty", ig: "urbannestrealty", category: "Realtor", email: "", phone: "(702) 743-4545", status: "pending", notes: "" },
+  { num: 5027, name: "Simply Vegas Real Estate", ig: "simplyvegasre", category: "Realtor", email: "", phone: "(702) 620-7777", status: "pending", notes: "" },
+  { num: 5028, name: "Allysa Navarro Las Vegas Realtor", ig: "allysanavarro", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
+  { num: 5029, name: "Corcoran Global Living LV", ig: "corcorangloballiving", category: "Realtor", email: "", phone: "(702) 820-0000", status: "pending", notes: "" },
+  { num: 5030, name: "Galindo Group Real Estate", ig: "galindogroupre", category: "Realtor", email: "", phone: "(702) 467-7660", status: "pending", notes: "" },
+  { num: 5031, name: "Mark Minardi Realtor LV", ig: "markminardirealtor", category: "Realtor", email: "", phone: "(702) 370-7653", status: "pending", notes: "" },
+  { num: 5032, name: "Realty One Group", ig: "realtyonegroup", category: "Realtor", email: "", phone: "(702) 909-9499", status: "pending", notes: "" },
+  { num: 5033, name: "Vegas Modern Realty", ig: "vegasmodernrealty", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
+  { num: 5034, name: "Alexandra Hoelter LV Realtor", ig: "alexandrahoelter", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
+  { num: 5035, name: "Frank Napoli Real Estate", ig: "franknapolirealestate", category: "Realtor", email: "", phone: "(702) 499-2449", status: "pending", notes: "" },
+  { num: 5036, name: "Vegas Homes by Carla", ig: "vegashomesbycarla", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
+  { num: 5037, name: "Debbie Bruck LV Realtor", ig: "debbiebruckrealtor", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
+  { num: 5038, name: "The Nartey Group", ig: "thenarteygroup", category: "Realtor", email: "", phone: "(702) 605-0323", status: "pending", notes: "" },
+  { num: 5039, name: "Hicks Real Estate LV", ig: "hicksrealestatenv", category: "Realtor", email: "", phone: "", status: "pending", notes: "" },
   {num:6014,name:"Endless Pastabilities LV",cat:"Catering",phone:"",ig:"endlesspastabilitieslv",email:"",website:"endlesspastabilitieslv.com"},
   {num:6015,name:"The Chef Truck Las Vegas",cat:"Catering",phone:"",ig:"thecheftruck",email:"",website:"thecheftruck.com"},
   {num:6016,name:"Sin City Wings LV",cat:"Catering",phone:"",ig:"sincitywings",email:"",website:"sincitywings.com"},
@@ -6161,7 +6181,7 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-verify'+(isSent?' marked':'')+'" onclick="advManualMarkSent('+a.num+')">'+(isSent?'Sent'+(sentDate?' '+sentDate.slice(0,10):''):'Email Sent')+'</button>';
   btns+='<button class="btn btn-dm" onclick="advOpenDM('+a.num+')">DM</button>';
   btns+='<button class="btn btn-copy-dm" onclick="advCopyDM('+a.num+')">Copy DM</button>';
-  if(dmDate&&dmDate!=='pending')btns+='<span class="btn btn-dm marked" style="cursor:default;">DM\'d '+dmDate.slice(0,10)+'</span>';
+  if(dmDate&&dmDate!=='pending')btns+='<span class="btn btn-dm marked" style="cursor:default;">DM\'d</span>';
   else if(!isBadIG)btns+='<span style="font-size:10px;color:#999;padding:4px 6px;border:1px solid #ddd;border-radius:6px;white-space:nowrap;">No DM yet</span>';
   btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')">Bounced</button>';
   btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
@@ -6384,7 +6404,7 @@ function advOpenEmail(num){
   }
   var name=advNameOverrideMap[num]||a.name;
   var subject='Sponsorship spot on @lasvegas_restaurants';
-  var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
   var url='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   // === EMAIL TIMESTAMP TOGGLE ===
   var _atts=advAttemptsMap[num]||[];
@@ -6479,7 +6499,7 @@ function advOpenDM(num){
 function advCopyDM(num){
   var a=_advGetA(num);if(!a)return;
   var name=advNameOverrideMap[num]||a.name;
-  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost your content to my Stories twice a month, every two weeks. You send me what you want featured (a post, a reel, a graphic), and I share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(msg).then(function(){alert('DM message copied to clipboard!');},function(){prompt('Copy this DM:',msg);});
   }else{
