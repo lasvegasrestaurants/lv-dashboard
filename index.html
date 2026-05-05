@@ -3162,7 +3162,7 @@ function _buildOutreachMsg(name) {
     'Shane Christensen\n' +
     'Creator of @lasvegas_restaurants\n' +
     'Shane@LasVegasRestaurants.net\n' +
-    'Cell: 949-899-3059';
+    'Cell: (949) 899-3059';
 }
 
 function copyDM(num) {
@@ -6316,7 +6316,7 @@ function advOpenEmail(num){
   }
   var name=advNameOverrideMap[num]||a.name;
   var subject='Sponsorship spot on @lasvegas_restaurants';
-  var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n(949) 899-3059';
   var url='googlegmail://co?to='+encodeURIComponent(email)+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   // === EMAIL TIMESTAMP TOGGLE ===
   var _atts=advAttemptsMap[num]||[];
@@ -6399,7 +6399,7 @@ function advOpenDM(num){
   var handle = ig.replace(/^@/,'').trim();
   // Copy message to clipboard automatically
   var name=advNameOverrideMap[num]||a.name;
-  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n949-899-3059';
+  var msg='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (131K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n(949) 899-3059';
   try{ navigator.clipboard.writeText(msg); }catch(e){}
   // Only stamp if not already stamped
   if(!advDmMap[num] || advDmMap[num] === 'pending'){
