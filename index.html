@@ -5638,6 +5638,7 @@ window.addEventListener('load',function(){
     })(views[i]);
   }
 
+  setupScroller('view-advertisers','adv-scUp','adv-scDown','adv-scTrack','adv-scThumb','adv-scPct', function(){var v=document.getElementById('view-advertisers');if(v&&v._updateSlider)v._updateSlider();});
   setupScroller('view-dashboard','dash-scUp','dash-scDown','dash-scTrack','dash-scThumb','dash-scPct',dashUpdateSlider);
   document.getElementById('modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeModal();});
   document.getElementById('token-modal-backdrop').addEventListener('click',function(e){if(e.target===this){ document.getElementById('token-modal-input').value=''; closeTokenModal(); }});
@@ -5727,7 +5728,7 @@ window.addEventListener('load',function(){
 
 
 <!-- ADVERTISERS VIEW -->
-<div class="view" id="view-advertisers" style="display:none;"><div class="scroller" id="adv-scroller" style="display:none;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
+<div class="view" id="view-advertisers" style="display:none;"><div class="scroller" id="adv-scroller" style="display:flex;"><div class="sc-arrow" id="adv-scUp">▲</div><div class="sc-track" id="adv-scTrack"><div class="sc-thumb" id="adv-scThumb"></div></div><div class="sc-arrow" id="adv-scDown">▼</div><div class="sc-pct" id="adv-scPct">0%</div></div>
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;padding:10px 0;">
       <button onclick="showDashTab()" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
