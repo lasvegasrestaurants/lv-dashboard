@@ -5787,31 +5787,9 @@ window.addEventListener('load',function(){
       <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;"><span id="adv-view-header">💼 ADS</span></span>
     </div>
   </div>
-  <div style="padding:8px 12px;background:#1B2E4A;">
+  <div style="padding:4px 12px 6px;background:#1B2E4A;">
     <input type="text" id="adv-search" placeholder="Search advertisers..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
   </div>
-    <div id="adv-stats-panel" style="display:flex;gap:6px;padding:6px 16px 4px 16px;flex-wrap:wrap;background:#0D1B2E;align-items:center;">
-      <div class="adv-stat-box" style="background:#1B2E4A;border:1px solid #243E5A;border-radius:6px;padding:3px 8px;min-width:0;text-align:center;display:inline-flex;align-items:center;gap:5px;">
-        <div id="stat-total" style="font-size:13px;font-weight:700;color:#00BCD4;"></div>
-        <div style="font-size:10px;color:#7A90A8;margin-top:1px;">TOTAL</div>
-      </div>
-      <div class="adv-stat-box" style="background:#1B2E4A;border:1px solid #243E5A;border-radius:6px;padding:3px 8px;min-width:0;text-align:center;display:inline-flex;align-items:center;gap:5px;">
-        <div id="stat-sent" style="font-size:13px;font-weight:700;color:#43A047;"></div>
-        <div style="font-size:10px;color:#7A90A8;margin-top:1px;">SENT</div>
-      </div>
-      <div class="adv-stat-box" style="background:#1B2E4A;border:1px solid #243E5A;border-radius:6px;padding:3px 8px;min-width:0;text-align:center;display:inline-flex;align-items:center;gap:5px;">
-        <div id="stat-dmd" style="font-size:13px;font-weight:700;color:#AB47BC;"></div>
-        <div style="font-size:10px;color:#7A90A8;margin-top:1px;">DM'D</div>
-      </div>
-      <div class="adv-stat-box" style="background:#1B2E4A;border:1px solid #243E5A;border-radius:6px;padding:3px 8px;min-width:0;text-align:center;display:inline-flex;align-items:center;gap:5px;">
-        <div id="stat-trade" style="font-size:13px;font-weight:700;color:#FFA726;"></div>
-        <div style="font-size:10px;color:#7A90A8;margin-top:1px;">TRADE</div>
-      </div>
-      <div class="adv-stat-box" style="background:#1B2E4A;border:1px solid #243E5A;border-radius:6px;padding:3px 8px;min-width:0;text-align:center;display:inline-flex;align-items:center;gap:5px;">
-        <div id="stat-interested" style="font-size:13px;font-weight:700;color:#EF5350;"></div>
-        <div style="font-size:10px;color:#7A90A8;margin-top:1px;">INTERESTED</div>
-      </div>
-    </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
     <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
