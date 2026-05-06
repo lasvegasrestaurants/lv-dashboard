@@ -7837,3 +7837,18 @@ setInterval(function(){
 </script>
 </body>
 </html>
+<script>
+function showStagingView(cat){
+  advViewType='staging';
+  advStagingCat=cat||'all';
+  var _lbl={lawyer:'Lawyers 2',doctor:'Doctors 2',spa:'Spas 2',salon:'Salons 2',realtor:'Realtors 2',catering:'Catering 2',dealer:'Dealers 2'};
+  var hdr=document.getElementById('adv-view-header');
+  if(hdr)hdr.textContent=_lbl[advStagingCat]||'Staging';
+  ['lawyers','doctors','dealers','spas','salons','realtors','catering','all'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');});
+  var _m={lawyer:'lawyers2',doctor:'doctors2',spa:'spas2',salon:'salons2',realtor:'realtors2',catering:'catering2',dealer:'dealers2'};
+  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
+  advRender();
+}
+function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var exists=ADVERTISERS_BASE.some(function(a){return a.num===rec.num||a.ig===rec.ig;});if(exists){alert('Already in main database.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);advRender();alert('Approved!');}
+function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;ADVERTISERS_STAGING.splice(idx,1);advRender();}
+</script>
