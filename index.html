@@ -6450,6 +6450,7 @@ function advDeleteRecord(num){
 }
 
 function advRender(){
+  if(typeof advViewType!=="undefined"&&advViewType==="staging")return;
   // Compute sub-tab counts from full database
   try {
     var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0, realtor:0, catering:0};
