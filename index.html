@@ -1094,6 +1094,13 @@ var ADVERTISERS_BASE = [
 ];
 
 // ══════════════════════════════════════════════════════
+// ADVERTISERS STAGING — unverified, review before merging
+// Add new records here. Use IDs starting at 9001+
+// ══════════════════════════════════════════════════════
+var ADVERTISERS_STAGING = [
+];
+
+// ══════════════════════════════════════════════════════
 // RESTAURANT DATA
 // ══════════════════════════════════════════════════════
 var RESTAURANTS_BASE = [
@@ -5738,7 +5745,7 @@ window.addEventListener('load',function(){
     </div>
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button></div>
+    <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView()" id="ads-sub-all" class="ads-subtab" style="background:#FFFFFF;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#1B2E4A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showStagingView()" id="ads-sub-staging" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">⚠️ Staging <span id="ads-sub-cnt-staging">0</span></button></div>
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
@@ -5995,7 +6002,7 @@ function advBuildList(){
 
 var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
-  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='catering'&&t!=='lawdoc')return;
+  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='catering'&&t!=='lawdoc'&&t!=='staging')return;
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
   advViewType=t;
@@ -6596,6 +6603,32 @@ function advSetFilter(f){
 
 function advSearchInput(v){
   advSearch = (v||'').toLowerCase();
+  advRender();
+}
+
+// STAGING FUNCTIONS
+function showStagingView(){
+  advViewType='staging';
+  var hdr=document.getElementById('adv-view-header');
+  if(hdr) hdr.textContent='\u26a0\ufe0f Staging';
+  advRender();
+}
+function advApproveStaging(num){
+  var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});
+  if(idx===-1){alert('Not found.');return;}
+  var rec=ADVERTISERS_STAGING[idx];
+  var exists=ADVERTISERS_BASE.some(function(a){return a.num===num||a.ig===rec.ig;});
+  if(exists){alert('Already in main database.');return;}
+  ADVERTISERS_BASE.push(rec);
+  ADVERTISERS_STAGING.splice(idx,1);
+  advRender();
+  alert('\u2713 Approved! Moved to main database.');
+}
+function advDeleteStaging(num){
+  var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});
+  if(idx===-1) return;
+  if(!confirm('Delete this staging record?')) return;
+  ADVERTISERS_STAGING.splice(idx,1);
   advRender();
 }
 
