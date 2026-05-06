@@ -6563,7 +6563,7 @@ function advRender(){
     else if(advFilter==='noig'){if(!e.noig)return false;}
     else if(advFilter==='metaads'){if(!e.metaads)return false;}
     else if(advFilter!=='all'&&e.status!==advFilter)return false;
-    if(advSearch&&e._search.indexOf(advSearch)===-1)return false;
+    if(advSearch&&(e._search||"").indexOf(advSearch)===-1)return false;
     return true;
   });
   var el=document.getElementById('adv-list');
