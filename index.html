@@ -1094,7 +1094,13 @@ var ADVERTISERS_BASE = [
 ];
 
 // ══════════════════════════════════════════════════════
-var ADVERTISERS_STAGING = [];
+var ADVERTISERS_STAGING = [
+  {num:9001,name:"Naqvi Injury Law",cat:"Lawyer - Personal Injury",phone:"(702) 553-1000",ig:"naqviinjurylaw",email:"",defaultStatus:'pending'},
+  {num:9002,name:"Shook & Stone Injury Lawyers",cat:"Lawyer - Personal Injury",phone:"(702) 570-0000",ig:"shookstonelaw",email:"",defaultStatus:'pending'},
+  {num:9003,name:"Lloyd Baker Injury Attorneys",cat:"Lawyer - Personal Injury",phone:"(702) 444-2222",ig:"855bakerlawnv",email:"",defaultStatus:'pending'},
+  {num:9004,name:"Goldberg Injury Law",cat:"Lawyer - Personal Injury",phone:"(702) 497-7173",ig:"goldberginjurylaw",email:"",defaultStatus:'pending'},
+  {num:9005,name:"Robinson Law Group",cat:"Lawyer - Family/Divorce",phone:"(702) 527-2625",ig:"familylawyerlasvegas",email:"",defaultStatus:'pending'}
+];
 // RESTAURANT DATA
 // ══════════════════════════════════════════════════════
 var RESTAURANTS_BASE = [
@@ -6456,6 +6462,7 @@ function _advUpdateDmButton(num){
   _advDmPinned[num] = true;
   var btn = document.querySelector('[data-adv-num="'+num+'"].btn-dm:not(.marked)');
   if(btn){
+    if(!advDmMap[num]||typeof advDmMap[num]!=='string')return;
     var _d=new Date(advDmMap[num]);
     var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Los_Angeles'});
     btn.textContent="DM'd "+_ds;
@@ -6828,7 +6835,7 @@ function _advApplyFirebaseData(rec){
   if(rec.tradedone){advTradeDoneMap=rec.tradedone;_advSaveMap('lv_adv_tradedone_v1',advTradeDoneMap);}
   if(rec.notes){advNotesMap=rec.notes;_advSaveMap('lv_adv_notes_v1',advNotesMap);}
   if(rec.nameoverride){advNameOverrideMap=rec.nameoverride;_advSaveMap('lv_adv_nameoverride_v1',advNameOverrideMap);}
-  if(rec.igoverride){Object.keys(rec.igoverride).forEach(function(k){if(rec.igoverride[k])advIGOverrideMap[k]=rec.igoverride[k];});_advSaveMap('lv_adv_igoverride_v1',advIGOverrideMap);}
+  if(rec.igoverride){advIGOverrideMap=rec.igoverride;_advSaveMap('lv_adv_igoverride_v1',advIGOverrideMap);}
   if(rec.fieldoverride){advFieldOverrideMap=rec.fieldoverride;_advSaveMap('lv_adv_fieldoverride_v1',advFieldOverrideMap);}
   if(rec.priority){advPriorityMap=rec.priority;_advSaveMap('lv_adv_priority_v1',advPriorityMap);}
   if(rec.website){advWebsiteMap=rec.website;_advSaveMap('lv_adv_website_v1',advWebsiteMap);}
@@ -7950,6 +7957,7 @@ function advSaveNewRecord(){
 <script>
 function showStagingView(cat){
   advViewType='staging';
+  advFilter='all';
   _advDmPinned={};
   advStagingCat=cat||'all';
   var _lbl={lawyer:'Lawyers 2',doctor:'Doctors 2',spa:'Spas 2',salon:'Salons 2',realtor:'Realtors 2',catering:'Catering 2',dealer:'Dealerships 2',other:'Misc 2'};
