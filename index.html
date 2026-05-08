@@ -3969,7 +3969,7 @@ function dashUpdateStats(){
     if(foodTradeDoneMap[r.num])foodtradedone++;
     if(ghostedMap[r.num])ghosted++;
     if(s==='pending')noemail++;
-    if(!dmMap[r.num]&&!badIGMap[r.num])nodm++;
+    if(!dmMap[r.num]&&!badIGMap[r.num]&&(r.instagram||igOverrideMap[r.num]))nodm++;
   }
   var el=_getStatEls();
   el.total.textContent=total; el.done.textContent=sent;
@@ -6034,6 +6034,7 @@ function advSetViewType(t){
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
   advViewType=t;
+  advFilter='all';
   _advDmPinned={};
   try{localStorage.setItem('lv_adv_viewtype_v1',t);}catch(e){}
   var hdr=document.getElementById('adv-view-header');
@@ -6155,7 +6156,7 @@ function _buildAdvCard(a,displayNum){
     btns+='<button class="btn btn-email" onclick="advOpenEmail('+a.num+')" style="font-size:13px;padding:8px 13px;">\u2709\ufe0f Email</button>';
   }
   if(dmDate&&dmDate!=='pending'){var _d=new Date(dmDate);var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Los_Angeles'});btns+='<button class="btn btn-dm marked" style="font-size:13px;padding:8px 13px;" onclick="advUnmarkDM('+a.num+')">DM\'d '+_ds+'</button>';}
-  else{btns+='<button class="btn btn-dm" style="font-size:13px;padding:8px 13px;" onclick="advOpenDM('+a.num+')">DM</button>';}
+  else{btns+='<button class="btn btn-dm" data-adv-num="'+a.num+'" style="font-size:13px;padding:8px 13px;" onclick="advOpenDM('+a.num+')">DM</button>';}
   btns+='<button class="btn btn-bounce-'+(isBounced?'on':'off')+'" onclick="'+(isBounced?'advUnmarkBounced':'advMarkBounced')+'('+a.num+')" style="font-size:13px;padding:8px 13px;">Bounced</button>';
   btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
   btns+='<button class="btn btn-foodtrade'+(advTradeMap[a.num]?' flagged':'')+'" onclick="advToggleTrade('+a.num+')">Trade</button>';
@@ -6453,7 +6454,7 @@ function advUnmarkBounced(num){
 var _advDmPinned = {};
 function _advUpdateDmButton(num){
   _advDmPinned[num] = true;
-  var btn = document.querySelector('[onclick="advOpenDM('+num+')"]');
+  var btn = document.querySelector('[data-adv-num="'+num+'"].btn-dm:not(.marked)');
   if(btn){
     var _d=new Date(advDmMap[num]);
     var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Los_Angeles'});
@@ -6594,10 +6595,7 @@ function advRender(){
     enriched.push({a:a,status:st,needdm:needsDM,noemail:fNoEmail,badig:fBadIG,interested:fInterested,notes:fNotes,followup:fFollowup,problem:fProblem,trade:fTrade,priority:fPriority,noig:fNoIG,metaads:fMetaAds,_search:(name+' '+(a.cat||a.category)+' '+(advNotesMap[a.num]||'')).toLowerCase()});
   }
   var ce=document.getElementById('adv-cnt-all');if(ce)ce.textContent=counts.all;
-  var cP=document.getElementById('adv-cnt-pending');if(cP)cP.textContent=counts.pending;
-  var cS=document.getElementById('adv-cnt-sent');if(cS)cS.textContent=counts.sent;
-  var cB=document.getElementById('adv-cnt-bounced');if(cB)cB.textContent=counts.bounced;
-  var cN=document.getElementById('adv-cnt-needdm');if(cN)cN.textContent=counts.needdm;
+
   var cNE=document.getElementById('adv-cnt-noemail');if(cNE)cNE.textContent=counts.noemail;
   var cBI=document.getElementById('adv-cnt-badig');if(cBI)cBI.textContent=counts.badig;
   var cI=document.getElementById('adv-cnt-interested');if(cI)cI.textContent=counts.interested;
@@ -6620,7 +6618,6 @@ function advRender(){
     else if(advFilter==='followup'){if(!e.followup)return false;}
     else if(advFilter==='problem'){if(!e.problem)return false;}
     else if(advFilter==='trade'){if(!e.trade)return false;}
-    else if(advFilter==='priority'){if(!e.priority)return false;}
     else if(advFilter==='noig'){if(!e.noig)return false;}
     else if(advFilter==='metaads'){if(!e.metaads)return false;}
     else if(advFilter!=='all'&&e.status!==advFilter)return false;
@@ -6640,16 +6637,15 @@ function advSetFilter(f){
   var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
   for(var _i=0;_i<_allBtns.length;_i++){var _b=document.getElementById('adv-filter-'+_allBtns[_i]);if(_b)_b.classList.remove('adv-active');}
   var _act=document.getElementById('adv-filter-'+f);if(_act)_act.classList.add('adv-active');
-  var btns = ['all','pending','sent','bounced','needdm'];
-  for(var i=0;i<btns.length;i++){
-    var b = document.getElementById('adv-filter-'+btns[i]);
-    if(b){
-      // Active color depends on which button: needdm uses dark teal, others use cyan
-      if(btns[i] === f){
-        b.style.background = (f === 'needdm') ? '#00695C' : '#00838F';
-      } else {
-        b.style.background = (btns[i] === 'needdm') ? '#004D40' : '#1B2E4A';
-      }
+  var _fbtnColors={'needdm':'#004D40','badig':'#B71C1C','interested':'#1B5E20','notes':'#4A148C','followup':'#E65100','problem':'#880E4F','trade':'#0277BD','metaads':'#F57F17','noig':'#BF360C','noemail':'#37474F'};
+  var _allBtnIds=['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
+  for(var _j=0;_j<_allBtnIds.length;_j++){
+    var _bj=document.getElementById('adv-filter-'+_allBtnIds[_j]);
+    if(!_bj)continue;
+    if(_allBtnIds[_j]===f){
+      _bj.style.background=_fbtnColors[f]||'#00838F';
+    } else {
+      _bj.style.background=_fbtnColors[_allBtnIds[_j]]||'#1B2E4A';
     }
   }
   advRender();
@@ -6707,12 +6703,14 @@ function showLawyersView(){
 function showMiscView(){
   if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
+  advFilter='all';
   advSetViewType('other');
   showAdvertisersView();
 }
 function showBadIGView(){
   if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
+  advFilter='all';
   advSetViewType('badig');
   showAdvertisersView();
 }
@@ -6748,6 +6746,7 @@ var ADV_FB_URL = "https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_a
 var _advFbSaveTimer = null;
 var _advFbLastSavedAt = 0;
 var _advFbSyncing = false;
+var _advFbPendingRetry = false;
 
 function advFbSave(){
   // Owner only — friend/demo never write
@@ -6758,7 +6757,7 @@ function advFbSave(){
 }
 
 function _advFbDoPush(){
-  if(_advFbSyncing) return;
+  if(_advFbSyncing){_advFbPendingRetry=true;return;}
   _advFbSyncing = true;
   var payload = {
     savedAt: Date.now(),
@@ -6791,8 +6790,10 @@ function _advFbDoPush(){
     body: JSON.stringify(payload)
   }).then(function(r){
     _advFbSyncing = false;
+    if(_advFbPendingRetry){_advFbPendingRetry=false;advFbSave();}
   }).catch(function(){
     _advFbSyncing = false;
+    if(_advFbPendingRetry){_advFbPendingRetry=false;advFbSave();}
   });
 }
 
@@ -7971,7 +7972,7 @@ function showStagingView(cat){
   ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
   advRender();
 }
-function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var exists=ADVERTISERS_BASE.some(function(a){return a.num===rec.num||a.ig===rec.ig;});if(exists){alert('Already in main database.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);advRender();alert('Approved!');}
+function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var exists=ADVERTISERS_BASE.some(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(exists){alert('Already in main database.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();alert('Approved!');}
 function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;ADVERTISERS_STAGING.splice(idx,1);advRender();}
 </script>
 <script>
