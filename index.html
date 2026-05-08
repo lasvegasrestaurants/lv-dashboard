@@ -6455,10 +6455,12 @@ function _advUpdateDmButton(num){
   _advDmPinned[num] = true;
   var btn = document.querySelector('[onclick="advOpenDM('+num+')"]');
   if(btn){
-    btn.textContent = "DM'd ✓";
-    btn.className = 'btn btn-dm marked';
-    btn.style.fontSize = '13px';
-    btn.style.padding = '8px 13px';
+    var _d=new Date(advDmMap[num]);
+    var _ds=(_d.getMonth()+1)+'/'+_d.getDate()+'/'+_d.getFullYear().toString().slice(2)+' '+_d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/Los_Angeles'});
+    btn.textContent="DM'd "+_ds;
+    btn.className='btn btn-dm marked';
+    btn.style.fontSize='13px';
+    btn.style.padding='8px 13px';
     btn.setAttribute('onclick','advUnmarkDM('+num+')');
   }
 }
