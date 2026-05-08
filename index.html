@@ -5746,9 +5746,42 @@ window.addEventListener('load',function(){
     <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#1B5E20;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#AD1457;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advSetFilter('trade')" id="adv-filter-trade" class="adv-fbtn" style="background:#00695C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trade <span id="adv-cnt-trade">0</span></button><button onclick="advSetFilter('metaads')" id="adv-filter-metaads" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Meta Ads <span id="adv-cnt-metaads">0</span></button>
   </div>
   <div style="padding:4px 12px 6px;background:#1B2E4A;">
-    <input type="text" id="adv-search" placeholder="Search..." oninput="advSearchInput(this.value)" style="width:100%;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;">
+    <div style="display:flex;gap:8px;align-items:center;"><input type="text" id="adv-search" placeholder="Search..." oninput="advSearchInput(this.value)" style="flex:1;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;"><button onclick="advOpenAddModal()" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</button></div>
   </div>
-  <div id="adv-list" style="padding:0 12px 80px;"></div>
+  
+<!-- ADD ADVERTISER MODAL -->
+<div id="adv-add-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;">
+  <div style="background:#1B2E4A;margin:40px auto;max-width:480px;border-radius:12px;padding:24px;box-sizing:border-box;">
+    <h2 style="color:#00BCD4;margin:0 0 20px;font-size:18px;">+ Add New Advertiser</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <input id="adv-add-name" placeholder="Business Name *" style="padding:10px;border-radius:8px;border:1px solid #263238;background:#0D1B2E;color:#fff;font-size:14px;">
+      <input id="adv-add-ig" placeholder="Instagram Handle (no @) *" style="padding:10px;border-radius:8px;border:1px solid #263238;background:#0D1B2E;color:#fff;font-size:14px;">
+      <input id="adv-add-phone" placeholder="Phone (optional)" style="padding:10px;border-radius:8px;border:1px solid #263238;background:#0D1B2E;color:#fff;font-size:14px;">
+      <input id="adv-add-email" placeholder="Email (optional)" style="padding:10px;border-radius:8px;border:1px solid #263238;background:#0D1B2E;color:#fff;font-size:14px;">
+      <select id="adv-add-category" style="padding:10px;border-radius:8px;border:1px solid #263238;background:#0D1B2E;color:#fff;font-size:14px;">
+        <option value="Lawyer - Personal Injury">Lawyer - Personal Injury</option>
+        <option value="Lawyer - Criminal/DUI">Lawyer - Criminal/DUI</option>
+        <option value="Lawyer - Family/Divorce">Lawyer - Family/Divorce</option>
+        <option value="Lawyer - Business/Estate">Lawyer - Business/Estate</option>
+        <option value="Doctor - Med Spa/Dermatology">Doctor - Med Spa/Dermatology</option>
+        <option value="Doctor - Plastic Surgery">Doctor - Plastic Surgery</option>
+        <option value="Doctor - Cosmetic Dentistry">Doctor - Cosmetic Dentistry</option>
+        <option value="Doctor - Orthodontist">Doctor - Orthodontist</option>
+        <option value="Doctor - Chiropractor">Doctor - Chiropractor</option>
+        <option value="Dealership">Dealership</option>
+        <option value="Spa">Spa</option>
+        <option value="Salon">Salon</option>
+        <option value="Realtor">Realtor</option>
+        <option value="Catering">Catering</option>
+      </select>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button onclick="advSaveNewRecord()" style="flex:1;background:#00838F;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Save to Staging</button>
+        <button onclick="advCloseAddModal()" style="flex:1;background:#546E7A;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="adv-list" style="padding:0 12px 80px;"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -7837,6 +7870,42 @@ setInterval(function(){
     };
   }
 })();
+</script>
+
+<script>
+function advOpenAddModal(){
+  document.getElementById('adv-add-name').value='';
+  document.getElementById('adv-add-ig').value='';
+  document.getElementById('adv-add-phone').value='';
+  document.getElementById('adv-add-email').value='';
+  document.getElementById('adv-add-modal').style.display='block';
+}
+function advCloseAddModal(){
+  document.getElementById('adv-add-modal').style.display='none';
+}
+function advSaveNewRecord(){
+  var name=document.getElementById('adv-add-name').value.trim();
+  var ig=document.getElementById('adv-add-ig').value.trim().replace(/^@/,'');
+  var phone=document.getElementById('adv-add-phone').value.trim();
+  var email=document.getElementById('adv-add-email').value.trim();
+  var cat=document.getElementById('adv-add-category').value;
+  if(!name){alert('Business name is required.');return;}
+  if(!ig){alert('Instagram handle is required.');return;}
+  // Check for duplicate IG
+  var dupBase=ADVERTISERS_BASE.some(function(a){return (a.ig||'').toLowerCase()===ig.toLowerCase();});
+  var dupStg=ADVERTISERS_STAGING.some(function(a){return (a.ig||'').toLowerCase()===ig.toLowerCase();});
+  if(dupBase||dupStg){alert('This Instagram handle already exists in the database.');return;}
+  // Generate new ID in 9000+ range
+  var maxId=9000;
+  ADVERTISERS_STAGING.forEach(function(a){if(a.num>maxId)maxId=a.num;});
+  var newNum=maxId+1;
+  ADVERTISERS_STAGING.push({num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',notes:''});
+  advCloseAddModal();
+  // Switch to correct staging tab
+  var catMap={'Lawyer - Personal Injury':'lawyer','Lawyer - Criminal/DUI':'lawyer','Lawyer - Family/Divorce':'lawyer','Lawyer - Business/Estate':'lawyer','Doctor - Med Spa/Dermatology':'doctor','Doctor - Plastic Surgery':'doctor','Doctor - Cosmetic Dentistry':'doctor','Doctor - Orthodontist':'doctor','Doctor - Chiropractor':'doctor','Dealership':'dealer','Spa':'spa','Salon':'salon','Realtor':'realtor','Catering':'catering'};
+  showStagingView(catMap[cat]||'all');
+  alert('Saved to staging! Review and approve when ready.');
+}
 </script>
 </body>
 </html>
