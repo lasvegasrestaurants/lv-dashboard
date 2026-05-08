@@ -6484,8 +6484,6 @@ function advDeleteRecord(num){
 }
 
 function advRender(){
-  if(typeof advViewType!=="undefined"&&advViewType==="staging")return;
-  if(advViewType==="staging"){var _el=document.getElementById("adv-list");if(_el){var _sf=ADVERTISERS_STAGING.filter(function(a){var c=a.cat||a.category||"";if(advStagingCat==="lawyer")return c.indexOf("Lawyer")===0;if(advStagingCat==="doctor")return c.indexOf("Doctor")===0;if(advStagingCat==="spa")return c==="Spa";if(advStagingCat==="salon")return c==="Salon";if(advStagingCat==="realtor")return c==="Realtor";if(advStagingCat==="catering")return c==="Catering";if(advStagingCat==="dealer")return c==="Dealership";return false;});if(_sf.length===0){_el.innerHTML="<div style=text-align:center;color:#aaa;padding:40px>No records in staging.</div>";return;}var _h="";for(var _i=0;_i<_sf.length;_i++){var _a=_sf[_i];_h+="<div class=card><div><button onclick=advApproveStaging("+_a.num+")>Approve</button><button onclick=advDeleteStaging("+_a.num+")>Delete</button></div><div>"+(_a.name||"")+"</div><div>@"+(_a.ig||"")+"</div></div>";}  _el.innerHTML=_h;}return;}
   // Compute sub-tab counts from full database
   try {
     var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0, realtor:0, catering:0};
@@ -7913,12 +7911,24 @@ function advSaveNewRecord(){
 function showStagingView(cat){
   advViewType='staging';
   advStagingCat=cat||'all';
-  var _lbl={lawyer:'Lawyers 2',doctor:'Doctors 2',spa:'Spas 2',salon:'Salons 2',realtor:'Realtors 2',catering:'Catering 2',dealer:'Dealers 2'};
+  var _lbl={lawyer:'Lawyers 2',doctor:'Doctors 2',spa:'Spas 2',salon:'Salons 2',realtor:'Realtors 2',catering:'Catering 2',dealer:'Dealers 2',other:'Other 2'};
   var hdr=document.getElementById('adv-view-header');
   if(hdr)hdr.textContent=_lbl[advStagingCat]||'Staging';
-  ['lawyers','doctors','dealers','spas','salons','realtors','catering','all'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');});
-  var _m={lawyer:'lawyers2',doctor:'doctors2',spa:'spas2',salon:'salons2',realtor:'realtors2',catering:'catering2',dealer:'dealers2'};
-  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
+  // Ensure advertisers view is visible
+  var vd=document.getElementById('view-dashboard');if(vd){vd.classList.remove('active');vd.style.display='none';}
+  var vt=document.getElementById('view-tasks');if(vt){vt.classList.remove('active');vt.style.display='none';}
+  var vc=document.getElementById('view-crm');if(vc){vc.classList.remove('active');vc.style.display='none';}
+  var va=document.getElementById('view-advertisers');if(va){va.classList.add('active');va.style.display='block';}
+  var ds=document.getElementById('dash-scroller');if(ds)ds.style.display='none';
+  // Reset all main subtab highlights (class AND inline background)
+  var _mainReset={lawyers:'#1B2E4A',doctors:'#1B2E4A',dealers:'#1B2E4A',spas:'#1B2E4A',salons:'#1B2E4A',realtors:'#1B2E4A',catering:'#1B2E4A',all:'#FFFFFF'};
+  Object.keys(_mainReset).forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el){el.classList.remove('ads-active');el.style.background=_mainReset[id];}});
+  // Also reset top-level nav tab backgrounds
+  var b1=document.getElementById('advertisers-tab-btn');if(b1)b1.style.background='#1B2E4A';
+  var b2=document.getElementById('dealerships-tab-btn');if(b2)b2.style.background='#1B2E4A';
+  var b3=document.getElementById('doctors-tab-btn');if(b3)b3.style.background='#1B2E4A';
+  var _m={lawyer:'lawyers2',doctor:'doctors2',spa:'spas2',salon:'salons2',realtor:'realtors2',catering:'catering2',dealer:'dealers2',other:'other2'};
+  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
   advRender();
 }
 function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var exists=ADVERTISERS_BASE.some(function(a){return a.num===rec.num||a.ig===rec.ig;});if(exists){alert('Already in main database.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);advRender();alert('Approved!');}
@@ -7942,6 +7952,7 @@ advRender = function(){
     if(cat === 'realtor') return c === 'Realtor';
     if(cat === 'catering') return c === 'Catering';
     if(cat === 'dealer') return c === 'Dealership';
+    if(cat === 'other') return c !== '' && c.indexOf('Lawyer') !== 0 && c.indexOf('Doctor') !== 0 && c !== 'Spa' && c !== 'Salon' && c !== 'Realtor' && c !== 'Catering' && c !== 'Dealership';
     return true;
   });
   if(filtered.length === 0){
