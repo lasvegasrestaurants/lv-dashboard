@@ -8041,16 +8041,11 @@ advRender = function(){
   var h = '';
   for(var i = 0; i < filtered.length; i++){
     var a = filtered[i];
-    h += '<div class="card" style="border-left:4px solid #F57F17;">';
-    h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">';
-    h += '<button class="btn" style="background:#2E7D32;" onclick="advApproveStaging('+a.num+')">&#10003; Approve</button>';
-    h += '<button class="btn" style="background:#B71C1C;" onclick="advDeleteStaging('+a.num+')">Delete</button>';
-    h += '</div>';
-    h += '<div class="ctag">'+(a.cat||a.category||'')+'</div>';
-    h += '<div class="rname">'+(a.name||'')+'</div>';
-    h += '<div class="info">@'+(a.ig||'')+'</div>';
-    if(a.phone) h += '<div class="info">&#128222; '+a.phone+'</div>';
-    h += '</div>';
+    var _ch = _buildAdvCard(a, i+1);
+    var _apBtn = '<button class="btn" style="background:#1B5E20;font-size:14px;padding:8px 14px;font-weight:700;" onclick="advApproveStaging('+a.num+')">&#8679; Move Up</button>';
+    _ch = _ch.replace('<div class="card-top">', '<div class="card-top">'+_apBtn);
+    _ch = _ch.replace('id="ac'+a.num+'"', 'id="ac'+a.num+'" style="border-left:4px solid #F57F17;"');
+    h += _ch;
   }
   el.innerHTML = h;
 };
