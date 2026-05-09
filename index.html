@@ -8011,7 +8011,7 @@ function _updateStagingCounts(){
   var keys = Object.keys(cats);
   for(var _j=0; _j<keys.length; _j++){
     var _el = document.getElementById('ads-s2-cnt-'+keys[_j]);
-    if(_el) _el.textContent = cats[keys[_j]] || '';
+    if(_el) _el.textContent = cats[keys[_j]];
   }
 }
 var _origAdvRender = advRender;
