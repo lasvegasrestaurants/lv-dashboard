@@ -7937,9 +7937,17 @@ function advSaveNewRecord(){
   if(!name){alert('Business name is required.');return;}
   if(!ig){alert('Instagram handle is required.');return;}
   // Check for duplicate IG
-  var dupBase=ADVERTISERS_BASE.some(function(a){return (a.ig||'').toLowerCase()===ig.toLowerCase();});
-  var dupStg=ADVERTISERS_STAGING.some(function(a){return (a.ig||'').toLowerCase()===ig.toLowerCase();});
-  if(dupBase||dupStg){alert('This Instagram handle already exists in the database.');return;}
+  var _dupBaseRec=ADVERTISERS_BASE.find(function(a){return ig&&(a.ig||'').toLowerCase()===ig.toLowerCase();});
+  var _dupStgRec=ig?ADVERTISERS_STAGING.find(function(a){return (a.ig||'').toLowerCase()===ig.toLowerCase();}):null;
+  if(_dupBaseRec){
+    if(advDeletedMap&&advDeletedMap[_dupBaseRec.num]){
+      alert('\u26A0\uFE0F This Instagram handle belongs to a record that was previously deleted ('+_dupBaseRec.name+').\nRestore it from the staging area if needed.');
+    } else {
+      alert('\u26A0\uFE0F This Instagram handle already exists in the main database ('+_dupBaseRec.name+').');
+    }
+    return;
+  }
+  if(_dupStgRec){alert('\u26A0\uFE0F This Instagram handle already exists in staging ('+_dupStgRec.name+').');return;}
   // Generate new ID in 9000+ range
   var maxId=9000;
   ADVERTISERS_STAGING.forEach(function(a){if(a.num>maxId)maxId=a.num;});
@@ -7980,7 +7988,7 @@ function showStagingView(cat){
   ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
   advRender();
 }
-function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var exists=ADVERTISERS_BASE.some(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(exists){alert('Already in main database.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();alert('Approved!');}
+function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1){alert('Not found.');return;}var rec=ADVERTISERS_STAGING[idx];var _matchedBase=ADVERTISERS_BASE.find(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(_matchedBase){if(advDeletedMap&&advDeletedMap[_matchedBase.num]){if(!confirm('\u26A0\uFE0F This record was previously deleted ('+_matchedBase.name+').\nOK = restore it  |  Cancel = leave it deleted.'))return;delete advDeletedMap[_matchedBase.num];_advSaveMap('lv_adv_deleted_v1',advDeletedMap);ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();alert('Record restored!');return;}alert('\u26A0\uFE0F Already in the main database: '+_matchedBase.name+'.');return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();alert('Approved!');}
 function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;ADVERTISERS_STAGING.splice(idx,1);advRender();}
 </script>
 <script>
