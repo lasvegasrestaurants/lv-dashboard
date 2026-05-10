@@ -5793,7 +5793,7 @@ window.addEventListener('load',function(){
     <div id="ads-subtabs" style="display:flex;gap:6px;padding:8px 12px;background:#0d1929;border-bottom:1px solid #1B2E4A;flex-wrap:wrap;"><button onclick="showAllAdsView();['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');})" id="ads-sub-all" class="ads-subtab" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showMiscView()" id="ads-sub-misc" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Misc <span id="ads-sub-cnt-misc">0</span></button><button onclick="showBadIGView()" id="ads-sub-badig" class="ads-subtab" style="background:#B71C1C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bad IG <span id="ads-sub-cnt-badig">0</span></button><button onclick="showStagingView('lawyer')" id="ads-sub-lawyers2" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Lawyers <span id="ads-s2-cnt-lawyer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('doctor')" id="ads-sub-doctors2" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Doctors <span id="ads-s2-cnt-doctor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('spa')" id="ads-sub-spas2" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Spas <span id="ads-s2-cnt-spa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('salon')" id="ads-sub-salons2" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Salons <span id="ads-s2-cnt-salon" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('realtor')" id="ads-sub-realtors2" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Realtors <span id="ads-s2-cnt-realtor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('catering')" id="ads-sub-catering2" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Catering <span id="ads-s2-cnt-catering" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dealer')" id="ads-sub-dealers2" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dealerships <span id="ads-s2-cnt-dealer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('other')" id="ads-sub-other2" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Misc <span id="ads-s2-cnt-other" style="font-size:11px;opacity:0.85;">0</span></button></div>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
-    <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advSetFilter('trade')" id="adv-filter-trade" class="adv-fbtn" style="background:#00695C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trade <span id="adv-cnt-trade">0</span></button><button onclick="advSetFilter('dupes')" id="adv-filter-dupes" class="adv-fbtn" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dupes <span id="adv-cnt-dupes">0</span></button>
+    <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advSetFilter('trade')" id="adv-filter-trade" class="adv-fbtn" style="background:#00695C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trade <span id="adv-cnt-trade">0</span></button><button onclick="advShowDupesModal()" id="adv-filter-dupes" class="adv-fbtn" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dupes</button>
   </div>
   <div style="padding:4px 12px 6px;background:#1B2E4A;">
     <div style="display:flex;gap:8px;align-items:center;"><input type="text" id="adv-search" placeholder="Search..." oninput="advSearchInput(this.value)" style="flex:1;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;"><button onclick="advOpenAddModal()" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</button></div>
@@ -6566,6 +6566,59 @@ function advDeleteRecord(num){
   _advSaveMap('lv_adv_deleted_v1',advDeletedMap);
   if(typeof advFbSave==='function')advFbSave();
   _advRefreshCard(num);
+}
+
+function advShowDupesModal(){
+  var igMap={};
+  var all=ADVERTISERS_BASE.concat(ADVERTISERS_STAGING);
+  all.forEach(function(a){
+    if(advDeletedMap[a.num]||_advStagingRemovedMap[a.num])return;
+    var ig=(advIGOverrideMap[a.num]!==undefined?advIGOverrideMap[a.num]:(a.ig||'')).toLowerCase().trim();
+    if(!ig)return;
+    if(!igMap[ig])igMap[ig]=[];
+    igMap[ig].push(a);
+  });
+  var dupes=Object.keys(igMap).filter(function(ig){return igMap[ig].length>1;});
+  dupes.sort();
+  var html='';
+  if(!dupes.length){
+    html='<p style="color:#90A4AE;text-align:center;padding:20px;">No duplicates found.</p>';
+  } else {
+    html='<p style="color:#90A4AE;font-size:12px;margin:0 0 14px;">'+dupes.length+' handle'+(dupes.length===1?'':'s')+' appear more than once. Delete the extra record in each group.</p>';
+    dupes.forEach(function(ig){
+      var recs=igMap[ig];
+      html+='<div style="background:#0d1929;border-radius:8px;padding:14px;margin-bottom:10px;">';
+      html+='<div style="color:#CE93D8;font-size:12px;font-weight:700;margin-bottom:8px;">@'+ig+'</div>';
+      recs.forEach(function(a){
+        var name=advNameOverrideMap[a.num]||a.name;
+        var cat=a.cat||a.category||'';
+        var isStaging=ADVERTISERS_STAGING.some(function(s){return s.num===a.num;});
+        html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid #1B2E4A;">';
+        html+='<div><span style="color:#fff;font-weight:600;font-size:13px;">'+_esc(name)+'</span>&nbsp;<span style="color:#78909C;font-size:11px;">'+_esc(cat)+(isStaging?' &bull; staging':'')+'</span></div>';
+        html+='<button onclick="advDupesDelete('+a.num+')" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;flex-shrink:0;">Delete</button>';
+        html+='</div>';
+      });
+      html+='</div>';
+    });
+  }
+  document.getElementById('adv-dupes-content').innerHTML=html;
+  document.getElementById('adv-dupes-modal').style.display='block';
+}
+function advCloseDupesModal(){
+  document.getElementById('adv-dupes-modal').style.display='none';
+}
+function advDupesDelete(num){
+  var si=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});
+  if(si!==-1){
+    _advStagingRemovedMap[num]=1;
+    localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
+    ADVERTISERS_STAGING.splice(si,1);
+  } else {
+    advDeletedMap[num]=true;
+    _advSaveMap('lv_adv_deleted_v1',advDeletedMap);
+    if(typeof advFbSave==='function')advFbSave();
+  }
+  advShowDupesModal();
 }
 
 function advRender(){
@@ -8011,6 +8064,16 @@ function advSaveNewRecord(){
   alert('Saved to staging! Review and approve when ready.');
 }
 </script>
+
+<div id="adv-dupes-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9999;overflow-y:auto;padding:24px;box-sizing:border-box;">
+  <div style="max-width:560px;margin:0 auto;background:#1B2E4A;border-radius:12px;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="color:#FFD600;margin:0;font-size:18px;">Duplicate Instagram Handles</h2>
+      <button onclick="advCloseDupesModal()" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
+    </div>
+    <div id="adv-dupes-content"></div>
+  </div>
+</div>
 </body>
 </html>
 <script>
