@@ -6364,6 +6364,7 @@ function advOpenQuoteModal(num){
 
 function _advGetA(num){
   for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num)return ADVERTISERS_BASE[i];}
+  for(var i=0;i<ADVERTISERS_STAGING.length;i++){if(ADVERTISERS_STAGING[i].num===num)return ADVERTISERS_STAGING[i];}
   return null;
 }
 
