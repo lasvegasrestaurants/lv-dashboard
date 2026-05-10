@@ -6539,7 +6539,7 @@ function advOpenDM(num){
     if(typeof advFbSave==='function')advFbSave();
   }
   _advUpdateDmButton(num);
-  setTimeout(function(){window.location.href='https://ig.me/m/'+handle;}, 100);
+  window.location.href='instagram://user?username='+handle;
 }
 
 function advUnmarkDM(num){
