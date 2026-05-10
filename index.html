@@ -6607,7 +6607,7 @@ function advShowDupesModal(){
     });
   }
   document.getElementById('adv-dupes-content').innerHTML=html;
-  document.getElementById('adv-dupes-modal').style.display='block';
+  document.getElementById('adv-dupes-modal').style.display='flex';
 }
 function advCloseDupesModal(){
   document.getElementById('adv-dupes-modal').style.display='none';
@@ -8070,13 +8070,13 @@ function advSaveNewRecord(){
 }
 </script>
 
-<div id="adv-dupes-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9999;overflow-y:auto;padding:24px;box-sizing:border-box;">
-  <div style="max-width:560px;margin:0 auto;background:#1B2E4A;border-radius:12px;padding:20px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<div id="adv-dupes-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
+  <div style="max-width:560px;width:100%;background:#1B2E4A;border-radius:12px;padding:20px;max-height:80vh;display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0;">
       <h2 style="color:#FFD600;margin:0;font-size:18px;">Duplicate Instagram Handles</h2>
       <button onclick="advCloseDupesModal()" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
     </div>
-    <div id="adv-dupes-content"></div>
+    <div id="adv-dupes-content" style="overflow-y:auto;flex:1;"></div>
   </div>
 </div>
 </body>
