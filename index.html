@@ -6304,7 +6304,7 @@ function _advPromptEdit(num,fieldName,currentVal,onSave){
 }
 
 function advOpenNameModal(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   var current=advNameOverrideMap[num]||a.name;
   _advPromptEdit(num,'Name',current,function(v){
@@ -6314,7 +6314,7 @@ function advOpenNameModal(num){
 }
 
 function advOpenEditIG(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   var current=advIGOverrideMap[num]!==undefined?advIGOverrideMap[num]:(a.ig||'');
   var displayVal = current ? '@'+current : '@';
@@ -6326,7 +6326,7 @@ function advOpenEditIG(num){
 }
 
 function advOpenEditEmail(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   // Find existing pending email if any
   var atts = advAttemptsMap[num] || [];
@@ -6345,7 +6345,7 @@ function advOpenEditEmail(num){
 }
 
 function advOpenEditPhone(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   var current=_advPhone(a);
   _advPromptEdit(num,'Phone',current,function(v){
@@ -6356,7 +6356,7 @@ function advOpenEditPhone(num){
 }
 
 function advOpenEditAddress(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   var current=_advAddr(a);
   _advPromptEdit(num,'Address',current,function(v){
@@ -6367,7 +6367,7 @@ function advOpenEditAddress(num){
 }
 
 function advOpenNoteModal(num){
-  var a=null;for(var i=0;i<ADVERTISERS_BASE.length;i++){if(ADVERTISERS_BASE[i].num===num){a=ADVERTISERS_BASE[i];break;}}
+  var a=_advGetA(num);
   if(!a)return;
   var current=advNotesMap[num]||'';
   // Use prompt for now (multi-line not great but works); upgrade to modal later
