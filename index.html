@@ -6372,6 +6372,7 @@ function _advGetEmail(num){
   var atts=advAttemptsMap[num]||[];
   for(var i=0;i<atts.length;i++){if(atts[i].status==='pending'&&atts[i].email)return atts[i].email;}
   for(var j=atts.length-1;j>=0;j--){if(atts[j].email)return atts[j].email;}
+  if(typeof advFieldOverrideMap!=='undefined'&&advFieldOverrideMap[num]&&advFieldOverrideMap[num].email)return advFieldOverrideMap[num].email;
   var a=_advGetA(num);return a?(a.email||''):'';
 }
 
@@ -6515,6 +6516,13 @@ function advUnmarkDM(num){
 
 
 function advDeleteRecord(num){
+  var _si=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});
+  if(_si!==-1){
+    if(!confirm('Remove '+ADVERTISERS_STAGING[_si].name+' from staging?'))return;
+    ADVERTISERS_STAGING.splice(_si,1);
+    advRender();
+    return;
+  }
   var a=_advGetA(num);if(!a)return;
   var name=advNameOverrideMap[num]||a.name;
   if(!confirm('Delete '+name+'?\n\nThis hides them from your list. Records can be restored from backup if needed.'))return;
@@ -6655,7 +6663,7 @@ function advSetFilter(f){
   var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
   for(var _i=0;_i<_allBtns.length;_i++){var _b=document.getElementById('adv-filter-'+_allBtns[_i]);if(_b)_b.classList.remove('adv-active');}
   var _act=document.getElementById('adv-filter-'+f);if(_act)_act.classList.add('adv-active');
-  var _fbtnColors={'needdm':'#004D40','badig':'#B71C1C','interested':'#1B5E20','notes':'#4A148C','followup':'#E65100','problem':'#D32F2F','trade':'#0277BD','metaads':'#F57F17','noig':'#BF360C','noemail':'#37474F'};
+  var _fbtnColors={'all':'#00838F','sent':'#388E3C','bounced':'#C62828','needdm':'#004D40','noemail':'#880E4F','badig':'#B71C1C','interested':'#F57F17','notes':'#EF6C00','followup':'#1565C0','problem':'#D32F2F','trade':'#00695C','metaads':'#1565C0','noig':'#BF360C'};
   var _allBtnIds=['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
   for(var _j=0;_j<_allBtnIds.length;_j++){
     var _bj=document.getElementById('adv-filter-'+_allBtnIds[_j]);
@@ -7874,31 +7882,7 @@ function _advApplyFirebaseData(rec){
 
 
 // === ADVERTISER SEED DATA (Patch 2Q - PI Lawyers IG batch 2) ===
-(function(){
-  try {
-    if (localStorage.getItem('lv_adv_seed_2q_v1_applied') === '1') return;
-    var igSeed = {
-      1008: 'naqviinjurylaw',
-      1115: 'samandashlaw',
-      1135: 'steve.dimopoulos',
-      1140: 'sweetjameslaw',
-      1181: 'ladah_law_firm',
-      1182: 'vanlawfirm'
-    };
-    var ig = {};
-    try { ig = JSON.parse(localStorage.getItem('lv_adv_igoverride_v1')) || {}; } catch(e) { ig = {}; }
-    Object.keys(igSeed).forEach(function(num){
-      if (!ig[num]) ig[num] = igSeed[num];
-    });
-    localStorage.setItem('lv_adv_igoverride_v1', JSON.stringify(ig));
-    localStorage.setItem('lv_adv_seed_2q_v1_applied', '1');
-    if (typeof advIGOverrideMap !== 'undefined') {
-      Object.keys(igSeed).forEach(function(num){
-        if (!advIGOverrideMap[num]) advIGOverrideMap[num] = igSeed[num];
-      });
-    }
-  } catch(e) { console.warn('Adv seed 2Q failed:', e); }
-})();
+
 
 
 
@@ -7962,8 +7946,9 @@ function advSaveNewRecord(){
   // Generate new ID in 9000+ range
   var maxId=9000;
   ADVERTISERS_STAGING.forEach(function(a){if(a.num>maxId)maxId=a.num;});
+  ADVERTISERS_BASE.forEach(function(a){if(a.num>9000&&a.num>maxId)maxId=a.num;});
   var newNum=maxId+1;
-  ADVERTISERS_STAGING.push({num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',notes:''});
+  ADVERTISERS_STAGING.push({num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',defaultStatus:'pending',notes:''});
   advCloseAddModal();
   // Switch to correct staging tab
   var catMap={'Lawyer - Personal Injury':'lawyer','Lawyer - Criminal/DUI':'lawyer','Lawyer - Family/Divorce':'lawyer','Lawyer - Business/Estate':'lawyer','Doctor - Med Spa/Dermatology':'doctor','Doctor - Plastic Surgery':'doctor','Doctor - Cosmetic Dentistry':'doctor','Doctor - Orthodontist':'doctor','Doctor - Chiropractor':'doctor','Dealership':'dealer','Spa':'spa','Salon':'salon','Realtor':'realtor','Catering':'catering'};
@@ -8007,7 +7992,6 @@ function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a)
 
 function _updateStagingCounts(){
   var cats = {lawyer:0, doctor:0, spa:0, salon:0, realtor:0, catering:0, dealer:0, other:0};
-  var knownCats = ['Lawyer','Doctor','Spa','Salon','Realtor','Catering','Dealership'];
   for(var _i=0; _i<ADVERTISERS_STAGING.length; _i++){
     var _c = ADVERTISERS_STAGING[_i].cat || ADVERTISERS_STAGING[_i].category || '';
     if(_c.indexOf('Lawyer')===0)       cats.lawyer++;
