@@ -187,8 +187,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-note.has-note { background: #F57F17; color: #fff; }
 .note-preview { font-size: 11px; color: #F57F17; font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .btn-delete { background: #B71C1C; color: #fff; border: none !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem { background: #fff; color: #FFD600; border: 2px solid #FFD600; font-size: 13px; padding: 8px 13px; }
-.btn-problem.flagged { background: #FFD600; color: #fff; }
+.btn-problem { background: #1A1A2E; color: #EF5350; border: 2px solid #EF5350; font-size: 13px; padding: 8px 13px; }
+.btn-problem.flagged { background: #D32F2F; color: #fff; border: 2px solid #D32F2F; }
 .b-problem { background: #FFD600; }
 .b-foodtrade  { background: #2E7D32; }
 .b-foodtradedone { background: #F57F17; }
@@ -5794,7 +5794,7 @@ window.addEventListener('load',function(){
 <button onclick="advSetFilter('all')" id="adv-filter-all" class="adv-fbtn adv-active" style="background:#00838F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="adv-cnt-all">0</span></button>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
-    <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#D32F2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advSetFilter('trade')" id="adv-filter-trade" class="adv-fbtn" style="background:#00695C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trade <span id="adv-cnt-trade">0</span></button><button onclick="advSetFilter('metaads')" id="adv-filter-metaads" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Meta Ads <span id="adv-cnt-metaads">0</span></button>
+    <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#D32F2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advSetFilter('trade')" id="adv-filter-trade" class="adv-fbtn" style="background:#00695C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trade <span id="adv-cnt-trade">0</span></button><button onclick="advSetFilter('metaads')" id="adv-filter-metaads" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Meta Ads <span id="adv-cnt-metaads">0</span></button><button onclick="advSetFilter('dupes')" id="adv-filter-dupes" class="adv-fbtn" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dupes <span id="adv-cnt-dupes">0</span></button>
   </div>
   <div style="padding:4px 12px 6px;background:#1B2E4A;">
     <div style="display:flex;gap:8px;align-items:center;"><input type="text" id="adv-search" placeholder="Search..." oninput="advSearchInput(this.value)" style="flex:1;padding:10px 12px;border:1px solid #1B2E4A;border-radius:8px;background:#263238;color:#fff;font-size:14px;box-sizing:border-box;"><button onclick="advOpenAddModal()" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</button></div>
@@ -6655,7 +6655,7 @@ function advRender(){
     if(fPriority) counts.priority++;
     var fNoIG = !ig || !!advBadIGMap[a.num];
     if(fNoIG) counts.noig++;
-    enriched.push({a:a,status:st,needdm:needsDM,noemail:fNoEmail,badig:fBadIG,interested:fInterested,notes:fNotes,followup:fFollowup,problem:fProblem,trade:fTrade,priority:fPriority,noig:fNoIG,metaads:fMetaAds,_search:(name+' '+(a.cat||a.category)+' '+(advNotesMap[a.num]||'')).toLowerCase()});
+    enriched.push({a:a,status:st,needdm:needsDM,noemail:fNoEmail,badig:fBadIG,interested:fInterested,notes:fNotes,followup:fFollowup,problem:fProblem,trade:fTrade,priority:fPriority,noig:fNoIG,metaads:fMetaAds,isDupe:false,_search:(name+' '+(a.cat||a.category)+' '+(advNotesMap[a.num]||'')).toLowerCase()});
   }
   var ce=document.getElementById('adv-cnt-all');if(ce)ce.textContent=counts.all;
 
@@ -6672,6 +6672,12 @@ function advRender(){
   var cs=document.getElementById('adv-cnt-sent');if(cs)cs.textContent=counts.sent;
   var cb=document.getElementById('adv-cnt-bounced');if(cb)cb.textContent=counts.bounced;
   var cn=document.getElementById('adv-cnt-needdm');if(cn)cn.textContent=counts.needdm;
+  // Detect duplicate IG handles within current view
+  var _igSeen={};
+  enriched.forEach(function(e){var _ig=(e.a.ig||'').toLowerCase();if(!_ig)return;_igSeen[_ig]=(_igSeen[_ig]||0)+1;});
+  var _dupeCnt=0;
+  enriched.forEach(function(e){var _ig=(e.a.ig||'').toLowerCase();if(_ig&&_igSeen[_ig]>1){e.isDupe=true;_dupeCnt++;}});
+  var cDu=document.getElementById('adv-cnt-dupes');if(cDu)cDu.textContent=_dupeCnt;
   var filtered=enriched.filter(function(e){
     if(advFilter==='needdm'){if(!e.needdm)return false;}
     else if(advFilter==='noemail'){if(!e.noemail)return false;}
@@ -6683,6 +6689,7 @@ function advRender(){
     else if(advFilter==='trade'){if(!e.trade)return false;}
     else if(advFilter==='noig'){if(!e.noig)return false;}
     else if(advFilter==='metaads'){if(!e.metaads)return false;}
+    else if(advFilter==='dupes'){if(!e.isDupe)return false;}
     else if(advFilter!=='all'&&e.status!==advFilter)return false;
     if(advSearch&&e._search.indexOf(advSearch)===-1)return false;
     return true;
@@ -6697,11 +6704,11 @@ function advRender(){
 
 function advSetFilter(f){
   advFilter = f;
-  var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
+  var _allBtns = ['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads','dupes'];
   for(var _i=0;_i<_allBtns.length;_i++){var _b=document.getElementById('adv-filter-'+_allBtns[_i]);if(_b)_b.classList.remove('adv-active');}
   var _act=document.getElementById('adv-filter-'+f);if(_act)_act.classList.add('adv-active');
-  var _fbtnColors={'all':'#00838F','sent':'#388E3C','bounced':'#C62828','needdm':'#004D40','noemail':'#880E4F','badig':'#B71C1C','interested':'#F57F17','notes':'#EF6C00','followup':'#1565C0','problem':'#D32F2F','trade':'#00695C','metaads':'#1565C0','noig':'#BF360C'};
-  var _allBtnIds=['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads'];
+  var _fbtnColors={'all':'#00838F','sent':'#388E3C','bounced':'#C62828','needdm':'#004D40','noemail':'#880E4F','badig':'#B71C1C','interested':'#F57F17','notes':'#EF6C00','followup':'#1565C0','problem':'#D32F2F','trade':'#00695C','metaads':'#1565C0','noig':'#BF360C','dupes':'#6A1B9A'};
+  var _allBtnIds=['all','pending','sent','bounced','needdm','noemail','badig','interested','notes','followup','problem','trade','noig','metaads','dupes'];
   for(var _j=0;_j<_allBtnIds.length;_j++){
     var _bj=document.getElementById('adv-filter-'+_allBtnIds[_j]);
     if(!_bj)continue;
