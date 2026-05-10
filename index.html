@@ -6102,6 +6102,7 @@ function advSetViewType(t){
   if(sbad){sbad.style.background='#B71C1C';sbad.classList.toggle('ads-active',t==='badig');}
   var s0=document.getElementById('ads-sub-all');
   if(s0){s0.style.background='#FFD600';s0.style.color='#000';s0.classList.toggle('ads-active',t==='all');}
+  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');});
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
