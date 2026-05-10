@@ -6219,6 +6219,7 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-note'+(advNotesMap[a.num]?' has-note':'')+'" onclick="advOpenNoteModal('+a.num+')">Note</button>';
 
   btns+='<button class="btn btn-ghosted'+(advGhostedMap[a.num]?' flagged':'')+'" onclick="advToggleGhosted('+a.num+')">\ud83d\udc7b Ghosted</button>';
+  btns+='<button class="btn btn-bad-ig'+(isBadIG?' flagged':'')+'" onclick="advToggleBadIG('+a.num+')">Bad IG</button>';
   btns+='<button class="btn btn-problem'+(advProblemMap[a.num]?' flagged':'')+'" onclick="advToggleProblem('+a.num+')">Problem</button>';
   btns+='<button class="btn btn-delete" onclick="advDeleteRecord('+a.num+')">Delete</button>';
   btns+='<button class="btn" style="background:#37474F;font-size:13px;padding:8px 13px;" onclick="advOpenCatModal('+a.num+')">Move To</button>';
