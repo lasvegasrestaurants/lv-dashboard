@@ -6158,6 +6158,7 @@ var advDeletedMap = (function(){try{return JSON.parse(localStorage.getItem('lv_a
 function _advPhone(a){var f=advFieldOverrideMap[a.num]||{};return f.phone!==undefined?f.phone:a.phone;}
 function _advAddr(a){var f=advFieldOverrideMap[a.num]||{};return f.address!==undefined?f.address:(a.address||'');}
 function _advOwner(a){var f=advFieldOverrideMap[a.num]||{};return f.owner!==undefined?f.owner:(a.owner||'');}
+function _advCat(a){var f=advFieldOverrideMap[a.num]||{};return f.cat!==undefined?f.cat:(a.cat||a.category||'');}
 
 function _advSentDate(num){
   var atts=advAttemptsMap[num]||[];
@@ -6220,8 +6221,9 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-ghosted'+(advGhostedMap[a.num]?' flagged':'')+'" onclick="advToggleGhosted('+a.num+')">\ud83d\udc7b Ghosted</button>';
   btns+='<button class="btn btn-problem'+(advProblemMap[a.num]?' flagged':'')+'" onclick="advToggleProblem('+a.num+')">Problem</button>';
   btns+='<button class="btn btn-delete" onclick="advDeleteRecord('+a.num+')">Delete</button>';
+  btns+='<button class="btn" style="background:#37474F;font-size:13px;padding:8px 13px;" onclick="advOpenCatModal('+a.num+')">Move To</button>';
   btns+='<button class="btn btn-add-email" onclick="advOpenEditEmail('+a.num+')" style="background:#546E7A;">Edit Email</button>';
-  var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(a.cat)+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+'</span> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'" style="font-size:13px;padding:8px 13px;">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
+  var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(_advCat(a))+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+'</span> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'" style="font-size:13px;padding:8px 13px;">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
   return h;
 }
 
@@ -6626,6 +6628,40 @@ function advDupesDelete(num){
   advShowDupesModal();
 }
 
+
+function advOpenCatModal(num){
+  var cats=[
+    {key:'Lawyer',    label:'Lawyers',     color:'#004D40'},
+    {key:'Doctor',    label:'Doctors',     color:'#4A148C'},
+    {key:'Spa',       label:'Spas',        color:'#880E4F'},
+    {key:'Salon',     label:'Salons',      color:'#0277BD'},
+    {key:'Realtor',   label:'Realtors',    color:'#F57F17'},
+    {key:'Catering',  label:'Catering',    color:'#BF360C'},
+    {key:'Dealership',label:'Dealerships', color:'#E65100'},
+    {key:'Other',     label:'Misc',        color:'#00BCD4'}
+  ];
+  var a=_advGetA(num);
+  var current=a?_advCat(a):'';
+  var btns=cats.map(function(c){
+    var isCur=current.toLowerCase().indexOf(c.key.toLowerCase())===0||(c.key==='Other'&&!['Lawyer','Doctor','Spa','Salon','Realtor','Catering','Dealership'].some(function(k){return current.toLowerCase().indexOf(k.toLowerCase())===0;}));
+    return '<button onclick="advSetCat('+num+',''+c.key+'')" style="background:'+c.color+';color:#fff;border:'+(isCur?'3px solid #FFD600':'2px solid transparent')+';border-radius:8px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer;width:100%;">'+c.label+'</button>';
+  }).join('');
+  document.getElementById('adv-cat-buttons').innerHTML=btns;
+  document.getElementById('adv-cat-modal').style.display='flex';
+}
+function advSetCat(num,cat){
+  // For staging records: update the record object directly
+  var si=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});
+  if(si!==-1){ADVERTISERS_STAGING[si].cat=cat;ADVERTISERS_STAGING[si].category=cat;}
+  // Always store in fieldOverrideMap for base records and persistence
+  if(!advFieldOverrideMap[num])advFieldOverrideMap[num]={};
+  advFieldOverrideMap[num].cat=cat;
+  _advSaveMap('lv_adv_fieldoverride_v1',advFieldOverrideMap);
+  if(typeof advFbSave==='function')advFbSave();
+  document.getElementById('adv-cat-modal').style.display='none';
+  advRender();
+}
+
 function advRender(){
   // Compute sub-tab counts from full database
   try {
@@ -6634,7 +6670,7 @@ function advRender(){
       var _ar = ADVERTISERS_BASE[_ix];
       if(!_ar || _ar.num===undefined) continue;
       if(advDeletedMap && advDeletedMap[_ar.num]) continue;
-      var _ac = (_ar.cat || _ar.category || '');
+      var _ac = _advCat(_ar);
       if(_ac==='Dealership') _subCounts.dealer++;
       else if(_ac==='Spa') _subCounts.spa++;
       else if(_ac==='Salon') _subCounts.salon++;
@@ -6650,7 +6686,7 @@ function advRender(){
     var _ssal=document.getElementById('ads-sub-cnt-salons'); if(_ssal) _ssal.textContent=_subCounts.salon;
     var _sre=document.getElementById('ads-sub-cnt-realtors'); if(_sre) _sre.textContent=_subCounts.realtor;
     var _sca=document.getElementById('ads-sub-cnt-catering'); if(_sca) _sca.textContent=_subCounts.catering;
-    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){var c=a.cat||a.category||'';return c&&['Dealership','Spa','Salon','Realtor','Catering'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
+    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){var c=_advCat(a);return c&&['Dealership','Spa','Salon','Realtor','Catering'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
     var _sbad2=document.getElementById('ads-sub-cnt-badig'); if(_sbad2) _sbad2.textContent=Object.keys(advBadIGMap||{}).length;
     var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=(_subCounts.lawyer+_subCounts.doctor+_subCounts.dealer+_subCounts.spa+_subCounts.salon+_subCounts.realtor+_subCounts.catering);
   } catch(_e) { console.warn('subcount loop failed:', _e); }
@@ -8077,6 +8113,16 @@ function advSaveNewRecord(){
       <button onclick="advCloseDupesModal()" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
     </div>
     <div id="adv-dupes-content" style="overflow-y:auto;flex:1;"></div>
+  </div>
+</div>
+
+<div id="adv-cat-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
+  <div style="max-width:380px;width:100%;background:#1B2E4A;border-radius:12px;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="color:#FFD600;margin:0;font-size:18px;">Move to Category</h2>
+      <button onclick="document.getElementById('adv-cat-modal').style.display='none'" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005;</button>
+    </div>
+    <div id="adv-cat-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
   </div>
 </div>
 </body>
