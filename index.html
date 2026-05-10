@@ -6644,7 +6644,7 @@ function advOpenCatModal(num){
   var current=a?_advCat(a):'';
   var btns=cats.map(function(c){
     var isCur=current.toLowerCase().indexOf(c.key.toLowerCase())===0||(c.key==='Other'&&!['Lawyer','Doctor','Spa','Salon','Realtor','Catering','Dealership'].some(function(k){return current.toLowerCase().indexOf(k.toLowerCase())===0;}));
-    return '<button onclick="advSetCat('+num+',''+c.key+'')" style="background:'+c.color+';color:#fff;border:'+(isCur?'3px solid #FFD600':'2px solid transparent')+';border-radius:8px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer;width:100%;">'+c.label+'</button>';
+    return '<button onclick="advSetCat('+num+',&apos;'+c.key+'&apos;)" style="background:'+c.color+';color:#fff;border:'+(isCur?'3px solid #FFD600':'2px solid transparent')+';border-radius:8px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer;width:100%;">'+c.label+'</button>';
   }).join('');
   document.getElementById('adv-cat-buttons').innerHTML=btns;
   document.getElementById('adv-cat-modal').style.display='flex';
