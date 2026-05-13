@@ -3281,8 +3281,7 @@ function openDM(num) {
   }
   _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  // Open Instagram DM inbox directly (no popup, native URL scheme)
-  setTimeout(function() { window.location.href = 'instagram://direct/inbox'; }, 50);
+  window.location.href = 'https://ig.me/m/' + r.igHandle;
 }
 
 function openEmail(num) {
@@ -6547,8 +6546,7 @@ function advOpenDM(num){
     if(typeof advFbSave==='function')advFbSave();
   }
   _advUpdateDmButton(num);
-  // Open Instagram DM inbox directly (no popup, native URL scheme)
-  window.location.href='instagram://direct/inbox';
+  window.location.href='https://ig.me/m/'+handle;
 }
 
 function advUnmarkDM(num){
