@@ -11535,10 +11535,17 @@ function _pinCheck() {
     _enterDemoMode();
     return;
   }
-  if (_pinEntry === _pinCorrect) {
+  var _dynPin=(function(){try{return localStorage.getItem('lv_pin')||'227422';}catch(e){return '227422';}})();
+  if (_pinEntry === _dynPin) {
     // Correct — save session and unlock
     _pinAttempts = 0;
-    try { sessionStorage.setItem('lv_pin_ok', '1'); sessionStorage.removeItem('lv_guest_mode'); sessionStorage.removeItem('lv_demo_ok'); } catch(e) {}
+    try {
+      sessionStorage.setItem('lv_pin_ok', '1');
+      sessionStorage.removeItem('lv_guest_mode');
+      sessionStorage.removeItem('lv_demo_ok');
+      // Persist login across browser restarts (30-day expiry)
+      localStorage.setItem('lv_owner_session_v2', JSON.stringify({ok:1,t:Date.now()}));
+    } catch(e) {}
     document.getElementById('pin-screen').classList.add('hidden');
     document.getElementById('view-dashboard').classList.add('active');
     _startSessionTimer();
@@ -11579,6 +11586,7 @@ function logOut() {
     sessionStorage.removeItem('lv_demo_ok');
     sessionStorage.removeItem('lv_guest_mode');
     sessionStorage.removeItem('lv_friend_ok');
+    localStorage.removeItem('lv_owner_session_v2');
   } catch(e) {}
   // Reset demo/friend flags and restore real storage keys
   isDemo = false;
@@ -11635,7 +11643,7 @@ function logOut() {
 // SESSION TIMEOUT — 24h for demo, 4h for real
 // ══════════════════════════════════════════════════════
 var _sessionTimer = null;
-var _SESSION_MS = 4 * 60 * 60 * 1000;        // 4 hours real
+var _SESSION_MS = 30 * 24 * 60 * 60 * 1000;  // 30 days real
 var _DEMO_SESSION_MS = 24 * 60 * 60 * 1000;  // max 24h but activity-checked
 var _DEMO_ACTIVITY_CHECK_MS = 10 * 60 * 1000; // prompt every 10 minutes
 var _demoActivityTimer = null;
@@ -11728,7 +11736,14 @@ function _startSessionTimer() {
   // Clear any previous session timer to prevent overlap
   if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
   var ms = isDemo ? _DEMO_SESSION_MS : _SESSION_MS;
-  try { sessionStorage.setItem('lv_login_time', Date.now()); } catch(e) {}
+  try {
+    sessionStorage.setItem('lv_login_time', Date.now());
+    // Roll the 30-day window for owner each session start
+    if(!isDemo && !isFriend){
+      var _os2=JSON.parse(localStorage.getItem('lv_owner_session_v2')||'null');
+      if(_os2&&_os2.ok) localStorage.setItem('lv_owner_session_v2',JSON.stringify({ok:1,t:Date.now()}));
+    }
+  } catch(e) {}
   if (isDemo) {
     _scheduleDemoActivityCheck();
   } else {
@@ -11976,13 +11991,28 @@ function savePinChange() {
   if (nw === DEMO_PIN)      { msg.textContent = 'Cannot use 123456 — that is the demo PIN.'; return; }
   if (nw === FRIEND_PIN)    { msg.textContent = 'Cannot use 111111 — that is reserved.'; return; }
   if (nw !== conf)          { msg.textContent = 'New PINs do not match.'; return; }
-  try { localStorage.setItem('lv_pin', nw); } catch(e) {}
+  try {
+    localStorage.setItem('lv_pin', nw);
+    // Roll session so new PIN is live immediately
+    localStorage.setItem('lv_owner_session_v2', JSON.stringify({ok:1,t:Date.now()}));
+  } catch(e) {}
   _pinCorrect = nw;
   closePinChange();
   showDMToast('PIN changed!');
 }
 
 function _pinInit() {
+  // Check persistent 30-day owner session first
+  try {
+    var _os=JSON.parse(localStorage.getItem('lv_owner_session_v2')||'null');
+    if(_os&&_os.ok&&(Date.now()-_os.t)<30*24*60*60*1000){
+      sessionStorage.setItem('lv_pin_ok','1');
+      document.getElementById('pin-screen').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.add('active');
+      fbLoad();
+      return;
+    }
+  } catch(e) {}
   // Already unlocked this session?
   try {
     if (sessionStorage.getItem('lv_friend_ok') === '1') {
