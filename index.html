@@ -335,6 +335,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
   </div>
 
+  <!-- ── Restaurant Staging Bar ──────────────────────────────────── -->
+  <div id="rs-staging-bar" style="padding:4px 12px 8px;background:rgba(255,179,0,0.04);border-top:2px dashed #37474F;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <button onclick="rsShowStaging()" id="rs-stg-btn" style="background:#E65100;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">📋 Staging <span id="rs-stg-cnt" style="background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 7px;margin-left:4px;font-size:12px;">0</span></button>
+    <button onclick="rsShowMain()" id="rs-back-btn" style="display:none;background:#1565C0;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back to Outreach</button>
+    <span id="rs-stg-title" style="display:none;color:#FFD600;font-size:13px;font-weight:700;"></span>
+  </div>
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
     <input type="text" id="dash-search" placeholder="Search by restaurant name..." autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="none" style="flex:1;">
     <button class="btn-add-record" onclick="openAddRecord()">+ Add</button>
@@ -9290,82 +9296,6 @@ var ADVERTISERS_STAGING = [
   {num:17318, name:'LV Supplement Brand LV', ig:'lvsupplement', cat:'Other'},
   {num:17319, name:'702 Protein Snack Brand LV', ig:'702proteinsnack', cat:'Other'},
   {num:17320, name:'Vegas Smoothie Franchise LV', ig:'vegassmoothie', cat:'Other'},
-  {num:17321, name:'Sparrow + Wolf', ig:'sparrowandwolflv', cat:'Restaurant', phone:'(702) 790-2147', email:'info@sparrowandwolflv.com', defaultStatus:'pending'},
-  {num:17322, name:'Yardbird Table & Bar', ig:'yardbirdlv', cat:'Restaurant', phone:'(702) 297-6541', email:'info@yardbirdlv.com', defaultStatus:'pending'},
-  {num:17323, name:'Andiamo Italian Steakhouse', ig:'andiamodlv', cat:'Restaurant', phone:'(702) 388-2220', email:'info@andiamodlv.com', defaultStatus:'pending'},
-  {num:17324, name:'Glutton', ig:'glutton_lv', cat:'Restaurant', phone:'(702) 366-0600', email:'info@gluttonlv.com', defaultStatus:'pending'},
-  {num:17325, name:'Penny Quarter', ig:'pennyquarterlv', cat:'Restaurant', phone:'(702) 707-0043', email:'info@pennyquarterlv.com', defaultStatus:'pending'},
-  {num:17326, name:'Insert Coins', ig:'insertcoinslv', cat:'Restaurant', phone:'(702) 477-2525', email:'info@insertcoinslv.com', defaultStatus:'pending'},
-  {num:17327, name:'The Laundry Room', ig:'laundryroomlv', cat:'Restaurant', phone:'', email:'reservations@laundryroomlv.com', defaultStatus:'pending'},
-  {num:17328, name:'Carson Kitchen', ig:'carsonkitchenlv', cat:'Restaurant', phone:'(702) 473-9523', email:'info@carsonkitchen.com', defaultStatus:'pending'},
-  {num:17329, name:'Lady Luck Cocktail Lounge', ig:'ladylucklv', cat:'Restaurant', phone:'(702) 473-9595', email:'info@ladylucklv.com', defaultStatus:'pending'},
-  {num:17330, name:'Makers & Finders', ig:'makersandfinderslv', cat:'Restaurant', phone:'(702) 586-8255', email:'info@makersandfinders.com', defaultStatus:'pending'},
-  {num:17331, name:'Vesta Coffee Roasters', ig:'vestacoffeelv', cat:'Restaurant', phone:'(702) 840-0204', email:'hello@vestacoffee.com', defaultStatus:'pending'},
-  {num:17332, name:'The Black Sheep', ig:'theblacksheeplv', cat:'Restaurant', phone:'(702) 489-6122', email:'info@theblacksheeplv.com', defaultStatus:'pending'},
-  {num:17333, name:'PKWY Tavern Multiple', ig:'pkwytavern', cat:'Restaurant', phone:'(702) 778-6111', email:'info@pkwytavern.com', defaultStatus:'pending'},
-  {num:17334, name:'Raku', ig:'rakulv', cat:'Restaurant', phone:'(702) 367-3511', email:'info@raku-grill.com', defaultStatus:'pending'},
-  {num:17335, name:'Sweets Raku', ig:'sweetsraku', cat:'Restaurant', phone:'(702) 586-0524', email:'info@sweetsraku.com', defaultStatus:'pending'},
-  {num:17336, name:'Monta Ramen', ig:'montaramen', cat:'Restaurant', phone:'(702) 367-4600', email:'info@montaramen.com', defaultStatus:'pending'},
-  {num:17337, name:'Pho Bosa', ig:'phobosalv', cat:'Restaurant', phone:'(702) 220-9888', email:'info@phobosa.com', defaultStatus:'pending'},
-  {num:17338, name:'HongKong BBQ Cafe', ig:'hongkongbbqlv', cat:'Restaurant', phone:'(702) 251-2020', email:'info@hongkongbbqlv.com', defaultStatus:'pending'},
-  {num:17339, name:'Veggie House', ig:'veggiehouse_lv', cat:'Restaurant', phone:'(702) 367-3877', email:'info@veggiehouse.com', defaultStatus:'pending'},
-  {num:17340, name:'Bachi Burger', ig:'bachiburgerlv', cat:'Restaurant', phone:'(702) 242-2244', email:'info@bachiburger.com', defaultStatus:'pending'},
-  {num:17341, name:'Little Sheep Hot Pot', ig:'littlesheephotpot', cat:'Restaurant', phone:'(702) 365-5345', email:'info@littlesheeplv.com', defaultStatus:'pending'},
-  {num:17342, name:'Honey Salt', ig:'honeysaltlv', cat:'Restaurant', phone:'(702) 445-6100', email:'info@honeysalt.com', defaultStatus:'pending'},
-  {num:17343, name:'Cleo\'s Mediterranean Cuisine', ig:'cleolv', cat:'Restaurant', phone:'(702) 830-0280', email:'info@cleoslv.com', defaultStatus:'pending'},
-  {num:17344, name:'La Cave Wine & Food Hideaway', ig:'lacavelv', cat:'Restaurant', phone:'(702) 632-5200', email:'info@lacavelv.com', defaultStatus:'pending'},
-  {num:17345, name:'Todd\'s Unique Dining', ig:'toddsuniquedining', cat:'Restaurant', phone:'(702) 259-8633', email:'info@toddsuniquedining.com', defaultStatus:'pending'},
-  {num:17346, name:'SoulBelly BBQ', ig:'soulbellylv', cat:'Restaurant', phone:'(702) 405-3036', email:'info@soulbellylv.com', defaultStatus:'pending'},
-  {num:17347, name:'Bonefish Grill Summerlin', ig:'bonefishgrill', cat:'Restaurant', phone:'(702) 940-6750', email:'summerlin@bonefishgrill.com', defaultStatus:'pending'},
-  {num:17348, name:'Egg Works', ig:'eggworkslv', cat:'Restaurant', phone:'(702) 341-3447', email:'info@eggworkslv.com', defaultStatus:'pending'},
-  {num:17349, name:'Locale Italian Kitchen', ig:'localeitaliankitchen', cat:'Restaurant', phone:'(702) 737-4400', email:'info@localeitaliankitchen.com', defaultStatus:'pending'},
-  {num:17350, name:'Viet Noodle Bar', ig:'vietnoodlebarlv', cat:'Restaurant', phone:'(702) 914-2525', email:'info@vietnoodlebar.com', defaultStatus:'pending'},
-  {num:17351, name:'Lucille\'s Smokehouse Bar-B-Que', ig:'lucillesbbq', cat:'Restaurant', phone:'(702) 257-7427', email:'info@lucillesbbq.com', defaultStatus:'pending'},
-  {num:17352, name:'Station House', ig:'stationhouselv', cat:'Restaurant', phone:'(702) 430-3460', email:'info@stationhouselv.com', defaultStatus:'pending'},
-  {num:17353, name:'Tacos El Compita', ig:'tacoscompita', cat:'Restaurant', phone:'(702) 822-9111', email:'info@tacoscompita.com', defaultStatus:'pending'},
-  {num:17354, name:'Sendero Modern Mexican Kitchen', ig:'senderolv', cat:'Restaurant', phone:'(702) 564-4600', email:'info@senderolv.com', defaultStatus:'pending'},
-  {num:17355, name:'Hana Japanese Eatery', ig:'hanajapaneselv', cat:'Restaurant', phone:'(702) 897-2422', email:'info@hanajapaneselv.com', defaultStatus:'pending'},
-  {num:17356, name:'Tacos El Gordo', ig:'tacoselgordo', cat:'Restaurant', phone:'(702) 631-8226', email:'info@tacoselgordo.com', defaultStatus:'pending'},
-  {num:17357, name:'El Dorado Cantina', ig:'eldoradocantinalv', cat:'Restaurant', phone:'(702) 522-1919', email:'info@eldoradocantina.com', defaultStatus:'pending'},
-  {num:17358, name:'Egg & I', ig:'eggandilv', cat:'Restaurant', phone:'(702) 734-5755', email:'info@eggandi.com', defaultStatus:'pending'},
-  {num:17359, name:'Weiss Deli & Restaurant', ig:'weissdelilv', cat:'Restaurant', phone:'(702) 732-7829', email:'info@weissdelilv.com', defaultStatus:'pending'},
-  {num:17360, name:'El Sombrero Cafe', ig:'elsombrerolv', cat:'Restaurant', phone:'(702) 382-9234', email:'info@elsombrerolv.com', defaultStatus:'pending'},
-  {num:17361, name:'Omar\'s La Cosina', ig:'omarslacosina', cat:'Restaurant', phone:'(702) 644-0001', email:'info@omarslacosina.com', defaultStatus:'pending'},
-  {num:17362, name:'Wokcano', ig:'wockanolv', cat:'Restaurant', phone:'(702) 222-0300', email:'info@wockanolv.com', defaultStatus:'pending'},
-  {num:17363, name:'Firefly Tapas Kitchen & Bar', ig:'fireflylv', cat:'Restaurant', phone:'(702) 369-3971', email:'info@fireflylv.com', defaultStatus:'pending'},
-  {num:17364, name:'PT\'s Pub', ig:'ptspub', cat:'Restaurant', phone:'(702) 258-4949', email:'info@ptspub.com', defaultStatus:'pending'},
-  {num:17365, name:'Sundowner', ig:'sundownerlv', cat:'Restaurant', phone:'(702) 385-7929', email:'info@sundownerlv.com', defaultStatus:'pending'},
-  {num:17366, name:'PBR Rock Bar & Grill', ig:'pbrrocklv', cat:'Restaurant', phone:'(702) 383-9100', email:'info@pbrrocklv.com', defaultStatus:'pending'},
-  {num:17367, name:'Kame Japanese Cuisine', ig:'kamelv', cat:'Restaurant', phone:'(702) 840-3536', email:'info@kamelv.com', defaultStatus:'pending'},
-  {num:17368, name:'Carversteak', ig:'carversteaklv', cat:'Restaurant', phone:'(702) 850-3590', email:'info@carversteaklv.com', defaultStatus:'pending'},
-  {num:17369, name:'Amalfi by Bobby Flay', ig:'amalfibybobby', cat:'Restaurant', phone:'(702) 693-7223', email:'info@amalfibobby.com', defaultStatus:'pending'},
-  {num:17370, name:'The Dorsey', ig:'thedorseylv', cat:'Restaurant', phone:'(702) 770-3300', email:'info@thedorseylv.com', defaultStatus:'pending'},
-  {num:17371, name:'Stanton Social Prime', ig:'stantonsociallv', cat:'Restaurant', phone:'(702) 473-9622', email:'info@stantonsocial.com', defaultStatus:'pending'},
-  {num:17372, name:'Delilah', ig:'delilahwynn', cat:'Restaurant', phone:'(702) 770-5310', email:'info@delilahwynn.com', defaultStatus:'pending'},
-  {num:17373, name:'Urth Caffe Las Vegas', ig:'urthcaffelv', cat:'Restaurant', phone:'(702) 483-0800', email:'info@urthcaffe.com', defaultStatus:'pending'},
-  {num:17374, name:'Memphis Championship Barbecue', ig:'memphisbbqlv', cat:'Restaurant', phone:'(702) 260-6909', email:'info@memphisbbqlv.com', defaultStatus:'pending'},
-  {num:17375, name:'J&J Hawaiian BBQ', ig:'jjhawaiianbbqlv', cat:'Restaurant', phone:'(702) 990-6880', email:'info@jjhawaiianbbq.com', defaultStatus:'pending'},
-  {num:17376, name:'Herbs & Rye', ig:'herbsandryelv2', cat:'Restaurant', phone:'(702) 982-8036', email:'info@herbsandrye2.com', defaultStatus:'pending'},
-  {num:17377, name:'The Broken Yolk', ig:'brokenyolklv', cat:'Restaurant', phone:'(702) 248-2555', email:'info@brokenyolklv.com', defaultStatus:'pending'},
-  {num:17378, name:'Barcode Gastropub', ig:'barcodelv', cat:'Restaurant', phone:'(702) 222-3171', email:'info@barcodelv.com', defaultStatus:'pending'},
-  {num:17379, name:'Crab Corner Maryland Seafood', ig:'crabcornerlv', cat:'Restaurant', phone:'(702) 243-5577', email:'info@crabcornerlv.com', defaultStatus:'pending'},
-  {num:17380, name:'Bonanno\'s New York Pizzeria', ig:'bonannospizzalv', cat:'Restaurant', phone:'(702) 432-3003', email:'info@bonannos.com', defaultStatus:'pending'},
-  {num:17381, name:'Bazaar Meat by José Andrés', ig:'bazaarlv', cat:'Restaurant', phone:'(702) 761-7601', email:'info@bazaarmeat.com', defaultStatus:'pending'},
-  {num:17382, name:'STK Steakhouse Las Vegas', ig:'stklv', cat:'Restaurant', phone:'(702) 698-7990', email:'info@stksteakhouse.com', defaultStatus:'pending'},
-  {num:17383, name:'Giada Las Vegas', ig:'giadalv', cat:'Restaurant', phone:'(702) 414-3773', email:'info@giadadelaurentiislv.com', defaultStatus:'pending'},
-  {num:17384, name:'Rose. Rabbit. Lie.', ig:'roserabbitlie', cat:'Restaurant', phone:'(702) 698-7440', email:'info@roserabbitlie.com', defaultStatus:'pending'},
-  {num:17385, name:'Vanderpump Cocktail Garden', ig:'vanderpumplv', cat:'Restaurant', phone:'(702) 777-7777', email:'info@vanderpumplv.com', defaultStatus:'pending'},
-  {num:17386, name:'Spago Las Vegas', ig:'spagolv', cat:'Restaurant', phone:'(702) 369-6300', email:'info@spagolv.com', defaultStatus:'pending'},
-  {num:17387, name:'Gordon Ramsay Fish & Chips', ig:'gordonramsaylv', cat:'Restaurant', phone:'(702) 731-7406', email:'info@gordonramsaylv.com', defaultStatus:'pending'},
-  {num:17388, name:'In-N-Out Burger Las Vegas Strip', ig:'innout', cat:'Restaurant', phone:'(800) 786-1000', email:'', defaultStatus:'pending'},
-  {num:17389, name:'Rao\'s Las Vegas', ig:'raoslv', cat:'Restaurant', phone:'(702) 777-7346', email:'info@raoslv.com', defaultStatus:'pending'},
-  {num:17390, name:'Locale Italian Kitchen Henderson', ig:'localehenderson', cat:'Restaurant', phone:'(702) 564-4000', email:'info@localehendersonlv.com', defaultStatus:'pending'},
-  {num:17391, name:'Pinches Tacos', ig:'pinchestacoslv', cat:'Restaurant', phone:'(702) 586-4949', email:'info@pinchestacoslv.com', defaultStatus:'pending'},
-  {num:17392, name:'Eat. Las Vegas', ig:'eatlv', cat:'Restaurant', phone:'(702) 534-1515', email:'info@eatlv.com', defaultStatus:'pending'},
-  {num:17393, name:'Bob Taylor\'s Ranch House', ig:'bobtaylorsranchhouse', cat:'Restaurant', phone:'(702) 645-1399', email:'info@bobtaylors.com', defaultStatus:'pending'},
-  {num:17394, name:'The Peppermill Restaurant & Lounge', ig:'peppermilllv', cat:'Restaurant', phone:'(702) 735-4177', email:'info@peppermilllv.com', defaultStatus:'pending'},
-  {num:17395, name:'Battista\'s Hole in the Wall', ig:'battistasholeinthewallrestaurant', cat:'Restaurant', phone:'(702) 732-1424', email:'info@battistashole.com', defaultStatus:'pending'},
-  {num:17396, name:'Holsteins Shakes & Buns', ig:'holsteinslv', cat:'Restaurant', phone:'(702) 698-7940', email:'info@holsteinslv.com', defaultStatus:'pending'},
 ];
 // Filter out staging records that have been approved or deleted (persist across restarts)
 ADVERTISERS_STAGING = ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});
@@ -10610,6 +10540,95 @@ var RESTAURANTS_BASE = [
 {num:1252,name:'Holsteins Shakes & Buns',owner:'Cosmopolitan',instagram:'@holsteinslv',phone:'(702) 698-7940',email:'info@holsteinslv.com',newEmail:'',cuisine:'Gourmet Burgers/Shakes',defaultStatus:'pending',notes:'Boozy milkshakes and gourmet burgers - Cosmopolitan - excellent happy hour',address:'3708 Las Vegas Blvd S, Las Vegas, NV 89109'}
 ];
 
+// ── RESTAURANTS STAGING PIPELINE ─────────────────────────────────────────
+// Restaurants queued for review — "↑ Add to Outreach" promotes to customRecords
+var RESTAURANTS_STAGING = [
+  {num:20001,name:'Sparrow + Wolf',ig:'sparrowandwolflv',phone:'(702) 790-2147',email:'info@sparrowandwolflv.com',cuisine:'New American/Small Plates',address:'4480 Spring Mountain Rd Ste 100, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20002,name:'Yardbird Table & Bar',ig:'yardbirdlv',phone:'(702) 297-6541',email:'info@yardbirdlv.com',cuisine:'Southern American',address:'3355 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20003,name:'Herbs & Rye',ig:'herbsandryelv',phone:'(702) 982-8036',email:'info@herbsandrye.com',cuisine:'New American/Cocktail Bar',address:'3713 W Sahara Ave, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20004,name:'Andiamo Italian Steakhouse',ig:'andiamodlv',phone:'(702) 388-2220',email:'info@andiamodlv.com',cuisine:'Italian Steakhouse',address:'301 Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20005,name:'Glutton',ig:'glutton_lv',phone:'(702) 366-0600',email:'info@gluttonlv.com',cuisine:'New American Comfort',address:'508 E Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20006,name:'PublicUs',ig:'publicuslv',phone:'(702) 613-8255',email:'info@publicuslv.com',cuisine:'Coffee/Cafe/Brunch',address:'1126 Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20007,name:'Penny Quarter',ig:'pennyquarterlv',phone:'(702) 707-0043',email:'info@pennyquarterlv.com',cuisine:'New American Bar',address:'707 Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20008,name:'Insert Coins',ig:'insertcoinslv',phone:'(702) 477-2525',email:'info@insertcoinslv.com',cuisine:'Bar/Arcade/American',address:'512 Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20009,name:'The Laundry Room',ig:'laundryroomlv',phone:'',email:'reservations@laundryroomlv.com',cuisine:'Speakeasy Cocktail Bar',address:'525 Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20010,name:'Carson Kitchen',ig:'carsonkitchenlv',phone:'(702) 473-9523',email:'info@carsonkitchen.com',cuisine:'New American Small Plates',address:'124 S 6th St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20011,name:'Lady Luck Cocktail Lounge',ig:'ladylucklv',phone:'(702) 473-9595',email:'info@ladylucklv.com',cuisine:'Cocktail Bar/Bites',address:'107 E Charleston Blvd, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20012,name:'Makers & Finders',ig:'makersandfinderslv',phone:'(702) 586-8255',email:'info@makersandfinders.com',cuisine:'Latin Coffee/Brunch',address:'1120 S Main St, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20013,name:'Vesta Coffee Roasters',ig:'vestacoffeelv',phone:'(702) 840-0204',email:'hello@vestacoffee.com',cuisine:'Specialty Coffee/Cafe',address:'1114 S Casino Center Blvd, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20014,name:'The Black Sheep',ig:'theblacksheeplv',phone:'(702) 489-6122',email:'info@theblacksheeplv.com',cuisine:'New American/Fusion',address:'8560 W Desert Inn Rd Ste 100, Las Vegas, NV 89117',defaultStatus:'pending'},
+  {num:20015,name:'PKWY Tavern Multiple',ig:'pkwytavern',phone:'(702) 778-6111',email:'info@pkwytavern.com',cuisine:'American Sports Bar/Brunch',address:'9510 W Flamingo Rd, Las Vegas, NV 89147',defaultStatus:'pending'},
+  {num:20016,name:'Sunrise Coffee Las Vegas',ig:'sunrisecoffeelv',phone:'(702) 641-8565',email:'info@sunrisecoffeelv.com',cuisine:'Coffee/Breakfast/Brunch',address:'2913 E Sahara Ave, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20017,name:'Raku',ig:'rakulv',phone:'(702) 367-3511',email:'info@raku-grill.com',cuisine:'Japanese Robata/Izakaya',address:'5030 Spring Mountain Rd Ste 2, Las Vegas, NV 89146',defaultStatus:'pending'},
+  {num:20018,name:'Sweets Raku',ig:'sweetsraku',phone:'(702) 586-0524',email:'info@sweetsraku.com',cuisine:'Japanese Patisserie/Dessert',address:'5040 Spring Mountain Rd, Las Vegas, NV 89146',defaultStatus:'pending'},
+  {num:20019,name:'Monta Ramen',ig:'montaramen',phone:'(702) 367-4600',email:'info@montaramen.com',cuisine:'Japanese Ramen',address:'5030 Spring Mountain Rd Ste 7, Las Vegas, NV 89146',defaultStatus:'pending'},
+  {num:20020,name:'Pho Bosa',ig:'phobosalv',phone:'(702) 220-9888',email:'info@phobosa.com',cuisine:'Vietnamese Pho',address:'4321 Spring Mountain Rd, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20021,name:'HongKong BBQ Cafe',ig:'hongkongbbqlv',phone:'(702) 251-2020',email:'info@hongkongbbqlv.com',cuisine:'Cantonese BBQ/Dim Sum',address:'3407 S Jones Blvd, Las Vegas, NV 89146',defaultStatus:'pending'},
+  {num:20022,name:'Veggie House',ig:'veggiehouse_lv',phone:'(702) 367-3877',email:'info@veggiehouse.com',cuisine:'Vegan Chinese',address:'3441 S Jones Blvd, Las Vegas, NV 89146',defaultStatus:'pending'},
+  {num:20023,name:'Bachi Burger',ig:'bachiburgerlv',phone:'(702) 242-2244',email:'info@bachiburger.com',cuisine:'Asian Fusion Burgers',address:'470 E Windmill Ln, Las Vegas, NV 89123',defaultStatus:'pending'},
+  {num:20024,name:'Little Sheep Hot Pot',ig:'littlesheephotpot',phone:'(702) 365-5345',email:'info@littlesheeplv.com',cuisine:'Mongolian Hot Pot',address:'3939 Spring Mountain Rd, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20025,name:'Honey Salt',ig:'honeysaltlv',phone:'(702) 445-6100',email:'info@honeysalt.com',cuisine:'American Farm-to-Table',address:'1031 S Rampart Blvd, Las Vegas, NV 89145',defaultStatus:'pending'},
+  {num:20026,name:'Cleo\'s Mediterranean Cuisine',ig:'cleolv',phone:'(702) 830-0280',email:'info@cleoslv.com',cuisine:'Mediterranean/Lebanese',address:'11261 S Eastern Ave, Henderson, NV 89052',defaultStatus:'pending'},
+  {num:20027,name:'La Cave Wine & Food Hideaway',ig:'lacavelv',phone:'(702) 632-5200',email:'info@lacavelv.com',cuisine:'Wine Bar/Mediterranean',address:'3131 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20028,name:'Todd\'s Unique Dining',ig:'toddsuniquedining',phone:'(702) 259-8633',email:'info@toddsuniquedining.com',cuisine:'New American Fine Dining',address:'4350 E Sunset Rd Ste 10, Henderson, NV 89014',defaultStatus:'pending'},
+  {num:20029,name:'SoulBelly BBQ',ig:'soulbellylv',phone:'(702) 405-3036',email:'info@soulbellylv.com',cuisine:'Texas BBQ/Beer Garden',address:'$521 E Fremont St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20030,name:'Bonefish Grill Summerlin',ig:'bonefishgrill',phone:'(702) 940-6750',email:'summerlin@bonefishgrill.com',cuisine:'Seafood/American',address:'10110 W Tropicana Ave, Las Vegas, NV 89147',defaultStatus:'pending'},
+  {num:20031,name:'Egg Works',ig:'eggworkslv',phone:'(702) 341-3447',email:'info@eggworkslv.com',cuisine:'Breakfast/Brunch/American',address:'9575 W Tropicana Ave, Las Vegas, NV 89147',defaultStatus:'pending'},
+  {num:20032,name:'Locale Italian Kitchen',ig:'localeitaliankitchen',phone:'(702) 737-4400',email:'info@localeitaliankitchen.com',cuisine:'Italian Neighborhood',address:'10345 S Eastern Ave Ste 125, Henderson, NV 89052',defaultStatus:'pending'},
+  {num:20033,name:'Viet Noodle Bar',ig:'vietnoodlebarlv',phone:'(702) 914-2525',email:'info@vietnoodlebar.com',cuisine:'Vietnamese Pho/Noodles',address:'250 Water St, Henderson, NV 89015',defaultStatus:'pending'},
+  {num:20034,name:'Lucille\'s Smokehouse Bar-B-Que',ig:'lucillesbbq',phone:'(702) 257-7427',email:'info@lucillesbbq.com',cuisine:'Southern BBQ Chain',address:'2245 Village Walk Dr, Henderson, NV 89052',defaultStatus:'pending'},
+  {num:20035,name:'Station House',ig:'stationhouselv',phone:'(702) 430-3460',email:'info@stationhouselv.com',cuisine:'New American/Brunch',address:'115 S Water St, Henderson, NV 89015',defaultStatus:'pending'},
+  {num:20036,name:'Tacos El Compita',ig:'tacoscompita',phone:'(702) 822-9111',email:'info@tacoscompita.com',cuisine:'Authentic Mexican Tacos',address:'280 N Gibson Rd, Henderson, NV 89014',defaultStatus:'pending'},
+  {num:20037,name:'Sendero Modern Mexican Kitchen',ig:'senderolv',phone:'(702) 564-4600',email:'info@senderolv.com',cuisine:'Modern Mexican',address:'2567 Windmill Pkwy, Henderson, NV 89074',defaultStatus:'pending'},
+  {num:20038,name:'Hana Japanese Eatery',ig:'hanajapaneselv',phone:'(702) 897-2422',email:'info@hanajapaneselv.com',cuisine:'Japanese/Sushi/Izakaya',address:'460 N Stephanie St Ste 12, Henderson, NV 89014',defaultStatus:'pending'},
+  {num:20039,name:'Tacos El Gordo',ig:'tacoselgordo',phone:'(702) 631-8226',email:'info@tacoselgordo.com',cuisine:'Tijuana Tacos',address:'3049 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20040,name:'El Dorado Cantina',ig:'eldoradocantinalv',phone:'(702) 522-1919',email:'info@eldoradocantina.com',cuisine:'Organic Mexican',address:'3930 Las Vegas Blvd S, Las Vegas, NV 89119',defaultStatus:'pending'},
+  {num:20041,name:'Egg & I',ig:'eggandilv',phone:'(702) 734-5755',email:'info@eggandi.com',cuisine:'Breakfast/Brunch',address:'4533 W Sahara Ave, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20042,name:'Weiss Deli & Restaurant',ig:'weissdelilv',phone:'(702) 732-7829',email:'info@weissdelilv.com',cuisine:'Jewish Deli',address:'2764 E Sahara Ave, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20043,name:'El Sombrero Cafe',ig:'elsombrerolv',phone:'(702) 382-9234',email:'info@elsombrerolv.com',cuisine:'Mexican',address:'807 S Main St, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20044,name:'Omar\'s La Cosina',ig:'omarslacosina',phone:'(702) 644-0001',email:'info@omarslacosina.com',cuisine:'Mexican/Tex-Mex',address:'4485 N Rancho Dr, Las Vegas, NV 89130',defaultStatus:'pending'},
+  {num:20045,name:'Wokcano',ig:'wockanolv',phone:'(702) 222-0300',email:'info@wockanolv.com',cuisine:'Asian Fusion/Sushi',address:'6455 S Fort Apache Rd Ste 40, Las Vegas, NV 89148',defaultStatus:'pending'},
+  {num:20046,name:'Firefly Tapas Kitchen & Bar',ig:'fireflylv',phone:'(702) 369-3971',email:'info@fireflylv.com',cuisine:'Spanish Tapas',address:'3900 Paradise Rd, Las Vegas, NV 89169',defaultStatus:'pending'},
+  {num:20047,name:'PT\'s Pub',ig:'ptspub',phone:'(702) 258-4949',email:'info@ptspub.com',cuisine:'Bar/American Pub',address:'6070 S Rainbow Blvd, Las Vegas, NV 89118',defaultStatus:'pending'},
+  {num:20048,name:'Sundowner',ig:'sundownerlv',phone:'(702) 385-7929',email:'info@sundownerlv.com',cuisine:'American Bar/Diner',address:'2801 E Fremont St, Las Vegas, NV 89104',defaultStatus:'pending'},
+  {num:20049,name:'PBR Rock Bar & Grill',ig:'pbrrocklv',phone:'(702) 383-9100',email:'info@pbrrocklv.com',cuisine:'American/Rock Bar',address:'3663 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20050,name:'Kame Japanese Cuisine',ig:'kamelv',phone:'(702) 840-3536',email:'info@kamelv.com',cuisine:'Omakase/Japanese',address:'10780 S Eastern Ave Ste 105, Henderson, NV 89052',defaultStatus:'pending'},
+  {num:20051,name:'Carversteak',ig:'carversteaklv',phone:'(702) 850-3590',email:'info@carversteaklv.com',cuisine:'Modern American Steakhouse',address:'3000 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20052,name:'Amalfi by Bobby Flay',ig:'amalfibybobby',phone:'(702) 693-7223',email:'info@amalfibobby.com',cuisine:'Italian/Seafood',address:'3570 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20053,name:'The Dorsey',ig:'thedorseylv',phone:'(702) 770-3300',email:'info@thedorseylv.com',cuisine:'Cocktail Lounge/Small Plates',address:'3131 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20054,name:'Stanton Social Prime',ig:'stantonsociallv',phone:'(702) 473-9622',email:'info@stantonsocial.com',cuisine:'American Social Dining',address:'4455 Paradise Rd, Las Vegas, NV 89169',defaultStatus:'pending'},
+  {num:20055,name:'Delilah',ig:'delilahwynn',phone:'(702) 770-5310',email:'info@delilahwynn.com',cuisine:'Supper Club/American',address:'3131 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20056,name:'Urth Caffe Las Vegas',ig:'urthcaffelv',phone:'(702) 483-0800',email:'info@urthcaffe.com',cuisine:'Organic Coffee/Brunch',address:'3131 S Las Vegas Blvd, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20057,name:'Memphis Championship Barbecue',ig:'memphisbbqlv',phone:'(702) 260-6909',email:'info@memphisbbqlv.com',cuisine:'Memphis BBQ',address:'4379 W Flamingo Rd, Las Vegas, NV 89103',defaultStatus:'pending'},
+  {num:20058,name:'J&J Hawaiian BBQ',ig:'jjhawaiianbbqlv',phone:'(702) 990-6880',email:'info@jjhawaiianbbq.com',cuisine:'Hawaiian BBQ/Plate Lunch',address:'3475 E Tropicana Ave Ste 22, Las Vegas, NV 89121',defaultStatus:'pending'},
+  {num:20059,name:'Herbs & Rye',ig:'herbsandryelv2',phone:'(702) 982-8036',email:'info@herbsandrye2.com',cuisine:'Cocktail Bar/New American',address:'3713 W Sahara Ave, Las Vegas, NV 89102',defaultStatus:'pending'},
+  {num:20060,name:'The Broken Yolk',ig:'brokenyolklv',phone:'(702) 248-2555',email:'info@brokenyolklv.com',cuisine:'Breakfast/Brunch',address:'3455 S Durango Dr, Las Vegas, NV 89117',defaultStatus:'pending'},
+  {num:20061,name:'Barcode Gastropub',ig:'barcodelv',phone:'(702) 222-3171',email:'info@barcodelv.com',cuisine:'Gastropub/American',address:'9310 W Sahara Ave Ste 200, Las Vegas, NV 89117',defaultStatus:'pending'},
+  {num:20062,name:'Crab Corner Maryland Seafood',ig:'crabcornerlv',phone:'(702) 243-5577',email:'info@crabcornerlv.com',cuisine:'Maryland Seafood/Crab',address:'521 E Twain Ave, Las Vegas, NV 89169',defaultStatus:'pending'},
+  {num:20063,name:'Bonanno\'s New York Pizzeria',ig:'bonannospizzalv',phone:'(702) 432-3003',email:'info@bonannos.com',cuisine:'New York Pizza',address:'7260 Arroyo Crossing Pkwy Ste 140, Las Vegas, NV 89113',defaultStatus:'pending'},
+  {num:20064,name:'Bazaar Meat by José Andrés',ig:'bazaarlv',phone:'(702) 761-7601',email:'info@bazaarmeat.com',cuisine:'Modern Spanish/Steakhouse',address:'2535 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20065,name:'STK Steakhouse Las Vegas',ig:'stklv',phone:'(702) 698-7990',email:'info@stksteakhouse.com',cuisine:'Modern Steakhouse',address:'3724 Las Vegas Blvd S, Las Vegas, NV 89158',defaultStatus:'pending'},
+  {num:20066,name:'Giada Las Vegas',ig:'giadalv',phone:'(702) 414-3773',email:'info@giadadelaurentiislv.com',cuisine:'Italian/California Cuisine',address:'3595 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20067,name:'Rose. Rabbit. Lie.',ig:'roserabbitlie',phone:'(702) 698-7440',email:'info@roserabbitlie.com',cuisine:'Supper Club/American',address:'3708 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20068,name:'Vanderpump Cocktail Garden',ig:'vanderpumplv',phone:'(702) 777-7777',email:'info@vanderpumplv.com',cuisine:'Cocktail Lounge/Bites',address:'3570 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20069,name:'Spago Las Vegas',ig:'spagolv',phone:'(702) 369-6300',email:'info@spagolv.com',cuisine:'California Cuisine',address:'3500 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20070,name:'Gordon Ramsay Fish & Chips',ig:'gordonramsaylv',phone:'(702) 731-7406',email:'info@gordonramsaylv.com',cuisine:'British Fish & Chips',address:'3545 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20071,name:'In-N-Out Burger Las Vegas Strip',ig:'innout',phone:'(800) 786-1000',email:'',cuisine:'American Burgers',address:'3545 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20072,name:'Rao\'s Las Vegas',ig:'raoslv',phone:'(702) 777-7346',email:'info@raoslv.com',cuisine:'Italian-American',address:'3570 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20073,name:'Locale Italian Kitchen Henderson',ig:'localehenderson',phone:'(702) 564-4000',email:'info@localehendersonlv.com',cuisine:'Italian Neighborhood',address:'10980 S Eastern Ave Ste 100, Henderson, NV 89052',defaultStatus:'pending'},
+  {num:20074,name:'Pinches Tacos',ig:'pinchestacoslv',phone:'(702) 586-4949',email:'info@pinchestacoslv.com',cuisine:'Baja Mexican Tacos',address:'3940 Hualapai Way, Las Vegas, NV 89147',defaultStatus:'pending'},
+  {num:20075,name:'Eat. Las Vegas',ig:'eatlv',phone:'(702) 534-1515',email:'info@eatlv.com',cuisine:'American Diner/Brunch',address:'707 Carson Ave, Las Vegas, NV 89101',defaultStatus:'pending'},
+  {num:20076,name:'Bob Taylor\'s Ranch House',ig:'bobtaylorsranchhouse',phone:'(702) 645-1399',email:'info@bobtaylors.com',cuisine:'Western Steakhouse',address:'6250 Rio Vista St, Las Vegas, NV 89130',defaultStatus:'pending'},
+  {num:20077,name:'The Peppermill Restaurant & Lounge',ig:'peppermilllv',phone:'(702) 735-4177',email:'info@peppermilllv.com',cuisine:'American Diner/Fireside Lounge',address:'2985 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20078,name:'Battista\'s Hole in the Wall',ig:'battistasholeinthewallrestaurant',phone:'(702) 732-1424',email:'info@battistashole.com',cuisine:'Italian-American',address:'4041 Audrie St, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20079,name:'Holsteins Shakes & Buns',ig:'holsteinslv',phone:'(702) 698-7940',email:'info@holsteinslv.com',cuisine:'Gourmet Burgers/Shakes',address:'3708 Las Vegas Blvd S, Las Vegas, NV 89109',defaultStatus:'pending'},
+];
+(function(){
+  var _rsRm = {};
+  try { _rsRm = JSON.parse(localStorage.getItem('lv_rs_removed_v1')) || {}; } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_rsRm[r.num]; });
+})();
+
 // ══════════════════════════════════════════════════════
 // STORAGE — keys swap automatically when isDemo is set
 // ══════════════════════════════════════════════════════
@@ -10632,6 +10651,8 @@ var LS_FOODTRADE_DONE = 'lv_outreach_foodtradedone_v1';
 var LS_FIELD_OVERRIDE  = 'lv_outreach_field_override_v1';
 var LS_GHOSTED        = 'lv_outreach_ghosted_v1';
 var LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
+var LS_RS_REMOVED     = 'lv_rs_removed_v1';    // Restaurant staging removed
+var _rsIsStaging = false;                       // true = staging view active
 
 function _setDemoKeys() {
   LS_STATUS         = 'demo_status_v1';
@@ -11412,6 +11433,179 @@ function saveNewRecord() {
     }
   }, 80);
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// RESTAURANT STAGING SYSTEM
+// ══════════════════════════════════════════════════════════════════════
+
+function _rsUpdateCount() {
+  var el = document.getElementById('rs-stg-cnt');
+  if (el) el.textContent = RESTAURANTS_STAGING.length;
+}
+
+function rsShowStaging() {
+  _rsIsStaging = true;
+  // Update staging bar UI
+  var stgBtn  = document.getElementById('rs-stg-btn');
+  var backBtn = document.getElementById('rs-back-btn');
+  var title   = document.getElementById('rs-stg-title');
+  if (stgBtn)  stgBtn.style.display  = 'none';
+  if (backBtn) backBtn.style.display = '';
+  if (title)   { title.style.display = ''; title.textContent = '📋 Restaurant Staging — ' + RESTAURANTS_STAGING.length + ' pending'; }
+  // Hide stats + search bar, clear list state
+  var statsEl = document.querySelector('#view-dashboard .stats');
+  if (statsEl) statsEl.style.display = 'none';
+  var srBar = document.getElementById('search-result-bar');
+  if (srBar) srBar.style.display = 'none';
+  rsRender();
+}
+
+function rsShowMain() {
+  _rsIsStaging = false;
+  // Restore staging bar UI
+  var stgBtn  = document.getElementById('rs-stg-btn');
+  var backBtn = document.getElementById('rs-back-btn');
+  var title   = document.getElementById('rs-stg-title');
+  if (stgBtn)  stgBtn.style.display  = '';
+  if (backBtn) backBtn.style.display = 'none';
+  if (title)   title.style.display   = 'none';
+  // Restore stats bar
+  var statsEl = document.querySelector('#view-dashboard .stats');
+  if (statsEl) statsEl.style.display = '';
+  _invalidatePending(); _dashDirty = true;
+  dashRender();
+}
+
+function rsRender() {
+  var listEl = document.getElementById('list');
+  if (!listEl) return;
+  var scroller = document.getElementById('dash-scroller');
+  if (scroller) scroller.style.display = 'none';
+  var srBar = document.getElementById('search-result-bar');
+  if (srBar) srBar.style.display = 'none';
+  var _nrEl = document.getElementById('no-results');
+
+  // Update title count
+  var title = document.getElementById('rs-stg-title');
+  if (title) title.textContent = '📋 Restaurant Staging — ' + RESTAURANTS_STAGING.length + ' pending';
+  _rsUpdateCount();
+
+  // Filter by search
+  var srch = (document.getElementById('dash-search')||{}).value || '';
+  srch = srch.trim().toLowerCase();
+  var list = RESTAURANTS_STAGING.filter(function(r){
+    if (!srch) return true;
+    return (r.name||'').toLowerCase().indexOf(srch) >= 0
+      || (r.cuisine||'').toLowerCase().indexOf(srch) >= 0
+      || (r.ig||'').toLowerCase().indexOf(srch) >= 0
+      || (r.address||'').toLowerCase().indexOf(srch) >= 0;
+  });
+
+  if (list.length === 0) {
+    listEl.innerHTML = '';
+    if (_nrEl) { _nrEl.style.display = 'block'; _nrEl.textContent = RESTAURANTS_STAGING.length === 0 ? 'No staging restaurants — all promoted or removed!' : 'No results for "' + srch + '"'; }
+    return;
+  }
+  if (_nrEl) _nrEl.style.display = 'none';
+
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var r = list[i];
+    var _igLink = r.ig ? '<a href="https://instagram.com/' + r.ig + '" target="_blank" style="color:#90CAF9;text-decoration:none;">@' + _esc(r.ig) + '</a>' : '<span style="color:#666;">No IG</span>';
+    var _phoneHtml = r.phone ? '<a href="tel:' + (r.phone||'').replace(/\D/g,'') + '" style="color:#A5D6A7;text-decoration:none;">' + _esc(r.phone) + '</a>' : '';
+    var _emailHtml = r.email ? '<a href="mailto:' + _esc(r.email) + '" style="color:#90CAF9;text-decoration:none;">' + _esc(r.email) + '</a>' : '<span style="color:#555;">No email</span>';
+    html += '<div class="card" style="border-left:4px solid #E65100;margin-bottom:10px;">'
+      + '<div class="card-top">'
+      + '<button class="btn" onclick="rsApprove(' + r.num + ')" style="background:#2E7D32;">↑ Add to Outreach</button> '
+      + '<button class="btn btn-delete" onclick="rsRemove(' + r.num + ')">Remove</button>'
+      + '</div>'
+      + '<div class="ctag">' + _esc(r.cuisine||'') + '</div>'
+      + '<div class="rname">' + _esc(r.name) + '</div>'
+      + '<div class="info">' + _igLink + '</div>'
+      + '<div style="font-size:12px;color:#aaa;margin-top:4px;">' + _esc(r.address||'') + '</div>'
+      + '<div style="font-size:12px;color:#bbb;margin-top:3px;">' + _phoneHtml + (r.phone && r.email ? ' &nbsp;|&nbsp; ' : '') + _emailHtml + '</div>'
+      + '</div>';
+  }
+  listEl.innerHTML = html;
+}
+
+function rsApprove(num) {
+  var idx = RESTAURANTS_STAGING.findIndex(function(r){ return r.num === num; });
+  if (idx === -1) return;
+  var r = RESTAURANTS_STAGING[idx];
+
+  // Check if this restaurant is already in the main outreach list (by IG handle)
+  var alreadyIn = RESTAURANTS.find(function(x){
+    return r.ig && x.igHandle && x.igHandle.toLowerCase() === r.ig.toLowerCase();
+  });
+
+  if (alreadyIn) {
+    // Already an active outreach target — just remove from staging
+    RESTAURANTS_STAGING.splice(idx, 1);
+    var _rsRm = {};
+    try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+    _rsRm[num] = 1;
+    try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+    lsSaved();
+    rsRender();
+    return;
+  }
+
+  // Not in list — promote to customRecords
+  var newNum = _getNextNum();
+  var rec = {
+    num:       newNum,
+    name:      r.name,
+    owner:     'Local Operators',
+    instagram: '@' + (r.ig || ''),
+    phone:     r.phone || '',
+    email:     r.email || '',
+    cuisine:   r.cuisine || '',
+    address:   r.address || '',
+    notes:     'Promoted from staging'
+  };
+  customRecords.push(rec);
+  try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {}
+  attemptsMap[newNum] = [{email: rec.email, status: 'pending', date: null, note: ''}];
+  statusMap[newNum] = 'pending';
+  saveAttemptsAndStatuses();
+  RESTAURANTS.push({
+    num: newNum, name: rec.name, owner: rec.owner,
+    instagram: rec.instagram, igHandle: (r.ig||''),
+    phone: rec.phone, phoneLink: rec.phone.replace(/\D/g,''),
+    cuisine: rec.cuisine, notes: rec.notes, address: rec.address,
+    defaultStatus: 'pending', status: 'pending',
+    attempts: attemptsMap[newNum],
+    _search: rec.name.toLowerCase()
+  });
+  _numToIdx[newNum] = RESTAURANTS.length - 1;
+
+  // Remove from staging
+  RESTAURANTS_STAGING.splice(idx, 1);
+  var _rsRm2 = {};
+  try { _rsRm2 = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  _rsRm2[num] = 1;
+  try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm2)); } catch(e) {}
+  lsSaved();
+  _invalidatePending(); _dashDirty = true;
+  rsRender();
+}
+
+function rsRemove(num) {
+  var idx = RESTAURANTS_STAGING.findIndex(function(r){ return r.num === num; });
+  if (idx === -1) return;
+  if (!confirm('Remove this restaurant from staging?')) return;
+  RESTAURANTS_STAGING.splice(idx, 1);
+  var _rsRm = {};
+  try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  _rsRm[num] = 1;
+  try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+  lsSaved();
+  rsRender();
+}
+
+// Initialize staging count on load
+setTimeout(function(){ _rsUpdateCount(); }, 500);
 
 function duplicateRestaurant(num) {
   var r = getR(num);
@@ -12361,6 +12555,7 @@ function clearDashSearch(){
 }
 
 function dashRender(){
+  if (_rsIsStaging) { rsRender(); return; }
   _refilter();
   var total=_dashFiltered.length;
   // Show/hide search result bar
