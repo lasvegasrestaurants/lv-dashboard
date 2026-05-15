@@ -11708,6 +11708,8 @@ function advSetViewType(t){
   var s0=document.getElementById('ads-sub-all');
   if(s0){s0.style.background='#546E7A';s0.style.color='#fff';s0.classList.toggle('ads-active',t==='all');}
   ['all2','lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2','hotel2','medspa2','dental2','trainer2','wedding2','vet2','tours2','wine2','gaming2','ecommerce2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');});
+  advSearch='';
+  var _si2=document.getElementById('adv-search');if(_si2)_si2.value='';
   if(typeof advRender==='function')advRender();
 }
 var advAttemptsMap = (function(){try{return JSON.parse(localStorage.getItem('lv_adv_attempts_v1'))||{};}catch(e){return{};}})();
@@ -12295,13 +12297,13 @@ function advRender(){
     var _s_wine=document.getElementById('ads-sub-cnt-wine'); if(_s_wine) _s_wine.textContent=_subCounts.wine;
     var _s_gaming=document.getElementById('ads-sub-cnt-gaming'); if(_s_gaming) _s_gaming.textContent=_subCounts.gaming;
     var _s_ecommerce=document.getElementById('ads-sub-cnt-ecommerce'); if(_s_ecommerce) _s_ecommerce.textContent=_subCounts.ecommerce;
-    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){var c=_advCat(a);return c&&['Dealership', 'Spa', 'Salon', 'Realtor', 'Catering', 'Liquor', 'Hotel', 'MedSpa', 'Dental', 'Trainer', 'Wedding', 'Vet', 'Tours', 'Wine', 'Gaming', 'Ecommerce'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
+    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){if(advDeletedMap&&advDeletedMap[a.num])return false;var c=_advCat(a);return c&&['Dealership', 'Spa', 'Salon', 'Realtor', 'Catering', 'Liquor', 'Hotel', 'MedSpa', 'Dental', 'Trainer', 'Wedding', 'Vet', 'Tours', 'Wine', 'Gaming', 'Ecommerce'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
     var _sbad2=document.getElementById('ads-sub-cnt-badig'); if(_sbad2) _sbad2.textContent=Object.keys(advBadIGMap||{}).length;
     var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=ADVERTISERS_BASE.filter(function(a){return !advDeletedMap[a.num];}).length;
   } catch(_e) { console.warn('subcount loop failed:', _e); }
   var all=ADVERTISERS_BASE.filter(function(a){
     if(advDeletedMap[a.num])return false;
-    var c=a.cat||a.category||'';
+    var c=_advCat(a);
     var isDealer=(c==='Dealership');
     var isDoc=(c.indexOf('Doctor')===0);
     var isLaw=(c.indexOf('Lawyer')===0);
@@ -12388,6 +12390,7 @@ function advRender(){
   var cI=document.getElementById('adv-cnt-interested');if(cI)cI.textContent=counts.interested;
   var cNo=document.getElementById('adv-cnt-notes');if(cNo)cNo.textContent=counts.notes;
   var cFu=document.getElementById('adv-cnt-followup');if(cFu)cFu.textContent=counts.followup;
+  var cPri=document.getElementById('adv-cnt-priority');if(cPri)cPri.textContent=counts.priority;
   var cPr=document.getElementById('adv-cnt-problem');if(cPr)cPr.textContent=counts.problem;
   var cTr=document.getElementById('adv-cnt-trade');if(cTr)cTr.textContent=counts.trade;
   var cNI=document.getElementById('adv-cnt-noig');if(cNI)cNI.textContent=counts.noig;
@@ -12428,11 +12431,11 @@ function advRender(){
 
 function advSetFilter(f){
   advFilter = f;
-  var _allBtns = ['pending','sent','bounced','needdm','noemail','interested','notes','followup','problem','noig','dupes'];
+  var _allBtns = ['pending','sent','bounced','needdm','noemail','interested','notes','followup','problem','noig','dupes','badig','trade','metaads','priority'];
   for(var _i=0;_i<_allBtns.length;_i++){var _b=document.getElementById('adv-filter-'+_allBtns[_i]);if(_b)_b.classList.remove('adv-active');}
   var _act=document.getElementById('adv-filter-'+f);if(_act)_act.classList.add('adv-active');
   var _fbtnColors={'sent':'#388E3C','bounced':'#C62828','needdm':'#004D40','noemail':'#880E4F','interested':'#F57F17','notes':'#EF6C00','followup':'#1565C0','problem':'#C62828','noig':'#BF360C','dupes':'#6A1B9A'};
-  var _allBtnIds=['pending','sent','bounced','needdm','noemail','interested','notes','followup','problem','noig','dupes'];
+  var _allBtnIds=['pending','sent','bounced','needdm','noemail','interested','notes','followup','problem','noig','dupes','badig','trade','metaads','priority'];
   for(var _j=0;_j<_allBtnIds.length;_j++){
     var _bj=document.getElementById('adv-filter-'+_allBtnIds[_j]);
     if(!_bj)continue;
@@ -12643,7 +12646,8 @@ function _advFbDoPush(){
     lastcontacted: advLastContactedMap,
     quote: advQuoteMap,
     deleted: advDeletedMap,
-    staging_approved: _advStagingApproved
+    staging_approved: _advStagingApproved,
+    staging_removed: _advStagingRemovedMap
   };
   _advFbLastSavedAt = payload.savedAt;
   fetch(ADV_FB_URL, {
@@ -12697,6 +12701,12 @@ function _advApplyFirebaseData(rec){
   if(rec.lastcontacted){advLastContactedMap=rec.lastcontacted;_advSaveMap('lv_adv_lastcontacted_v1',advLastContactedMap);}
   if(rec.quote){advQuoteMap=rec.quote;_advSaveMap('lv_adv_quote_v1',advQuoteMap);}
   if(rec.deleted){advDeletedMap=rec.deleted;_advSaveMap('lv_adv_deleted_v1',advDeletedMap);}
+  if(rec.staging_removed){
+    var _rm=rec.staging_removed;
+    Object.keys(_rm).forEach(function(k){_advStagingRemovedMap[k]=1;});
+    localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
+    ADVERTISERS_STAGING=ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});
+  }
   if(rec.staging_approved){
     _advStagingApproved=rec.staging_approved;
     localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));
@@ -13829,9 +13839,11 @@ function advSaveNewRecord(){
 function showStagingView(cat){
   advViewType='staging';
   advFilter='all';
+  advSearch='';
+  var _si=document.getElementById('adv-search');if(_si)_si.value='';
   _advDmPinned={};
   advStagingCat=cat||'all';
-  var _lbl={all:'• All',lawyer:'• Lawyers',doctor:'• Doctors',spa:'• Spas',salon:'• Salons',realtor:'• Realtors',catering:'• Catering',dealer:'• Dealerships',other:'• Misc',liquor:'• Liquor',hotel:'• Hotels',medspa:'• Med Spas',dental:'• Dentists',trainer:'• Trainers',wedding:'• Wedding',vet:'• Vets',tours:'• Tours',wine:'• Wine',gaming:'• Gaming',ecommerce:'• Ecommerce'};
+  var _lbl={all:'All Staging',lawyer:'• Lawyers',doctor:'• Doctors',spa:'• Spas',salon:'• Salons',realtor:'• Realtors',catering:'• Catering',dealer:'• Dealerships',other:'• Misc',liquor:'• Liquor',hotel:'• Hotels',medspa:'• Med Spas',dental:'• Dentists',trainer:'• Trainers',wedding:'• Wedding',vet:'• Vets',tours:'• Tours',wine:'• Wine',gaming:'• Gaming',ecommerce:'• Ecommerce'};
   var hdr=document.getElementById('adv-view-header');
   if(hdr)hdr.textContent=_lbl[advStagingCat]||'Staging';
   // Ensure advertisers view is visible
@@ -13855,7 +13867,7 @@ function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a
   _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
   if(!_advStagingApproved.find(function(r){return r.num===num;})){_advStagingApproved.push(rec);localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));}
   if(typeof advFbSave==='function')advFbSave();var _rc=rec.cat||rec.category||'';var _vt='other';if(_rc.indexOf('Lawyer')===0)_vt='lawyer';else if(_rc.indexOf('Doctor')===0)_vt='doctor';else if(_rc==='Spa')_vt='spa';else if(_rc==='Salon')_vt='salon';else if(_rc==='Realtor')_vt='realtor';else if(_rc==='Catering')_vt='catering';else if(_rc==='Dealership')_vt='dealer';else if(_rc==='Liquor')_vt='liquor';else if(_rc==='Hotel')_vt='hotel';else if(_rc==='MedSpa')_vt='medspa';else if(_rc==='Dental')_vt='dental';else if(_rc==='Trainer')_vt='trainer';else if(_rc==='Wedding')_vt='wedding';else if(_rc==='Vet')_vt='vet';else if(_rc==='Tours')_vt='tours';else if(_rc==='Wine')_vt='wine';else if(_rc==='Gaming')_vt='gaming';else if(_rc==='Ecommerce')_vt='ecommerce';advSetViewType(_vt);advRender();}
-function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);advRender();}
+function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();}
 </script>
 <script>
 // Override advRender to handle staging view
@@ -13922,8 +13934,14 @@ advRender = function(){
     if(cat === 'other') return c !== '' && c.indexOf('Lawyer') !== 0 && c.indexOf('Doctor') !== 0 && c !== 'Spa' && c !== 'Salon' && c !== 'Realtor' && c !== 'Catering' && c !== 'Dealership' && c !== 'Liquor' && c !== 'Hotel' && c !== 'MedSpa' && c !== 'Dental' && c !== 'Trainer' && c !== 'Wedding' && c !== 'Vet' && c !== 'Tours' && c !== 'Wine' && c !== 'Gaming' && c !== 'Ecommerce';
     return true;
   });
+  if(advSearch){
+    filtered=filtered.filter(function(a){
+      return (a.name+' '+(a.cat||a.category||'')+' '+(a.ig||'')).toLowerCase().indexOf(advSearch)!==-1;
+    });
+  }
   if(filtered.length === 0){
-    el.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px 20px;font-size:14px;">No staging records in this category.</div>';
+    var _emsg=advSearch?'No staging records match "'+advSearch+'".':('No staging records in this category.');
+    el.innerHTML='<div style="text-align:center;color:#aaa;padding:40px 20px;font-size:14px;">'+_emsg+'</div>';
     return;
   }
   var h = '';
