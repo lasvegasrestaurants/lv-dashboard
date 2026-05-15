@@ -10641,6 +10641,7 @@ function _fbDoPush() {
     userattempts:  userAttemptsMap,
     todos:         _gtl(),
     projects:      _gpl(),
+    crmcustomers:  CRM_CUSTOMERS,
     savedBy:       isFriend ? 'friend' : 'owner',
     savedAt:       Date.now()
   };
@@ -10690,6 +10691,12 @@ function _applyFirebaseData(rec) {
       if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
       if (rec.todos)         { try { localStorage.setItem(_LT, JSON.stringify(rec.todos)); } catch(e) {} }
       if (rec.projects)      { try { localStorage.setItem(_LP, JSON.stringify(rec.projects)); } catch(e) {} }
+      if (rec.crmcustomers && Array.isArray(rec.crmcustomers) && rec.crmcustomers.length > 0) {
+        if (rec.crmcustomers.length >= CRM_CUSTOMERS.length) {
+          CRM_CUSTOMERS = rec.crmcustomers;
+          try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {}
+        }
+      }
       // Rebuild RESTAURANTS from updated maps
       _numToIdx = Object.create(null);
       RESTAURANTS = (isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE).filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
@@ -10702,7 +10709,7 @@ function _applyFirebaseData(rec) {
         return {
           num:r.num, name:nameOverrideMap[r.num]||r.name, owner:r.owner,
           instagram:r.instagram, igHandle:(igOverrideMap[r.num]||r.instagram).replace(/^@/,''),
-          phone:r.phone, phoneLink:r.phone.replace(/\D/g,'').length>=7?r.phone.replace(/\D/g,''):'',
+          phone:r.phone||'', phoneLink:(r.phone||'').replace(/\D/g,'').length>=7?(r.phone||'').replace(/\D/g,''):'',
           cuisine:r.cuisine, notes:r.notes||'', address:r.address||'',
           defaultStatus:r.defaultStatus, status:statusMap[r.num]||r.defaultStatus,
           attempts:attemptsMap[r.num],
@@ -12339,8 +12346,8 @@ function _enterFriendMode() {
     if(r.newEmail&&r.newEmail!==r.email)seed.push({email:r.newEmail,status:'pending',date:null,note:'Alt contact'});
     attemptsMap[r.num]=seed;
     return {num:r.num,name:r.name,owner:r.owner,
-      instagram:r.instagram,igHandle:r.instagram.replace(/^@/,''),
-      phone:r.phone,phoneLink:r.phone.replace(/[^0-9]/g,'').length>=7?r.phone.replace(/[^0-9]/g,''):'',
+      instagram:r.instagram||'',igHandle:(r.instagram||'').replace(/^@/,''),
+      phone:r.phone||'',phoneLink:(r.phone||'').replace(/[^0-9]/g,'').length>=7?(r.phone||'').replace(/[^0-9]/g,''):'',
       cuisine:r.cuisine,notes:r.notes||'',address:r.address||'',
       defaultStatus:r.defaultStatus,status:'pending',
       attempts:attemptsMap[r.num],_search:r.name.toLowerCase()};
@@ -13395,6 +13402,7 @@ function crmLoadCustomers() {
 }
 function crmSaveCustomers() {
   try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {}
+  if (!isDemo) lsSaved();
 }
 function crmGetNextId() {
   var max = 0;
@@ -13427,6 +13435,14 @@ function crmSetFilter(f) {
   if (si && crmSearch) { crmSearch = ''; si.value = ''; }
   var view = document.getElementById('view-crm');
   if (view) view.scrollTop = 0;
+  // Update active badge highlight
+  var _crmBadgeMap = {all:'.b-total',vip:'.b-interested',birthday:'[onclick*="birthday"]',anniversary:'[onclick*="anniversary"]',lapsed:'.b-bounced',followup:'.b-followup',notes:'.b-notes',optout:'.b-problem'};
+  var _crmView = document.getElementById('view-crm');
+  if (_crmView) {
+    _crmView.querySelectorAll('.stats .badge').forEach(function(b){ b.classList.remove('active-badge'); });
+    var _crmSel = _crmBadgeMap[f];
+    if (_crmSel) { var _crmEl = _crmView.querySelector(_crmSel); if (_crmEl) _crmEl.classList.add('active-badge'); }
+  }
   crmRender();
 }
 
@@ -13484,7 +13500,7 @@ function crmBuildCard(c) {
   var initials = c.name.split(' ').map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase();
   var avatarColor = c.avatarColor || '#1565C0';
   var cardClass = 'crm-card' + (c.vip?' crm-vip':'') + (bdayThis?' crm-birthday':'') + (!c.vip&&lapsedFlag?' crm-lapsed':'');
-  var tierColor = c.points>=500?'#FFD600':c.points>=200?'#78909C':c.points>=50?'#8D6E63':'transparent';
+  var tierColor = c.points>=500?'#FFD600':c.points>=200?'#90CAF9':c.points>=50?'#E65100':'transparent';
 
   var html = '<div class="'+cardClass+'" id="cdc'+c.id+'">';
 
@@ -13877,7 +13893,7 @@ function initCRM() {
   }
   // Modal backdrop clicks
   document.getElementById('crm-add-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmAdd(); });
-  document.getElementById('crm-note-backdrop').addEventListener('click', function(e){ if(e.target===this) saveCrmNote(); });
+  document.getElementById('crm-note-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmNote(); });
 }
 
 // Data is stored in localStorage — no save needed on page close
@@ -16520,6 +16536,7 @@ function advSaveNewRecord(){
   var newNum=maxId+1;
   ADVERTISERS_STAGING.push({num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',defaultStatus:'pending',notes:''});
   advCloseAddModal();
+  if(typeof advFbSave==='function') advFbSave();
   // Switch to correct staging tab
   var catMap={'Lawyer - Personal Injury':'lawyer','Lawyer - Criminal/DUI':'lawyer','Lawyer - Family/Divorce':'lawyer','Lawyer - Business/Estate':'lawyer','Doctor - Med Spa/Dermatology':'doctor','Doctor - Plastic Surgery':'doctor','Doctor - Cosmetic Dentistry':'doctor','Doctor - Orthodontist':'doctor','Doctor - Chiropractor':'doctor','Dealership':'dealer','Spa':'spa','Salon':'salon','Realtor':'realtor','Catering':'catering','Liquor':'liquor','Hotel':'hotel','MedSpa':'medspa','Dental':'dental','Trainer':'trainer','Wedding':'wedding','Vet':'vet','Tours':'tours','Wine':'wine','Gaming':'gaming','Ecommerce':'ecommerce','IGFixed':'igfixed'};
   showStagingView(catMap[cat]||'all');
