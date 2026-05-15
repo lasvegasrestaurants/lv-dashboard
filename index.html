@@ -1201,7 +1201,27 @@ var ADVERTISERS_STAGING = [
   {num:9140, name:'Riviera Chevrolet', ig:'rivierachevroletnv', cat:'Dealership', phone:'(702) 405-8900'},
   {num:9141, name:'AutoNation Nissan Las Vegas', ig:'autonation_nissanlv', cat:'Dealership', phone:'(702) 455-0000'},
   {num:9142, name:'Desert Kia', ig:'desertkialv', cat:'Dealership', phone:'(702) 565-5000'},
-  {num:9143, name:'Subaru of Las Vegas', ig:'subaruoflasvegas', cat:'Dealership', phone:'(702) 456-9800'}
+  {num:9143, name:'Subaru of Las Vegas', ig:'subaruoflasvegas', cat:'Dealership', phone:'(702) 456-9800'},
+  {num:9144, name:'Southern Glazer\'s Wine & Spirits', ig:'southernglazers', cat:'Liquor', phone:'(702) 736-1900'},
+  {num:9145, name:'Republic National Distributing', ig:'rndc_national', cat:'Liquor', phone:'(702) 739-9161'},
+  {num:9146, name:'Breakthru Beverage Nevada', ig:'breakthrubeverage', cat:'Liquor', phone:'(702) 384-8500'},
+  {num:9147, name:'Total Wine & More Las Vegas', ig:'totalwine', cat:'Liquor', phone:'(702) 897-0070'},
+  {num:9148, name:'Lee\'s Discount Liquor', ig:'leesdiscountliquor', cat:'Liquor', phone:'(702) 736-9215'},
+  {num:9149, name:'ABC Fine Wine & Spirits LV', ig:'abcfinewine', cat:'Liquor', phone:'(702) 735-1111'},
+  {num:9150, name:'Nevada Beverage Co', ig:'nevadabeverageco', cat:'Liquor', phone:'(702) 642-4000'},
+  {num:9151, name:'Primo Liquor Las Vegas', ig:'primoliquorlv', cat:'Liquor', phone:'(702) 800-0000'},
+  {num:9152, name:'Silver State Distributing', ig:'silverstatedist', cat:'Liquor', phone:'(702) 649-1200'},
+  {num:9153, name:'Empire Distributors Nevada', ig:'empiredistributorsnv', cat:'Liquor', phone:'(702) 643-0000'},
+  {num:9154, name:'Rémy Cointreau USA', ig:'remycointreau', cat:'Liquor', phone:'(212) 399-4200'},
+  {num:9155, name:'Patrón Spirits Company', ig:'patrontequila', cat:'Liquor', phone:'(702) 920-0888'},
+  {num:9156, name:'Tito\'s Handmade Vodka', ig:'titosvodka', cat:'Liquor', phone:'(512) 380-3100'},
+  {num:9157, name:'Fireball Cinnamon Whisky', ig:'fireballwhisky', cat:'Liquor', phone:'(800) 343-1821'},
+  {num:9158, name:'Redemption Whiskey', ig:'redemptionwhiskey', cat:'Liquor', phone:'(917) 671-7400'},
+  {num:9159, name:'Nevada H&C Distributing', ig:'nevadahandc', cat:'Liquor', phone:'(702) 642-1000'},
+  {num:9160, name:'Jack Daniel\'s Tennessee Whiskey', ig:'jackdaniels_us', cat:'Liquor', phone:'(615) 759-6180'},
+  {num:9161, name:'Don Julio Tequila', ig:'donjulio', cat:'Liquor', phone:'(800) 800-8000'},
+  {num:9162, name:'Casamigos Tequila', ig:'casamigos', cat:'Liquor', phone:'(310) 388-8383'},
+  {num:9163, name:'Hennessy USA', ig:'hennessyus', cat:'Liquor', phone:'(212) 251-8200'}
 ];
 // Filter out staging records that have been approved or deleted (persist across restarts)
 ADVERTISERS_STAGING = ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});
@@ -5855,7 +5875,7 @@ window.addEventListener('load',function(){
     </div>
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="background:#0d1929;border-bottom:1px solid #1B2E4A;"><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;"><button onclick="showAllAdsView();['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');})" id="ads-sub-all" class="ads-subtab" style="background:#546E7A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showMiscView()" id="ads-sub-misc" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Misc <span id="ads-sub-cnt-misc">0</span></button><button onclick="showBadIGView()" id="ads-sub-badig" class="ads-subtab" style="background:#B71C1C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bad IG <span id="ads-sub-cnt-badig">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px 8px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showStagingView('lawyer')" id="ads-sub-lawyers2" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Lawyers <span id="ads-s2-cnt-lawyer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('doctor')" id="ads-sub-doctors2" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Doctors <span id="ads-s2-cnt-doctor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('spa')" id="ads-sub-spas2" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Spas <span id="ads-s2-cnt-spa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('salon')" id="ads-sub-salons2" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Salons <span id="ads-s2-cnt-salon" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('realtor')" id="ads-sub-realtors2" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Realtors <span id="ads-s2-cnt-realtor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('catering')" id="ads-sub-catering2" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Catering <span id="ads-s2-cnt-catering" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dealer')" id="ads-sub-dealers2" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dealerships <span id="ads-s2-cnt-dealer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('other')" id="ads-sub-other2" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Misc <span id="ads-s2-cnt-other" style="font-size:11px;opacity:0.85;">0</span></button></div></div>
+    <div id="ads-subtabs" style="background:#0d1929;border-bottom:1px solid #1B2E4A;"><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;"><button onclick="showAllAdsView();['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');})" id="ads-sub-all" class="ads-subtab" style="background:#546E7A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showMiscView()" id="ads-sub-misc" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Misc <span id="ads-sub-cnt-misc">0</span></button><button onclick="showLiquorView()" id="ads-sub-liquor" class="ads-subtab" style="background:#5D4037;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🍾 Liquor <span id="ads-sub-cnt-liquor">0</span></button><button onclick="showBadIGView()" id="ads-sub-badig" class="ads-subtab" style="background:#B71C1C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bad IG <span id="ads-sub-cnt-badig">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px 8px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showStagingView('lawyer')" id="ads-sub-lawyers2" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Lawyers <span id="ads-s2-cnt-lawyer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('doctor')" id="ads-sub-doctors2" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Doctors <span id="ads-s2-cnt-doctor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('spa')" id="ads-sub-spas2" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Spas <span id="ads-s2-cnt-spa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('salon')" id="ads-sub-salons2" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Salons <span id="ads-s2-cnt-salon" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('realtor')" id="ads-sub-realtors2" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Realtors <span id="ads-s2-cnt-realtor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('catering')" id="ads-sub-catering2" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Catering <span id="ads-s2-cnt-catering" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dealer')" id="ads-sub-dealers2" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dealerships <span id="ads-s2-cnt-dealer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('other')" id="ads-sub-other2" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Misc <span id="ads-s2-cnt-other" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('liquor')" id="ads-sub-liquor2" class="ads-subtab" style="background:#5D4037;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Liquor <span id="ads-s2-cnt-liquor" style="font-size:11px;opacity:0.85;">0</span></button></div></div>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
     <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advShowDupesModal()" id="adv-filter-dupes" class="adv-fbtn" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dupes</button>
@@ -6145,7 +6165,7 @@ function advBuildList(){
 
 var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
-  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='catering'&&t!=='lawdoc'&&t!=='other'&&t!=='badig')return;
+  if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='catering'&&t!=='lawdoc'&&t!=='other'&&t!=='badig'&&t!=='liquor')return;
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
   advViewType=t;
@@ -6162,6 +6182,7 @@ function advSetViewType(t){
     else if(t==='catering')hdr.textContent='Catering';
     else if(t==='other')hdr.textContent='Miscellaneous';
     else if(t==='badig')hdr.textContent='Bad IG';
+    else if(t==='liquor')hdr.textContent='🍾 Liquor';
     else if(t==='lawyer')hdr.textContent='Lawyers';
     else hdr.textContent='\ud83d\udcbc ADS';
   }
@@ -6189,6 +6210,8 @@ function advSetViewType(t){
   if(sm){sm.style.background='#00BCD4';sm.classList.toggle('ads-active',t==='other');}
   var sbad=document.getElementById('ads-sub-badig');
   if(sbad){sbad.style.background='#B71C1C';sbad.classList.toggle('ads-active',t==='badig');}
+  var sliq=document.getElementById('ads-sub-liquor');
+  if(sliq){sliq.style.background='#5D4037';sliq.classList.toggle('ads-active',t==='liquor');}
   var s0=document.getElementById('ads-sub-all');
   if(s0){s0.style.background='#546E7A';s0.style.color='#fff';s0.classList.toggle('ads-active',t==='all');}
   ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');});
@@ -6698,12 +6721,13 @@ function advOpenCatModal(num){
     {key:'Realtor',   label:'Realtors',    color:'#F57F17'},
     {key:'Catering',  label:'Catering',    color:'#BF360C'},
     {key:'Dealership',label:'Dealerships', color:'#E65100'},
+    {key:'Liquor',    label:'Liquor 🍾',   color:'#5D4037'},
     {key:'Other',     label:'Misc',        color:'#00BCD4'}
   ];
   var a=_advGetA(num);
   var current=a?_advCat(a):'';
   var btns=cats.map(function(c){
-    var isCur=current.toLowerCase().indexOf(c.key.toLowerCase())===0||(c.key==='Other'&&!['Lawyer','Doctor','Spa','Salon','Realtor','Catering','Dealership'].some(function(k){return current.toLowerCase().indexOf(k.toLowerCase())===0;}));
+    var isCur=current.toLowerCase().indexOf(c.key.toLowerCase())===0||(c.key==='Other'&&!['Lawyer','Doctor','Spa','Salon','Realtor','Catering','Dealership','Liquor'].some(function(k){return current.toLowerCase().indexOf(k.toLowerCase())===0;}));
     return '<button onclick="advSetCat('+num+',&apos;'+c.key+'&apos;)" style="background:'+c.color+';color:#fff;border:'+(isCur?'3px solid #FFD600':'2px solid transparent')+';border-radius:8px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer;width:100%;">'+c.label+'</button>';
   }).join('');
   document.getElementById('adv-cat-buttons').innerHTML=btns;
@@ -6725,7 +6749,7 @@ function advSetCat(num,cat){
 function advRender(){
   // Compute sub-tab counts from full database
   try {
-    var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0, realtor:0, catering:0};
+    var _subCounts = {lawyer:0, doctor:0, dealer:0, spa:0, salon:0, realtor:0, catering:0, liquor:0};
     for(var _ix=0; _ix<ADVERTISERS_BASE.length; _ix++){
       var _ar = ADVERTISERS_BASE[_ix];
       if(!_ar || _ar.num===undefined) continue;
@@ -6738,6 +6762,7 @@ function advRender(){
       else if(_ac==='Catering') _subCounts.catering++;
       else if(_ac.indexOf('Doctor')===0) _subCounts.doctor++;
       else if(_ac.indexOf('Lawyer')===0) _subCounts.lawyer++;
+      else if(_ac==='Liquor') _subCounts.liquor++;
     }
     var _sl=document.getElementById('ads-sub-cnt-lawyers'); if(_sl) _sl.textContent=_subCounts.lawyer;
     var _sd=document.getElementById('ads-sub-cnt-doctors'); if(_sd) _sd.textContent=_subCounts.doctor;
@@ -6746,7 +6771,8 @@ function advRender(){
     var _ssal=document.getElementById('ads-sub-cnt-salons'); if(_ssal) _ssal.textContent=_subCounts.salon;
     var _sre=document.getElementById('ads-sub-cnt-realtors'); if(_sre) _sre.textContent=_subCounts.realtor;
     var _sca=document.getElementById('ads-sub-cnt-catering'); if(_sca) _sca.textContent=_subCounts.catering;
-    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){var c=_advCat(a);return c&&['Dealership','Spa','Salon','Realtor','Catering'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
+    var _sliq=document.getElementById('ads-sub-cnt-liquor'); if(_sliq) _sliq.textContent=_subCounts.liquor;
+    var _sm2=document.getElementById('ads-sub-cnt-misc'); if(_sm2) _sm2.textContent=ADVERTISERS_BASE.filter(function(a){var c=_advCat(a);return c&&['Dealership','Spa','Salon','Realtor','Catering','Liquor'].indexOf(c)===-1&&c.indexOf('Lawyer')!==0&&c.indexOf('Doctor')!==0;}).length;
     var _sbad2=document.getElementById('ads-sub-cnt-badig'); if(_sbad2) _sbad2.textContent=Object.keys(advBadIGMap||{}).length;
     var _sa=document.getElementById('ads-sub-cnt-all'); if(_sa) _sa.textContent=(_subCounts.lawyer+_subCounts.doctor+_subCounts.dealer+_subCounts.spa+_subCounts.salon+_subCounts.realtor+_subCounts.catering);
   } catch(_e) { console.warn('subcount loop failed:', _e); }
@@ -6760,8 +6786,10 @@ function advRender(){
     var isSalon=(c==='Salon');
     var isRealtor=(c==='Realtor');
     var isCatering=(c==='Catering');
+    var isLiquor=(c==='Liquor');
     if(advViewType==='all')return true;
-    if(advViewType==='other')return !isDealer&&!isDoc&&!isSpa&&!isSalon&&!isRealtor&&!isCatering&&!isLaw;
+    if(advViewType==='liquor')return isLiquor;
+    if(advViewType==='other')return !isDealer&&!isDoc&&!isSpa&&!isSalon&&!isRealtor&&!isCatering&&!isLaw&&!isLiquor;
     if(advViewType==='badig')return !!(advBadIGMap&&advBadIGMap[a.num]);
     if(advViewType==='dealer')return isDealer;
     if(advViewType==='doctor')return isDoc;
@@ -6923,6 +6951,13 @@ function showLawyersView(){
   showAdvertisersView();
 }
 
+function showLiquorView(){
+  if(typeof isFriend!=='undefined'&&isFriend)return;
+  if(typeof isDemo!=='undefined'&&isDemo)return;
+  advFilter='all';
+  advSetViewType('liquor');
+  showAdvertisersView();
+}
 function showMiscView(){
   if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
@@ -8193,7 +8228,7 @@ function showStagingView(cat){
   advFilter='all';
   _advDmPinned={};
   advStagingCat=cat||'all';
-  var _lbl={lawyer:'• Lawyers',doctor:'• Doctors',spa:'• Spas',salon:'• Salons',realtor:'• Realtors',catering:'• Catering',dealer:'• Dealerships',other:'• Misc'};
+  var _lbl={lawyer:'• Lawyers',doctor:'• Doctors',spa:'• Spas',salon:'• Salons',realtor:'• Realtors',catering:'• Catering',dealer:'• Dealerships',other:'• Misc',liquor:'• Liquor 🍾'};
   var hdr=document.getElementById('adv-view-header');
   if(hdr)hdr.textContent=_lbl[advStagingCat]||'Staging';
   // Ensure advertisers view is visible
@@ -8203,27 +8238,27 @@ function showStagingView(cat){
   var va=document.getElementById('view-advertisers');if(va){va.classList.add('active');va.style.display='block';}
   var ds=document.getElementById('dash-scroller');if(ds)ds.style.display='none';
   // Reset all main subtab highlights (class AND inline background)
-  var _mainReset={lawyers:'#004D40',doctors:'#4A148C',dealers:'#E65100',spas:'#880E4F',salons:'#0277BD',realtors:'#F57F17',catering:'#BF360C',all:'#546E7A',misc:'#00BCD4',badig:'#B71C1C'};
+  var _mainReset={lawyers:'#004D40',doctors:'#4A148C',dealers:'#E65100',spas:'#880E4F',salons:'#0277BD',realtors:'#F57F17',catering:'#BF360C',all:'#546E7A',misc:'#00BCD4',badig:'#B71C1C',liquor:'#5D4037'};
   Object.keys(_mainReset).forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el){el.classList.remove('ads-active');el.style.background=_mainReset[id];}});
   // Also reset top-level nav tab backgrounds
   var b1=document.getElementById('advertisers-tab-btn');if(b1)b1.style.background='#1B2E4A';
   var b2=document.getElementById('dealerships-tab-btn');if(b2)b2.style.background='#1B2E4A';
   var b3=document.getElementById('doctors-tab-btn');if(b3)b3.style.background='#1B2E4A';
-  var _m={lawyer:'lawyers2',doctor:'doctors2',spa:'spas2',salon:'salons2',realtor:'realtors2',catering:'catering2',dealer:'dealers2',other:'other2'};
-  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
+  var _m={lawyer:'lawyers2',doctor:'doctors2',spa:'spas2',salon:'salons2',realtor:'realtors2',catering:'catering2',dealer:'dealers2',other:'other2',liquor:'liquor2'};
+  ['lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
   advRender();
 }
 function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;var rec=ADVERTISERS_STAGING[idx];var _matchedBase=ADVERTISERS_BASE.find(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(_matchedBase){if(advDeletedMap&&advDeletedMap[_matchedBase.num]){delete advDeletedMap[_matchedBase.num];_advSaveMap('lv_adv_deleted_v1',advDeletedMap);ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));advRender();return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);
   _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
   if(!_advStagingApproved.find(function(r){return r.num===num;})){_advStagingApproved.push(rec);localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));}
-  if(typeof advFbSave==='function')advFbSave();var _rc=rec.cat||rec.category||'';var _vt='other';if(_rc.indexOf('Lawyer')===0)_vt='lawyer';else if(_rc.indexOf('Doctor')===0)_vt='doctor';else if(_rc==='Spa')_vt='spa';else if(_rc==='Salon')_vt='salon';else if(_rc==='Realtor')_vt='realtor';else if(_rc==='Catering')_vt='catering';else if(_rc==='Dealership')_vt='dealer';advSetViewType(_vt);advRender();}
+  if(typeof advFbSave==='function')advFbSave();var _rc=rec.cat||rec.category||'';var _vt='other';if(_rc.indexOf('Lawyer')===0)_vt='lawyer';else if(_rc.indexOf('Doctor')===0)_vt='doctor';else if(_rc==='Spa')_vt='spa';else if(_rc==='Salon')_vt='salon';else if(_rc==='Realtor')_vt='realtor';else if(_rc==='Catering')_vt='catering';else if(_rc==='Dealership')_vt='dealer';else if(_rc==='Liquor')_vt='liquor';advSetViewType(_vt);advRender();}
 function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);advRender();}
 </script>
 <script>
 // Override advRender to handle staging view
 
 function _updateStagingCounts(){
-  var cats = {lawyer:0, doctor:0, spa:0, salon:0, realtor:0, catering:0, dealer:0, other:0};
+  var cats = {lawyer:0, doctor:0, spa:0, salon:0, realtor:0, catering:0, dealer:0, liquor:0, other:0};
   for(var _i=0; _i<ADVERTISERS_STAGING.length; _i++){
     var _c = ADVERTISERS_STAGING[_i].cat || ADVERTISERS_STAGING[_i].category || '';
     if(_c.indexOf('Lawyer')===0)       cats.lawyer++;
@@ -8233,6 +8268,7 @@ function _updateStagingCounts(){
     else if(_c==='Realtor')            cats.realtor++;
     else if(_c==='Catering')           cats.catering++;
     else if(_c==='Dealership')         cats.dealer++;
+    else if(_c==='Liquor')             cats.liquor++;
     else                               cats.other++;
   }
   var keys = Object.keys(cats);
@@ -8258,6 +8294,7 @@ advRender = function(){
     if(cat === 'realtor') return c === 'Realtor';
     if(cat === 'catering') return c === 'Catering';
     if(cat === 'dealer') return c === 'Dealership';
+    if(cat === 'liquor') return c === 'Liquor';
     if(cat === 'other') return c !== '' && c.indexOf('Lawyer') !== 0 && c.indexOf('Doctor') !== 0 && c !== 'Spa' && c !== 'Salon' && c !== 'Realtor' && c !== 'Catering' && c !== 'Dealership';
     return true;
   });
