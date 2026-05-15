@@ -12115,7 +12115,7 @@ function logOut() {
 // SESSION TIMEOUT — 24h for demo, 4h for real
 // ══════════════════════════════════════════════════════
 var _sessionTimer = null;
-var _SESSION_MS = 30 * 24 * 60 * 60 * 1000;  // 30 days real
+var _SESSION_MS = 30 * 24 * 60 * 60 * 1000;  // used only by friend mode now (owner has no expiry)
 var _DEMO_SESSION_MS = 24 * 60 * 60 * 1000;  // max 24h but activity-checked
 var _DEMO_ACTIVITY_CHECK_MS = 10 * 60 * 1000; // prompt every 10 minutes
 var _demoActivityTimer = null;
@@ -12210,7 +12210,7 @@ function _startSessionTimer() {
   var ms = isDemo ? _DEMO_SESSION_MS : _SESSION_MS;
   try {
     sessionStorage.setItem('lv_login_time', Date.now());
-    // Roll the 30-day window for owner each session start
+    // Refresh owner session timestamp on each login (permanent — no expiry)
     if(!isDemo && !isFriend){
       var _os2=JSON.parse(localStorage.getItem('lv_owner_session_v2')||'null');
       if(_os2&&_os2.ok) localStorage.setItem('lv_owner_session_v2',JSON.stringify({ok:1,t:Date.now()}));
@@ -12218,14 +12218,8 @@ function _startSessionTimer() {
   } catch(e) {}
   if (isDemo) {
     _scheduleDemoActivityCheck();
-  } else {
-    _sessionTimer = setTimeout(function() {
-      if (document.getElementById('pin-screen').classList.contains('hidden')) {
-        showDMToast('Session expired — please log in again');
-        setTimeout(logOut, 2000);
-      }
-    }, ms);
   }
+  // Owner: no session timer — stays logged in until explicit Log Out
 }
 
 function _scheduleDemoActivityCheck() {
@@ -12474,10 +12468,10 @@ function savePinChange() {
 }
 
 function _pinInit() {
-  // Check persistent 30-day owner session first
+  // Check persistent owner session (no expiry — remembered forever)
   try {
     var _os=JSON.parse(localStorage.getItem('lv_owner_session_v2')||'null');
-    if(_os&&_os.ok&&(Date.now()-_os.t)<30*24*60*60*1000){
+    if(_os&&_os.ok){
       sessionStorage.setItem('lv_pin_ok','1');
       document.getElementById('pin-screen').classList.add('hidden');
       document.getElementById('view-dashboard').classList.add('active');
