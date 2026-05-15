@@ -198,9 +198,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-foodtrade { background: #fff; color: #2E7D32; border: 2px solid #2E7D32; font-size: 13px; padding: 8px 13px; }
 .btn-foodtrade.flagged { background: #2E7D32; color: #fff; }
 .b-nodm    { background: #004D40; }
-.b-ghosted  { background: #546E7A; }
-.btn-ghosted { background: #fff; color: #546E7A; border: 2px solid #546E7A; font-size: 13px; padding: 8px 13px; }
-.btn-ghosted.flagged { background: #546E7A; color: #fff; }
+.b-ghosted  { background: #0277BD; }
+.btn-ghosted { background: #fff; color: #0277BD; border: 2px solid #0277BD; font-size: 13px; padding: 8px 13px; }
+.btn-ghosted.flagged { background: #0277BD; color: #fff; }
 .btn-add-record { background: #0277BD; color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn-add-record:active { filter: brightness(.85); }
 .btn-delete:active { background: #7F0000; }
@@ -10128,8 +10128,6 @@ function _setDemoKeys() {
   LS_FOODTRADE_DONE = 'demo_foodtradedone_v1';
   LS_GHOSTED        = 'demo_ghosted_v1';
   LS_FIELD_OVERRIDE = 'demo_field_override_v1';
-  LS_FIELD_OVERRIDE  = 'demo_field_override_v1';
-  LS_GHOSTED        = 'demo_ghosted_v1';
   LS_USER_ATTEMPTS  = 'demo_user_attempts_v1';
 }
 
@@ -10603,7 +10601,7 @@ function importBackup(event) {
         num: r.num, name: nameOverrideMap[r.num] || r.name, owner: _fo3.owner || r.owner,
         instagram: igOverrideMap[r.num] || r.instagram,
         igHandle: (igOverrideMap[r.num] || r.instagram).replace(/^@/,''),
-        phone: r.phone, phoneLink: (function(p){ var c=p.replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
+        phone: r.phone||'', phoneLink: (function(p){ var c=(p||'').replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
         cuisine: r.cuisine, notes: r.notes||'', address: r.address||'',
         defaultStatus: r.defaultStatus,
         status: statusMap[r.num] || r.defaultStatus,
@@ -10689,7 +10687,7 @@ function _invalidatePending() {} // no-op — batch queue removed
 var _numToIdx = Object.create(null);
 var RESTAURANTS = (isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE).filter(function(r){ return !deletedMap[r.num]; }).map(function(r, i) {
   var _fo=fieldOverrideMap[r.num]||{};
-  var cleanPhone = (_fo.phone||r.phone).replace(/\D/g,'');
+  var cleanPhone = (_fo.phone||r.phone||'').replace(/\D/g,'');
   _numToIdx[r.num] = i;
   // Seed attempts from base data if no saved attempts yet
   if (!attemptsMap[r.num]) {
@@ -10798,6 +10796,7 @@ function _getNextNum() {
 function openAddRecord() {
   ['ar-name','ar-owner','ar-instagram','ar-phone','ar-email','ar-cuisine','ar-address','ar-notes'].forEach(function(id){
     var el = document.getElementById(id);
+    if (!el) return;
     el.value = '';
     el.style.borderColor = ''; // reset any error state
   });
@@ -11439,6 +11438,76 @@ function saveNote() {
 
 var _igModalNum = null;
 
+var _fullEditNum = null;
+
+function openFullEdit(num) {
+  var r = getR(num); if (!r) return;
+  _fullEditNum = num;
+  var _fo = fieldOverrideMap[num] || {};
+  document.getElementById('full-edit-title').textContent = 'Edit: ' + (nameOverrideMap[num] || r.name);
+  document.getElementById('fe-name').value      = nameOverrideMap[num] || r.name || '';
+  document.getElementById('fe-owner').value     = _fo.owner || r.owner || '';
+  document.getElementById('fe-instagram').value = igOverrideMap[num] || r.instagram || '';
+  document.getElementById('fe-phone').value     = _fo.phone || r.phone || '';
+  document.getElementById('fe-email').value     = (attemptsMap[num] && attemptsMap[num][0]) ? attemptsMap[num][0].email : (r.email || '');
+  document.getElementById('fe-cuisine').value   = _fo.cuisine || r.cuisine || '';
+  document.getElementById('fe-address').value   = _fo.address || r.address || '';
+  document.getElementById('fe-notes').value     = userNotesMap[num] || r.notes || '';
+  document.getElementById('full-edit-backdrop').classList.add('open');
+  setTimeout(function(){ document.getElementById('fe-name').focus(); }, 200);
+}
+function closeFullEdit() {
+  document.getElementById('full-edit-backdrop').classList.remove('open');
+  _fullEditNum = null;
+}
+function saveFullEdit() {
+  if (!_fullEditNum) return;
+  var num = _fullEditNum;
+  var r = getR(num);
+  if (!r) { closeFullEdit(); return; }
+  var newName = document.getElementById('fe-name').value.trim();
+  if (!newName) {
+    var _nel = document.getElementById('fe-name');
+    _nel.style.borderColor = '#C62828';
+    setTimeout(function(){ _nel.style.borderColor = ''; }, 2000);
+    return;
+  }
+  // Save name
+  nameOverrideMap[num] = newName;
+  try { localStorage.setItem(LS_NAME_OVERRIDE, JSON.stringify(nameOverrideMap)); } catch(e) {}
+  // Save IG
+  var _newIG = document.getElementById('fe-instagram').value.trim();
+  if (_newIG) { igOverrideMap[num] = _newIG; } else { delete igOverrideMap[num]; }
+  try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {}
+  // Save field overrides
+  if (!fieldOverrideMap[num]) fieldOverrideMap[num] = {};
+  var _newOwner   = document.getElementById('fe-owner').value.trim();
+  var _newPhone   = document.getElementById('fe-phone').value.trim();
+  var _newCuisine = document.getElementById('fe-cuisine').value.trim();
+  var _newAddress = document.getElementById('fe-address').value.trim();
+  if (_newOwner)   fieldOverrideMap[num].owner   = _newOwner;
+  if (_newPhone)   fieldOverrideMap[num].phone   = _newPhone;
+  if (_newCuisine) fieldOverrideMap[num].cuisine = _newCuisine;
+  if (_newAddress) fieldOverrideMap[num].address = _newAddress;
+  saveFieldOverride();
+  // Save notes
+  var _newNote = document.getElementById('fe-notes').value.trim();
+  if (_newNote) { userNotesMap[num] = _newNote; } else { delete userNotesMap[num]; }
+  try { localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap)); } catch(e) {}
+  // Update live record
+  r.name    = newName;
+  r.owner   = _newOwner   || r.owner;
+  r.instagram = (_newIG   || r.instagram || '');
+  r.igHandle  = (_newIG   || r.instagram || '').replace(/^@/, '');
+  r.phone   = _newPhone   || r.phone;
+  r.cuisine = _newCuisine || r.cuisine;
+  r.address = _newAddress || r.address;
+  r._search = newName.toLowerCase();
+  lsSaved();
+  closeFullEdit();
+  _invalidatePending(); _dashDirty = true; dashRefreshCard(num); dashUpdateStats();
+}
+
 function openEditName(num) { openFullEdit(num); }
 function openEditIG(num) {
   _igModalNum = num;
@@ -11557,7 +11626,7 @@ function _buildCard(r, displayNum) {
   var isNotInterested = !!notInterestedMap[r.num];
   var cls = isSent?'sent':isBounced?'bounced':'pending';
 
-  var _foCard=fieldOverrideMap[r.num]||{}; var _rphone=_foCard.phone||r.phone; var _rphoneLink=_rphone.replace(/\D/g,''); var phoneLine = _rphoneLink
+  var _foCard=fieldOverrideMap[r.num]||{}; var _rphone=_foCard.phone||r.phone||''; var _rphoneLink=_rphone.replace(/\D/g,''); var phoneLine = _rphoneLink
     ?'<div class="info"><a href="tel:'+r.phoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 '+_esc(r.phone)+'</a></div>'
     :(r.phone?'<div class="info">📞 '+_esc(r.phone)+'</div>':'');
 
@@ -11578,12 +11647,12 @@ function _buildCard(r, displayNum) {
   btns += '<button class="btn btn-ghosted'+(ghostedMap[r.num]?' flagged':'')+'" onclick="toggleGhosted('+r.num+')">👻 Ghosted</button>';
   btns += '<button class="btn btn-problem'+(problemMap[r.num]?' flagged':'')+'" onclick="toggleProblem('+r.num+')">Problem</button>';
   btns += '<button class="btn btn-delete" onclick="deleteRestaurant('+r.num+')">Delete</button>';
-  btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#546E7A;">Edit Email</button>';
+  btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#0277BD;">Edit Email</button>';
 
   var html = '<div class="card '+cls+'" id="dc'+r.num+'">'
     +'<div class="card-top">'+btns+'</div>'
     +'<div class="ctag">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].cuisine)||r.cuisine)+'</div>'
-    +'<div class="rname">'+_esc(nameOverrideMap[r.num]||r.name)+' <button onclick="openNameModal('+r.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div>'
+    +'<div class="rname">'+_esc(nameOverrideMap[r.num]||r.name)+' <button onclick="openNameModal('+r.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div>'
     +'<div class="info">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].owner)||r.owner)+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(igOverrideMap[r.num]||r.instagram)+'</span>'
     +' <button onclick="toggleBadIG('+r.num+')" class="btn btn-bad-ig'+(isBadIG?' flagged':'')+'" style="margin-left:4px;">Bad IG</button>'
     +' <button onclick="openEditIG('+r.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;margin-left:2px;">Edit IG</button></div>'
@@ -11957,7 +12026,7 @@ function _enterDemoMode() {
       num: r.num, name: nameOverrideMap[r.num] || r.name, owner: r.owner,
       instagram: igOverrideMap[r.num] || r.instagram,
       igHandle: (igOverrideMap[r.num] || r.instagram).replace(/^@/,''),
-      phone: r.phone, phoneLink: (function(p){ var c=p.replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
+      phone: r.phone||'', phoneLink: (function(p){ var c=(p||'').replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
       cuisine: r.cuisine, notes: r.notes||'', address: r.address||'',
       attempts: attemptsMap[r.num] || [],
       status: statusMap[r.num] || r.defaultStatus || 'pending'
@@ -13074,7 +13143,7 @@ function crmBuildCard(c) {
   if (annThis)    html += '<span class="crm-badge" style="background:#F3E5F5;color:#9C27B0;border:1px solid #CE93D8;">💍 Anniversary This Month</span>';
   if (lapsedFlag) html += '<span class="crm-badge" style="background:#FFEBEE;color:#C62828;border:1px solid #FFCDD2;">😴 Lapsed 60+ days</span>';
   if (c.followup) html += '<span class="crm-badge" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;">🔔 Follow Up</span>';
-  if (c.optout)   html += '<span class="crm-badge" style="background:#ECEFF1;color:#546E7A;border:1px solid #CFD8DC;">🚫 Opt-Out</span>';
+  if (c.optout)   html += '<span class="crm-badge" style="background:#ECEFF1;color:#0277BD;border:1px solid #CFD8DC;">🚫 Opt-Out</span>';
   if (c.tags) { c.tags.split(',').forEach(function(t){ t=t.trim(); if(t) html+='<span class="crm-badge" style="background:#E3F2FD;color:#1565C0;border:1px solid #BBDEFB;">'+_esc(t)+'</span>'; }); }
   html += '</div>';
 
@@ -13101,7 +13170,7 @@ function crmBuildCard(c) {
   html += '<div class="crm-action-row">';
   html += '<button class="crm-btn" style="background:#0277BD;" onclick="crmLogVisit('+c.id+')">✓ Visit</button>';
   html += '<button class="crm-btn" style="background:#E65100;" onclick="crmAddPoints('+c.id+')">+ Points</button>';
-  html += '<button class="crm-btn'+(c.followup?' '+'btn-followup flagged':'')+'" style="background:'+(c.followup?'#00695C':'#546E7A')+';" onclick="crmToggleFollowup('+c.id+')">🔔 Follow Up</button>';
+  html += '<button class="crm-btn'+(c.followup?' '+'btn-followup flagged':'')+'" style="background:'+(c.followup?'#00695C':'#0277BD')+';" onclick="crmToggleFollowup('+c.id+')">🔔 Follow Up</button>';
   html += '<button class="crm-btn" style="background:#1B2E4A;" onclick="openCrmNote('+c.id+')">'+(c.notes?'📝 Note ✓':'📝 Note')+'</button>';
   html += '<button class="crm-btn" style="background:#00BCD4;" onclick="openEditCustomer('+c.id+')">✏️ Edit</button>';
   html += '<button class="crm-btn" style="background:#B71C1C;" onclick="crmDelete('+c.id+')">🗑 Delete</button>';
@@ -13635,7 +13704,7 @@ window.addEventListener('load',function(){
       </select>
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button onclick="advSaveNewRecord()" style="flex:1;background:#00838F;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Save to Staging</button>
-        <button onclick="advCloseAddModal()" style="flex:1;background:#546E7A;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+        <button onclick="advCloseAddModal()" style="flex:1;background:#0277BD;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
       </div>
     </div>
   </div>
@@ -14064,8 +14133,8 @@ function _buildAdvCard(a,displayNum){
   btns+='<button class="btn btn-problem'+(advProblemMap[a.num]?' flagged':'')+'" onclick="advToggleProblem('+a.num+')">Problem</button>';
   btns+='<button class="btn btn-delete" onclick="advDeleteRecord('+a.num+')">Delete</button>';
   btns+='<button class="btn" style="background:#00838F;font-size:13px;padding:8px 13px;" onclick="advOpenCatModal('+a.num+')">Move To</button>';
-  btns+='<button class="btn btn-add-email" onclick="advOpenEditEmail('+a.num+')" style="background:#546E7A;">Edit Email</button>';
-  var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(_advCat(a))+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+'</span> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'" style="font-size:13px;padding:8px 13px;">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#546E7A;font-size:13px;padding:8px 13px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
+  btns+='<button class="btn btn-add-email" onclick="advOpenEditEmail('+a.num+')" style="background:#0277BD;">Edit Email</button>';
+  var h='<div class="card '+cls+'" id="ac'+a.num+'"><div class="card-top">'+btns+'</div><div class="ctag">'+_esc(_advCat(a))+'</div><div class="rname">'+_esc(name)+' <button onclick="advOpenNameModal('+a.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div><div class="info">'+_esc(owner||'(no contact)')+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(ig||'(no IG)')+'</span> <button onclick="advOpenEditIG('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;margin-left:2px;">Edit IG</button></div><div style="display:flex;gap:6px;margin-top:4px;margin-bottom:6px;flex-wrap:wrap;"><button onclick="advToggleInterested('+a.num+')" class="btn btn-interested'+(isInterested?' flagged':'')+'">\ud83d\udc4d</button><button onclick="advToggleNotInterested('+a.num+')" class="btn btn-not-interested'+(isNotInterested?' flagged':'')+'">\ud83d\udc4e</button><button onclick="advToggleFollowup('+a.num+')" class="btn btn-followup'+(advFollowupMap[a.num]?' flagged':'')+'" style="font-size:13px;padding:8px 13px;">Follow Up'+(advFollowupMap[a.num]?' - '+advFollowupMap[a.num].slice(0,10):'')+'</button><button onclick="advOpenWebsiteModal('+a.num+')" class="btn" style="background:#1565C0;font-size:13px;padding:8px 13px;">'+(website?'\ud83c\udf10 '+_esc(website.replace(/^https?:\/\//,'').slice(0,20)):'+ Website')+'</button></div>'+phoneLine+'<div class="info" style="font-size:11px;color:#999;"><button onclick="advOpenEditPhone('+a.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;">Edit Phone</button>'+(lastContact?' &nbsp;\u23f1\ufe0f Last contacted: '+lastContact:'')+'</div>'+_advBuildAttemptHistory(a.num)+(addr?'<div class="addr-line">\ud83d\udccd <a href="https://maps.google.com/?q='+encodeURIComponent(addr)+'" target="_blank" style="color:#1565C0;text-decoration:none;">'+_esc(addr)+'</a> <button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;margin-left:4px;">Edit</button></div>':'<div class="addr-line"><button onclick="advOpenEditAddress('+a.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;">+ Add Address</button></div>')+(advNotesMap[a.num]?'<div class="note-preview">\ud83d\udcdd '+_esc((advNotesMap[a.num].trim().split('\n')[0]||advNotesMap[a.num].trim()).slice(0,80))+'</div>':'')+'</div>';
   return h;
 }
 
@@ -16094,7 +16163,7 @@ function advSaveNewRecord(){
   <div style="max-width:560px;width:100%;background:#1B2E4A;border-radius:12px;padding:20px;max-height:80vh;display:flex;flex-direction:column;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0;">
       <h2 style="color:#FFD600;margin:0;font-size:18px;">Duplicate Instagram Handles</h2>
-      <button onclick="advCloseDupesModal()" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
+      <button onclick="advCloseDupesModal()" style="background:#0277BD;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
     </div>
     <div id="adv-dupes-content" style="overflow-y:auto;flex:1;"></div>
   </div>
@@ -16104,7 +16173,7 @@ function advSaveNewRecord(){
   <div style="max-width:380px;width:100%;background:#1B2E4A;border-radius:12px;padding:20px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h2 style="color:#FFD600;margin:0;font-size:18px;">Move to Category</h2>
-      <button onclick="document.getElementById('adv-cat-modal').style.display='none'" style="background:#546E7A;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005;</button>
+      <button onclick="document.getElementById('adv-cat-modal').style.display='none'" style="background:#0277BD;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005;</button>
     </div>
     <div id="adv-cat-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
   </div>
