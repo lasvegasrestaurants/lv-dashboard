@@ -11226,6 +11226,7 @@ function _fbDoPush() {
     todos:         _gtl(),
     projects:      _gpl(),
     crmcustomers:  CRM_CUSTOMERS,
+    rsremoved:     (function(){ try{ return JSON.parse(localStorage.getItem(LS_RS_REMOVED))||{}; }catch(e){ return {}; } })(),
     savedBy:       isFriend ? 'friend' : 'owner',
     savedAt:       Date.now()
   };
@@ -11273,6 +11274,7 @@ function _applyFirebaseData(rec) {
       if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
       if (rec.fieldoverride) { fieldOverrideMap  = rec.fieldoverride; try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} }
       if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
+      if (rec.rsremoved)     { try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(rec.rsremoved)); } catch(e) {} RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !rec.rsremoved[r.num]; }); }
       if (rec.todos)         { try { localStorage.setItem(_LT, JSON.stringify(rec.todos)); } catch(e) {} }
       if (rec.projects)      { try { localStorage.setItem(_LP, JSON.stringify(rec.projects)); } catch(e) {} }
       if (rec.crmcustomers && Array.isArray(rec.crmcustomers) && rec.crmcustomers.length > 0) {
@@ -11315,6 +11317,8 @@ function _applyFirebaseData(rec) {
         _numToIdx[cr.num] = RESTAURANTS.length - 1;
       }
       _invalidatePending(); _cachedMaxNum = 0; _statEls = null; _dashDirty = true;
+      // If in staging view, re-register staging records (Firebase rebuild wiped them) then re-render staging
+      if (_rsIsStaging) { _rsRegisterStaging(); rsRender(); dashUpdateStats(); lsStatus('#4CAF50', lsTs()); return; }
       dashSetFilter('all'); dashUpdateStats();
       lsStatus('#4CAF50', lsTs());
 }
@@ -12889,8 +12893,8 @@ function _buildCard(r, displayNum) {
   var cls = isSent?'sent':isBounced?'bounced':'pending';
 
   var _foCard=fieldOverrideMap[r.num]||{}; var _rphone=_foCard.phone||r.phone||''; var _rphoneLink=_rphone.replace(/\D/g,''); var phoneLine = _rphoneLink
-    ?'<div class="info"><a href="tel:'+r.phoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 '+_esc(r.phone)+'</a></div>'
-    :(r.phone?'<div class="info">📞 '+_esc(r.phone)+'</div>':'');
+    ?'<div class="info"><a href="tel:'+_rphoneLink+'" style="color:#1565C0;font-weight:700;text-decoration:none;font-size:14px;padding:4px 0;display:inline-block;">📞 '+_esc(_rphone)+'</a></div>'
+    :(_rphone?'<div class="info">📞 '+_esc(_rphone)+'</div>':'');
 
   // Build action buttons
   var btns = '<span class="card-num">#'+(displayNum != null ? displayNum : r.num)+'</span>';
@@ -13074,8 +13078,14 @@ try{_dashViewEl.addEventListener('scroll',function(){
 
 function dashRefreshCard(num){
   var el=document.getElementById('dc'+num);if(!el)return;
-  var idx=_rIdx(num),pos=-1;
-  for(var i=0;i<_dashFiltered.length;i++){if(_dashFiltered[i]===idx){pos=i;break;}}
+  var pos=-1;
+  if(_rsStagingNums[num]){
+    // In staging view — find position in RESTAURANTS_STAGING list
+    for(var _si=0;_si<RESTAURANTS_STAGING.length;_si++){if(RESTAURANTS_STAGING[_si].num===num){pos=_si;break;}}
+  } else {
+    var idx=_rIdx(num);
+    for(var i=0;i<_dashFiltered.length;i++){if(_dashFiltered[i]===idx){pos=i;break;}}
+  }
   var tmp=document.createElement('div');tmp.innerHTML=_buildCard(getR(num),pos>=0?pos+1:null);
   el.parentNode.replaceChild(tmp.firstElementChild,el);
 }
@@ -13103,7 +13113,7 @@ function manualMarkSent(num){
 // Cache stat badge DOM refs once
 var _statEls = null;
 var _feNum = null;
-var RENDER_BUFFER = 3;
+// RENDER_BUFFER already declared above as 14 — do not re-declare here
 function _getStatEls() {
   if (_statEls) return _statEls;
   _statEls = {
@@ -15004,6 +15014,7 @@ function _stl(a){try{localStorage.setItem(_LT,JSON.stringify(a));}catch(e){}}
 function _spl(a){try{localStorage.setItem(_LP,JSON.stringify(a));}catch(e){}}
 function _te(s){var d=document.createElement("div");d.textContent=String(s||"");return d.innerHTML;}
 function showTasksTab(which){
+  var _dc=document.getElementById('delete-confirm');if(_dc)_dc.style.display='none';
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.remove("active");vd.style.display="none";}
   var va=document.getElementById("view-advertisers");
@@ -15028,6 +15039,7 @@ function showTasksTab(which){
   setTimeout(_wireTasksScroller, 50);
 }
 function showDashTab(){
+  var _dc=document.getElementById('delete-confirm');if(_dc)_dc.style.display='none';
   var vt=document.getElementById("view-tasks");
   if(vt){vt.classList.remove("active");vt.style.display="none";}
   var va=document.getElementById("view-advertisers");
@@ -15233,6 +15245,7 @@ function advBuildList(){
 
 var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
+  var _dc=document.getElementById('delete-confirm');if(_dc)_dc.style.display='none';
   if(t!=='all'&&t!=='lawyer'&&t!=='doctor'&&t!=='dealer'&&t!=='spa'&&t!=='salon'&&t!=='realtor'&&t!=='catering'&&t!=='lawdoc'&&t!=='other'&&t!=='badig'&&t!=='liquor'&&t!=='hotel'&&t!=='medspa'&&t!=='dental'&&t!=='trainer'&&t!=='wedding'&&t!=='vet'&&t!=='tours'&&t!=='wine'&&t!=='gaming'&&t!=='ecommerce'&&t!=='igfixed')return;
   // Migrate legacy 'lawdoc' to 'lawyer'
   if(t==='lawdoc')t='lawyer';
