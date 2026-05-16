@@ -11130,6 +11130,8 @@ function _setRealKeys() {
   LS_GHOSTED        = 'lv_outreach_ghosted_v1';
   LS_FIELD_OVERRIDE = 'lv_outreach_field_override_v1';
   LS_USER_ATTEMPTS  = 'lv_user_attempts_v1';
+  LS_RS_REMOVED     = 'lv_rs_removed_v1';
+  if (typeof LS_CRM_CUSTOMERS !== 'undefined') LS_CRM_CUSTOMERS = 'lv_crm_customers_v1';
   FB_URL            = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
   if (typeof _LT !== 'undefined') _LT = 'lv_todos_v1';
   if (typeof _LP !== 'undefined') _LP = 'lv_projects_v1';
@@ -11483,6 +11485,7 @@ function exportCSV() {
       emailStatus,
       igOverrideMap[r.num] || r.instagram,
       dmDate ? dmDate.slice(0,10) : '',
+      sentDate,
       r.cuisine,
       r.owner,
       r.phone,
@@ -11496,8 +11499,7 @@ function exportCSV() {
       foodTradeMap[r.num] ? 'Yes' : '',
       foodTradeDoneMap[r.num] ? 'Yes' : '',
       ghostedMap[r.num] ? 'Yes' : '',
-      badIGMap[r.num] ? 'Yes' : '',
-      sentDate
+      badIGMap[r.num] ? 'Yes' : ''
     ]);
   }
 
@@ -11573,8 +11575,8 @@ function importBackup(event) {
         num: r.num, name: nameOverrideMap[r.num] || r.name, owner: _fo3.owner || r.owner,
         instagram: igOverrideMap[r.num] || r.instagram,
         igHandle: (igOverrideMap[r.num] || r.instagram).replace(/^@/,''),
-        phone: r.phone||'', phoneLink: (function(p){ var c=(p||'').replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
-        cuisine: r.cuisine, notes: r.notes||'', address: r.address||'',
+        phone: _fo3.phone||r.phone||'', phoneLink: (function(p){ var c=(p||'').replace(/\D/g,''); return c.length>=7?c:''; })(_fo3.phone||r.phone||''),
+        cuisine: _fo3.cuisine||r.cuisine, notes: r.notes||'', address: _fo3.address||r.address||'',
         defaultStatus: r.defaultStatus,
         status: statusMap[r.num] || r.defaultStatus,
         attempts: (function(rr) {
