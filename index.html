@@ -11027,6 +11027,9 @@ var RESTAURANTS_STAGING = [
   {num:20482,name:'Terrace Point Cafe',ig:'terracepoint_lv',phone:'(702) 636-7111',email:'info@terracepoint.com',cuisine:'American Cafe',address:'9090 Alta Dr, Las Vegas, NV 89145',defaultStatus:'pending'},
   {num:20483,name:'Secret Pizza Mirage',ig:'secretpizza_lv',phone:'(702) 693-8300',email:'info@secretpizzalv.com',cuisine:'Casual New York Pizza',address:'3400 S Las Vegas Blvd Level 3, Las Vegas, NV 89109',defaultStatus:'pending'},
   {num:20484,name:'Khoury\'s Mediterranean North',ig:'khourysnorth_lv',phone:'(702) 658-5545',email:'north@khouryslv.com',cuisine:'Mediterranean/Lebanese',address:'6480 N Durango Dr Ste 115, Las Vegas, NV 89149',defaultStatus:'pending'},
+  {num:20485,name:'Lotus of Siam',ig:'lotusofsiamlv',phone:'(702) 735-3033',email:'info@lotusofsiamlv.com',cuisine:'Northern Thai',address:'620 E Flamingo Rd, Las Vegas, NV 89119',defaultStatus:'pending'},
+  {num:20486,name:'Versailles Cuban Cuisine',ig:'versaillescubanlv',phone:'(702) 320-9999',email:'info@versaillescubanlv.com',cuisine:'Cuban',address:'101 Convention Center Dr, Las Vegas, NV 89109',defaultStatus:'pending'},
+  {num:20487,name:'Kabob Palace',ig:'kabobpalacenv',phone:'(702) 294-0100',email:'info@kabobpalacenv.com',cuisine:'Persian/Middle Eastern',address:'3900 S Paradise Rd Ste 101, Las Vegas, NV 89169',defaultStatus:'pending'},
 ];
 (function(){
   var _rsRm = {};
@@ -11843,12 +11846,46 @@ function saveNewRecord() {
 // RESTAURANT STAGING SYSTEM
 // ══════════════════════════════════════════════════════════════════════
 
+var _rsStagingNums = Object.create(null); // tracks which nums are from staging
+
 function _rsUpdateCount() {
   var el = document.getElementById('rs-stg-cnt');
   if (el) el.textContent = RESTAURANTS_STAGING.length;
 }
 
+function _rsRegisterStaging() {
+  for (var i = 0; i < RESTAURANTS_STAGING.length; i++) {
+    var _sr = RESTAURANTS_STAGING[i];
+    if (_numToIdx[_sr.num] !== undefined) continue;
+    var _adapted = {
+      num: _sr.num, name: _sr.name, owner: 'Staging',
+      instagram: '@' + (_sr.ig || ''), igHandle: (_sr.ig || ''),
+      phone: _sr.phone || '', phoneLink: (_sr.phone || '').replace(/\D/g, ''),
+      email: _sr.email || '', cuisine: _sr.cuisine || '',
+      address: _sr.address || '', notes: '', defaultStatus: 'pending',
+      status: statusMap[_sr.num] || 'pending',
+      _search: (_sr.name || '').toLowerCase(), _isStaging: true
+    };
+    if (!attemptsMap[_sr.num]) attemptsMap[_sr.num] = [{email: _sr.email || '', status: 'pending', date: null, note: ''}];
+    _adapted.attempts = attemptsMap[_sr.num];
+    RESTAURANTS.push(_adapted);
+    _numToIdx[_sr.num] = RESTAURANTS.length - 1;
+    _rsStagingNums[_sr.num] = true;
+  }
+}
+
+function _rsUnregisterStaging() {
+  if (!Object.keys(_rsStagingNums).length) return;
+  for (var i = RESTAURANTS.length - 1; i >= 0; i--) {
+    if (RESTAURANTS[i]._isStaging) { RESTAURANTS.splice(i, 1); }
+  }
+  _numToIdx = Object.create(null);
+  for (var j = 0; j < RESTAURANTS.length; j++) _numToIdx[RESTAURANTS[j].num] = j;
+  _rsStagingNums = Object.create(null);
+}
+
 function rsShowStaging() {
+  _rsRegisterStaging();
   _rsIsStaging = true;
   // Update staging bar UI
   var stgBtn  = document.getElementById('rs-stg-btn');
@@ -11866,6 +11903,7 @@ function rsShowStaging() {
 }
 
 function rsShowMain() {
+  _rsUnregisterStaging();
   _rsIsStaging = false;
   // Restore staging bar UI
   var stgBtn  = document.getElementById('rs-stg-btn');
@@ -11895,6 +11933,9 @@ function rsRender() {
   if (title) title.textContent = '📋 Restaurant Staging — ' + RESTAURANTS_STAGING.length + ' pending';
   _rsUpdateCount();
 
+  // Ensure staging records are registered
+  _rsRegisterStaging();
+
   // Filter by search
   var srch = (document.getElementById('dash-search')||{}).value || '';
   srch = srch.trim().toLowerCase();
@@ -11916,20 +11957,9 @@ function rsRender() {
   var html = '';
   for (var i = 0; i < list.length; i++) {
     var r = list[i];
-    var _igLink = r.ig ? '<a href="https://instagram.com/' + r.ig + '" target="_blank" style="color:#90CAF9;text-decoration:none;">@' + _esc(r.ig) + '</a>' : '<span style="color:#666;">No IG</span>';
-    var _phoneHtml = r.phone ? '<a href="tel:' + (r.phone||'').replace(/\D/g,'') + '" style="color:#A5D6A7;text-decoration:none;">' + _esc(r.phone) + '</a>' : '';
-    var _emailHtml = r.email ? '<a href="mailto:' + _esc(r.email) + '" style="color:#90CAF9;text-decoration:none;">' + _esc(r.email) + '</a>' : '<span style="color:#555;">No email</span>';
-    html += '<div class="card" style="border-left:4px solid #E65100;margin-bottom:10px;">'
-      + '<div class="card-top">'
-      + '<button class="btn" onclick="rsApprove(' + r.num + ')" style="background:#2E7D32;">↑ Add to Outreach</button> '
-      + '<button class="btn btn-delete" onclick="rsRemove(' + r.num + ')">Remove</button>'
-      + '</div>'
-      + '<div class="ctag">' + _esc(r.cuisine||'') + '</div>'
-      + '<div class="rname">' + _esc(r.name) + '</div>'
-      + '<div class="info">' + _igLink + '</div>'
-      + '<div style="font-size:12px;color:#aaa;margin-top:4px;">' + _esc(r.address||'') + '</div>'
-      + '<div style="font-size:12px;color:#bbb;margin-top:3px;">' + _phoneHtml + (r.phone && r.email ? ' &nbsp;|&nbsp; ' : '') + _emailHtml + '</div>'
-      + '</div>';
+    var restR = getR(r.num);
+    if (!restR) continue;
+    html += _buildCard(restR, i + 1);
   }
   listEl.innerHTML = html;
 }
@@ -12083,6 +12113,7 @@ function duplicateRestaurant(num) {
 }
 
 function deleteRestaurant(num) {
+  if (_rsStagingNums[num]) { rsRemove(num); return; }
   var r = getR(num);
   if (!r) return;
   var t = document.getElementById('delete-confirm');
@@ -12849,8 +12880,10 @@ function _buildCard(r, displayNum) {
   btns += '<button class="btn" onclick="duplicateRestaurant('+r.num+')" style="background:#00838F;">Duplicate</button>';
   btns += '<button class="btn btn-add-email" onclick="openEditEmail('+r.num+')" style="background:#0277BD;">Edit Email</button>';
 
-  var html = '<div class="card '+cls+'" id="dc'+r.num+'">'
-    +'<div class="card-top">'+btns+'</div>'
+  var _stagingBorderStyle = r._isStaging ? 'border-left:4px solid #E65100;' : '';
+  var _stagingTopBtns = r._isStaging ? '<button class="btn" onclick="rsApprove('+r.num+')" style="background:#1B5E20;font-size:13px;padding:8px 13px;margin-right:4px;">⬆️ Add to Outreach</button>' : '';
+  var html = '<div class="card '+cls+'" id="dc'+r.num+'" style="'+_stagingBorderStyle+'">'
+    +'<div class="card-top">'+_stagingTopBtns+btns+'</div>'
     +'<div class="ctag">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].cuisine)||r.cuisine)+'</div>'
     +'<div class="rname">'+_esc(nameOverrideMap[r.num]||r.name)+' <button onclick="openNameModal('+r.num+')" class="btn" style="background:#0277BD;font-size:13px;padding:8px 13px;vertical-align:middle;margin-left:4px;">Edit Name</button></div>'
     +'<div class="info">'+_esc((fieldOverrideMap[r.num]&&fieldOverrideMap[r.num].owner)||r.owner)+' &nbsp;|&nbsp; <span class="ig'+(isBadIG?' bad-ig':'')+'">'+_esc(igOverrideMap[r.num]||r.instagram)+'</span>'
