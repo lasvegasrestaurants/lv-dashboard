@@ -12779,29 +12779,46 @@ function saveFullEdit() {
   var _newIG = document.getElementById('fe-instagram').value.trim();
   if (_newIG) { igOverrideMap[num] = _newIG; } else { delete igOverrideMap[num]; }
   try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {}
-  // Save field overrides
+  // Save field overrides — empty string means "clear the override"
   if (!fieldOverrideMap[num]) fieldOverrideMap[num] = {};
   var _newOwner   = document.getElementById('fe-owner').value.trim();
   var _newPhone   = document.getElementById('fe-phone').value.trim();
   var _newCuisine = document.getElementById('fe-cuisine').value.trim();
   var _newAddress = document.getElementById('fe-address').value.trim();
-  if (_newOwner)   fieldOverrideMap[num].owner   = _newOwner;
-  if (_newPhone)   fieldOverrideMap[num].phone   = _newPhone;
-  if (_newCuisine) fieldOverrideMap[num].cuisine = _newCuisine;
-  if (_newAddress) fieldOverrideMap[num].address = _newAddress;
+  if (_newOwner)   { fieldOverrideMap[num].owner   = _newOwner;   } else { delete fieldOverrideMap[num].owner;   }
+  if (_newPhone)   { fieldOverrideMap[num].phone   = _newPhone;   } else { delete fieldOverrideMap[num].phone;   }
+  if (_newCuisine) { fieldOverrideMap[num].cuisine = _newCuisine; } else { delete fieldOverrideMap[num].cuisine; }
+  if (_newAddress) { fieldOverrideMap[num].address = _newAddress; } else { delete fieldOverrideMap[num].address; }
+  // Clean up empty override object
+  if (!Object.keys(fieldOverrideMap[num]).length) delete fieldOverrideMap[num];
   saveFieldOverride();
+  // Save email — update first pending attempt in-place, or add new entry
+  var _newEmail = document.getElementById('fe-email').value.trim().toLowerCase();
+  if (_newEmail && _newEmail.indexOf('@') > 0) {
+    if (!attemptsMap[num]) attemptsMap[num] = [];
+    var _pendFe = -1;
+    for (var _fi = 0; _fi < attemptsMap[num].length; _fi++) { if (attemptsMap[num][_fi].status === 'pending') { _pendFe = _fi; break; } }
+    if (_pendFe >= 0) { attemptsMap[num][_pendFe].email = _newEmail; }
+    else { attemptsMap[num].push({email: _newEmail, status: 'pending', date: null, note: ''}); }
+    saveAttemptsAndStatuses();
+  }
   // Save notes
   var _newNote = document.getElementById('fe-notes').value.trim();
   if (_newNote) { userNotesMap[num] = _newNote; } else { delete userNotesMap[num]; }
   try { localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap)); } catch(e) {}
-  // Update live record
+  // Update live record — look up base values so clearing an override reverts correctly
+  var _fo2 = fieldOverrideMap[num] || {};
+  var _feBases = isDemo ? RESTAURANTS_DEMO : RESTAURANTS_BASE;
+  var _feBase = null;
+  for (var _feI = 0; _feI < _feBases.length; _feI++) { if (_feBases[_feI].num === num) { _feBase = _feBases[_feI]; break; } }
+  if (!_feBase) { for (var _feJ = 0; _feJ < customRecords.length; _feJ++) { if (customRecords[_feJ].num === num) { _feBase = customRecords[_feJ]; break; } } }
   r.name    = newName;
-  r.owner   = _newOwner   || r.owner;
-  r.instagram = (_newIG   || r.instagram || '');
-  r.igHandle  = (_newIG   || r.instagram || '').replace(/^@/, '');
-  r.phone   = _newPhone   || r.phone;
-  r.cuisine = _newCuisine || r.cuisine;
-  r.address = _newAddress || r.address;
+  r.owner   = _fo2.owner   !== undefined ? _fo2.owner   : (_feBase ? _feBase.owner   || '' : '');
+  r.instagram = (_newIG || r.instagram || '');
+  r.igHandle  = (_newIG || r.instagram || '').replace(/^@/, '');
+  r.phone   = _fo2.phone   !== undefined ? _fo2.phone   : (_feBase ? _feBase.phone   || '' : '');
+  r.cuisine = _fo2.cuisine !== undefined ? _fo2.cuisine : (_feBase ? _feBase.cuisine || '' : '');
+  r.address = _fo2.address !== undefined ? _fo2.address : (_feBase ? _feBase.address || '' : '');
   r._search = newName.toLowerCase();
   lsSaved();
   closeFullEdit();
@@ -13820,6 +13837,26 @@ function undoDelete() {
     _numToIdx[num] = RESTAURANTS.length - 1;
   }
   if (d.customRecord) customRecords.push(d.customRecord);
+  // Persist restored state to localStorage immediately (lsSaved is debounced via Firebase only)
+  try {
+    localStorage.setItem(LS_DELETED,        JSON.stringify(deletedMap));
+    localStorage.setItem(LS_STATUS,         JSON.stringify(statusMap));
+    localStorage.setItem(LS_ATTEMPTS,       JSON.stringify(attemptsMap));
+    localStorage.setItem(LS_DM,             JSON.stringify(dmMap));
+    localStorage.setItem(LS_BAD_IG,         JSON.stringify(badIGMap));
+    localStorage.setItem(LS_IG_OVERRIDE,    JSON.stringify(igOverrideMap));
+    localStorage.setItem(LS_USER_NOTES,     JSON.stringify(userNotesMap));
+    localStorage.setItem(LS_NAME_OVERRIDE,  JSON.stringify(nameOverrideMap));
+    localStorage.setItem(LS_FOLLOWUP,       JSON.stringify(followupMap));
+    localStorage.setItem(LS_INTERESTED,     JSON.stringify(interestedMap));
+    localStorage.setItem(LS_NOT_INTERESTED, JSON.stringify(notInterestedMap));
+    localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap));
+    localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap));
+    localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap));
+    localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap));
+    localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap));
+    if (d.customRecord) localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords));
+  } catch(e) {}
   lsSaved();
   _undoData = null; _undoNum = null;
   document.getElementById('undo-toast').style.display = 'none';
@@ -16073,9 +16110,9 @@ function advRender(){
   var cn=document.getElementById('adv-cnt-needdm');if(cn)cn.textContent=counts.needdm;
   // Detect duplicate IG handles within current view
   var _igSeen={};
-  enriched.forEach(function(e){var _ig=(e.a.ig||'').toLowerCase();if(!_ig)return;_igSeen[_ig]=(_igSeen[_ig]||0)+1;});
+  enriched.forEach(function(e){var _ig=(advIGOverrideMap[e.a.num]!==undefined?advIGOverrideMap[e.a.num]:(e.a.ig||'')).toLowerCase();if(!_ig)return;_igSeen[_ig]=(_igSeen[_ig]||0)+1;});
   var _dupeCnt=0;
-  enriched.forEach(function(e){var _ig=(e.a.ig||'').toLowerCase();if(_ig&&_igSeen[_ig]>1){e.isDupe=true;_dupeCnt++;}});
+  enriched.forEach(function(e){var _ig=(advIGOverrideMap[e.a.num]!==undefined?advIGOverrideMap[e.a.num]:(e.a.ig||'')).toLowerCase();if(_ig&&_igSeen[_ig]>1){e.isDupe=true;_dupeCnt++;}});
   var cDu=document.getElementById('adv-cnt-dupes');if(cDu)cDu.textContent=_dupeCnt;
   var filtered=enriched.filter(function(e){
     if(advFilter==='needdm'){if(!e.needdm)return false;}
