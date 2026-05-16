@@ -11969,10 +11969,19 @@ function rsApprove(num) {
   if (idx === -1) return;
   var r = RESTAURANTS_STAGING[idx];
 
-  // Check if this restaurant is already in the main outreach list (by IG handle)
+  // Check if this restaurant is already in the REAL main outreach list (exclude staging records)
   var alreadyIn = RESTAURANTS.find(function(x){
-    return r.ig && x.igHandle && x.igHandle.toLowerCase() === r.ig.toLowerCase();
+    return !x._isStaging && r.ig && x.igHandle && x.igHandle.toLowerCase() === r.ig.toLowerCase();
   });
+
+  // Remove the temporary staging registration from RESTAURANTS before promoting
+  var _stagingIdx = _numToIdx[num];
+  if (_stagingIdx !== undefined && RESTAURANTS[_stagingIdx] && RESTAURANTS[_stagingIdx]._isStaging) {
+    RESTAURANTS.splice(_stagingIdx, 1);
+    _numToIdx = Object.create(null);
+    for (var _ri = 0; _ri < RESTAURANTS.length; _ri++) _numToIdx[RESTAURANTS[_ri].num] = _ri;
+    delete _rsStagingNums[num];
+  }
 
   if (alreadyIn) {
     // Already an active outreach target — just remove from staging
@@ -11990,26 +11999,41 @@ function rsApprove(num) {
   var newNum = _getNextNum();
   var rec = {
     num:       newNum,
-    name:      r.name,
+    name:      nameOverrideMap[num] || r.name,
     owner:     'Local Operators',
-    instagram: '@' + (r.ig || ''),
-    phone:     r.phone || '',
+    instagram: '@' + (igOverrideMap[num] || r.ig || ''),
+    phone:     (fieldOverrideMap[num] && fieldOverrideMap[num].phone) || r.phone || '',
     email:     r.email || '',
-    cuisine:   r.cuisine || '',
-    address:   r.address || '',
-    notes:     'Promoted from staging'
+    cuisine:   (fieldOverrideMap[num] && fieldOverrideMap[num].cuisine) || r.cuisine || '',
+    address:   (fieldOverrideMap[num] && fieldOverrideMap[num].address) || r.address || '',
+    notes:     userNotesMap[num] || 'Promoted from staging'
   };
   customRecords.push(rec);
   try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {}
-  attemptsMap[newNum] = [{email: rec.email, status: 'pending', date: null, note: ''}];
-  statusMap[newNum] = 'pending';
+
+  // Transfer any outreach data from staging num to new num
+  if (dmMap[num])            { dmMap[newNum] = dmMap[num]; delete dmMap[num]; saveDMDates(); }
+  if (statusMap[num])        { statusMap[newNum] = statusMap[num]; delete statusMap[num]; }
+  if (attemptsMap[num])      { attemptsMap[newNum] = attemptsMap[num]; delete attemptsMap[num]; }
+  else                       { attemptsMap[newNum] = [{email: rec.email, status: 'pending', date: null, note: ''}]; }
+  if (userNotesMap[num])     { userNotesMap[newNum] = userNotesMap[num]; delete userNotesMap[num]; }
+  if (interestedMap[num])    { interestedMap[newNum] = interestedMap[num]; delete interestedMap[num]; }
+  if (notInterestedMap[num]) { notInterestedMap[newNum] = notInterestedMap[num]; delete notInterestedMap[num]; }
+  if (followupMap[num])      { followupMap[newNum] = followupMap[num]; delete followupMap[num]; }
+  if (ghostedMap[num])       { ghostedMap[newNum] = ghostedMap[num]; delete ghostedMap[num]; }
+  if (problemMap[num])       { problemMap[newNum] = problemMap[num]; delete problemMap[num]; }
+  if (badIGMap[num])         { badIGMap[newNum] = badIGMap[num]; delete badIGMap[num]; }
+  if (igOverrideMap[num])    { igOverrideMap[newNum] = igOverrideMap[num]; delete igOverrideMap[num]; }
+  if (nameOverrideMap[num])  { nameOverrideMap[newNum] = nameOverrideMap[num]; delete nameOverrideMap[num]; }
   saveAttemptsAndStatuses();
+
+  statusMap[newNum] = statusMap[newNum] || 'pending';
   RESTAURANTS.push({
     num: newNum, name: rec.name, owner: rec.owner,
-    instagram: rec.instagram, igHandle: (r.ig||''),
+    instagram: rec.instagram, igHandle: (igOverrideMap[newNum] || r.ig || ''),
     phone: rec.phone, phoneLink: rec.phone.replace(/\D/g,''),
     cuisine: rec.cuisine, notes: rec.notes, address: rec.address,
-    defaultStatus: 'pending', status: 'pending',
+    defaultStatus: 'pending', status: statusMap[newNum] || 'pending',
     attempts: attemptsMap[newNum],
     _search: rec.name.toLowerCase()
   });
@@ -12031,6 +12055,14 @@ function rsRemove(num) {
   if (idx === -1) return;
   if (!confirm('Remove this restaurant from staging?')) return;
   RESTAURANTS_STAGING.splice(idx, 1);
+  // Also remove from RESTAURANTS registration
+  var _stagingIdx = _numToIdx[num];
+  if (_stagingIdx !== undefined && RESTAURANTS[_stagingIdx] && RESTAURANTS[_stagingIdx]._isStaging) {
+    RESTAURANTS.splice(_stagingIdx, 1);
+    _numToIdx = Object.create(null);
+    for (var _ri = 0; _ri < RESTAURANTS.length; _ri++) _numToIdx[RESTAURANTS[_ri].num] = _ri;
+    delete _rsStagingNums[num];
+  }
   var _rsRm = {};
   try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   _rsRm[num] = 1;
