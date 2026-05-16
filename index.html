@@ -11081,6 +11081,7 @@ function _setDemoKeys() {
   LS_GHOSTED        = 'demo_ghosted_v1';
   LS_FIELD_OVERRIDE = 'demo_field_override_v1';
   LS_USER_ATTEMPTS  = 'demo_user_attempts_v1';
+  LS_RS_REMOVED     = 'demo_rs_removed_v1';
 }
 
 function _setFriendKeys() {
@@ -11102,6 +11103,7 @@ function _setFriendKeys() {
   LS_GHOSTED        = 'friend_ghosted_v1';
   LS_FIELD_OVERRIDE = 'friend_field_override_v1';
   LS_USER_ATTEMPTS  = 'friend_user_attempts_v1';
+  LS_RS_REMOVED     = 'friend_rs_removed_v1';
   FB_URL            = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_friend.json';
   if (typeof _LT !== 'undefined') _LT = 'friend_todos_v1';
   if (typeof _LP !== 'undefined') _LP = 'friend_projects_v1';
@@ -11988,7 +11990,20 @@ function rsApprove(num) {
   }
 
   if (alreadyIn) {
-    // Already an active outreach target — just remove from staging
+    // Already an active outreach target — transfer any staging outreach work to the real record
+    var _tgt = alreadyIn.num;
+    if (dmMap[num] && !dmMap[_tgt])         { dmMap[_tgt] = dmMap[num]; saveDMDates(); }
+    if (userNotesMap[num])                  { userNotesMap[_tgt] = (userNotesMap[_tgt] ? userNotesMap[_tgt] + '\n---\n' : '') + userNotesMap[num]; try { localStorage.setItem(LS_USER_NOTES, JSON.stringify(userNotesMap)); } catch(e) {} }
+    if (interestedMap[num])                 { interestedMap[_tgt] = true; saveInterested(); }
+    if (notInterestedMap[num])              { notInterestedMap[_tgt] = true; saveNotInterested(); }
+    if (followupMap[num] && !followupMap[_tgt]) { followupMap[_tgt] = followupMap[num]; saveFollowup(); }
+    if (ghostedMap[num])                    { ghostedMap[_tgt] = true; saveGhosted(); }
+    if (problemMap[num])                    { problemMap[_tgt] = true; saveProblem(); }
+    // Clean up staging map entries
+    delete dmMap[num]; delete userNotesMap[num]; delete interestedMap[num];
+    delete notInterestedMap[num]; delete followupMap[num]; delete ghostedMap[num]; delete problemMap[num];
+    delete attemptsMap[num]; delete statusMap[num]; delete badIGMap[num];
+    // Remove from staging
     RESTAURANTS_STAGING.splice(idx, 1);
     var _rsRm = {};
     try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
@@ -13260,6 +13275,9 @@ function _enterFriendMode() {
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
+  // Friend mode gets a clean staging view (their own removal history, not owner's)
+  var _friendRsRm = {}; try { _friendRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_friendRsRm[r.num]; });
   dashSetFilter('all'); dashUpdateStats();
   lsStatus('#7B1FA2','👥 Friend Mode');
   _startSessionTimer();
@@ -13325,6 +13343,9 @@ function _enterDemoMode() {
   var ghBtn = document.getElementById('gh-push-btn');
   if (ghBtn) ghBtn.style.display = 'none';
   lsStatus('#F57F17', '🎭 Customer CRM Demo');
+  // Re-filter RESTAURANTS_STAGING with demo key (separate from production removals)
+  var _demoRsRm = {}; try { _demoRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_demoRsRm[r.num]; });
   initCRM();
   _startSessionTimer();
 }
@@ -15228,20 +15249,9 @@ document.addEventListener("click",function(e){if(e.target===document.getElementB
 // ADVERTISERS STORAGE & RENDER
 var LS_ADV_STATUS = 'lv_adv_status_v1';
 function advLoadStatus(){try{return JSON.parse(localStorage.getItem(LS_ADV_STATUS))||{};}catch(e){return{};}}
-var advStatusMap = advLoadStatus();
 var advFilter = 'all';
 var advSearch = '';
 var advStagingCat = (function(){try{return localStorage.getItem('lv_adv_stagingcat_v1')||'all';}catch(e){return 'all';}})();
-
-function advBuildList(){
-  var arr = [];
-  for(var i=0;i<ADVERTISERS_BASE.length;i++){
-    var a = ADVERTISERS_BASE[i];
-    var status = advStatusMap[a.num] || a.defaultStatus || 'pending';
-    arr.push({num:a.num,name:a.name,cat:a.cat||a.category,phone:a.phone,ig:a.ig,email:a.email,status:status,_search:(a.name+' '+(a.cat||a.category)).toLowerCase()});
-  }
-  return arr;
-}
 
 var advViewType = (function(){try{var v=localStorage.getItem('lv_adv_viewtype_v1')||'all';if(v==='lawdoc')v='all';return v;}catch(e){return 'all';}})();
 function advSetViewType(t){
@@ -15819,6 +15829,7 @@ function advDupesDelete(num){
     _advStagingRemovedMap[num]=1;
     localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
     ADVERTISERS_STAGING.splice(si,1);
+    _advCleanupStagingMaps(num);
   } else {
     advDeletedMap[num]=true;
     _advSaveMap('lv_adv_deleted_v1',advDeletedMap);
@@ -17502,7 +17513,15 @@ function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a
   _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
   if(!_advStagingApproved.find(function(r){return r.num===num;})){_advStagingApproved.push(rec);localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));}
   if(typeof advFbSave==='function')advFbSave();var _rc=_advCat(rec);var _vt='other';if(_rc.indexOf('Lawyer')===0)_vt='lawyer';else if(_rc.indexOf('Doctor')===0)_vt='doctor';else if(_rc==='Spa')_vt='spa';else if(_rc==='Salon')_vt='salon';else if(_rc==='Realtor')_vt='realtor';else if(_rc==='Catering')_vt='catering';else if(_rc==='Dealership')_vt='dealer';else if(_rc==='Liquor')_vt='liquor';else if(_rc==='Hotel')_vt='hotel';else if(_rc==='MedSpa')_vt='medspa';else if(_rc==='Dental')_vt='dental';else if(_rc==='Trainer')_vt='trainer';else if(_rc==='Wedding')_vt='wedding';else if(_rc==='Vet')_vt='vet';else if(_rc==='Tours')_vt='tours';else if(_rc==='Wine')_vt='wine';else if(_rc==='Gaming')_vt='gaming';else if(_rc==='Ecommerce')_vt='ecommerce';else if(_rc==='IGFixed')_vt='igfixed';advSetViewType(_vt);advRender();}
-function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);if(typeof advFbSave==='function')advFbSave();advRender();}
+function _advCleanupStagingMaps(num){
+  // Remove all map entries for a staging num to prevent data bloat
+  var _maps=['lv_adv_attempts_v1','lv_adv_dm_v1','lv_adv_badig_v1','lv_adv_interested_v1','lv_adv_notinterested_v1','lv_adv_followup_v1','lv_adv_problem_v1','lv_adv_ghosted_v1','lv_adv_trade_v1','lv_adv_tradedone_v1','lv_adv_metaads_v1','lv_adv_notes_v1','lv_adv_nameoverride_v1','lv_adv_igoverride_v1','lv_adv_fieldoverride_v1','lv_adv_priority_v1','lv_adv_website_v1','lv_adv_lastcontacted_v1','lv_adv_quote_v1'];
+  var _objs=[advAttemptsMap,advDmMap,advBadIGMap,advInterestedMap,advNotInterestedMap,advFollowupMap,advProblemMap,advGhostedMap,advTradeMap,advTradeDoneMap,advMetaAdsMap,advNotesMap,advNameOverrideMap,advIGOverrideMap,advFieldOverrideMap,advPriorityMap,advWebsiteMap,advLastContactedMap,advQuoteMap];
+  for(var _ci=0;_ci<_objs.length;_ci++){
+    if(_objs[_ci][num]!==undefined){delete _objs[_ci][num];try{localStorage.setItem(_maps[_ci],JSON.stringify(_objs[_ci]));}catch(e){}}
+  }
+}
+function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);_advCleanupStagingMaps(num);if(typeof advFbSave==='function')advFbSave();advRender();}
 </script>
 <script>
 // Override advRender to handle staging view
