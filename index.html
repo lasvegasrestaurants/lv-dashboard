@@ -11082,6 +11082,7 @@ function _setDemoKeys() {
   LS_FIELD_OVERRIDE = 'demo_field_override_v1';
   LS_USER_ATTEMPTS  = 'demo_user_attempts_v1';
   LS_RS_REMOVED     = 'demo_rs_removed_v1';
+  if (typeof LS_CRM_CUSTOMERS !== 'undefined') LS_CRM_CUSTOMERS = 'demo_crm_customers_v1';
 }
 
 function _setFriendKeys() {
@@ -11104,6 +11105,7 @@ function _setFriendKeys() {
   LS_FIELD_OVERRIDE = 'friend_field_override_v1';
   LS_USER_ATTEMPTS  = 'friend_user_attempts_v1';
   LS_RS_REMOVED     = 'friend_rs_removed_v1';
+  if (typeof LS_CRM_CUSTOMERS !== 'undefined') LS_CRM_CUSTOMERS = 'friend_crm_customers_v1';
   FB_URL            = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_friend.json';
   if (typeof _LT !== 'undefined') _LT = 'friend_todos_v1';
   if (typeof _LP !== 'undefined') _LP = 'friend_projects_v1';
@@ -11294,11 +11296,12 @@ function _applyFirebaseData(rec) {
           if (r.newEmail && r.newEmail !== r.email) seed.push({email:r.newEmail, status:'pending', date:null, note:'Alt contact'});
           attemptsMap[r.num] = seed;
         }
+        var _fo=fieldOverrideMap[r.num]||{};
         return {
-          num:r.num, name:nameOverrideMap[r.num]||r.name, owner:r.owner,
-          instagram:r.instagram, igHandle:(igOverrideMap[r.num]||r.instagram).replace(/^@/,''),
-          phone:r.phone||'', phoneLink:(r.phone||'').replace(/\D/g,'').length>=7?(r.phone||'').replace(/\D/g,''):'',
-          cuisine:r.cuisine, notes:r.notes||'', address:r.address||'',
+          num:r.num, name:nameOverrideMap[r.num]||r.name, owner:_fo.owner||r.owner,
+          instagram:igOverrideMap[r.num]||r.instagram, igHandle:(igOverrideMap[r.num]||r.instagram).replace(/^@/,''),
+          phone:_fo.phone||r.phone||'', phoneLink:(_fo.phone||r.phone||'').replace(/\D/g,'').length>=7?(_fo.phone||r.phone||'').replace(/\D/g,''):'',
+          cuisine:_fo.cuisine||r.cuisine, notes:r.notes||'', address:_fo.address||r.address||'',
           defaultStatus:r.defaultStatus, status:statusMap[r.num]||r.defaultStatus,
           attempts:attemptsMap[r.num],
           _search:(nameOverrideMap[r.num]||r.name).toLowerCase()
@@ -11410,6 +11413,8 @@ function exportBackup() {
     ghosted:       ghostedMap,
     fieldoverride: fieldOverrideMap,
     userattempts:  userAttemptsMap,
+    crmcustomers:  (typeof CRM_CUSTOMERS !== 'undefined' ? CRM_CUSTOMERS : []),
+    rsremoved:     (function(){ try{ return JSON.parse(localStorage.getItem(LS_RS_REMOVED))||{}; }catch(e){ return {}; } })(),
     todos:         (function(){try{return JSON.parse(localStorage.getItem(_LT))||[];}catch(e){return[];}})(),
     projects:      (function(){try{return JSON.parse(localStorage.getItem(_LP))||[];}catch(e){return[];}})()
   };
@@ -11556,6 +11561,8 @@ function importBackup(event) {
     if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
     if (rec.fieldoverride) { fieldOverrideMap  = rec.fieldoverride; try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} }
     if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
+    if (rec.crmcustomers && Array.isArray(rec.crmcustomers)) { CRM_CUSTOMERS = rec.crmcustomers; try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {} }
+    if (rec.rsremoved)     { try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(rec.rsremoved)); RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !rec.rsremoved[r.num]; }); } catch(e) {} }
     if (rec.todos)         { try { localStorage.setItem(_LT, JSON.stringify(rec.todos)); } catch(e) {} }
     if (rec.projects)      { try { localStorage.setItem(_LP, JSON.stringify(rec.projects)); } catch(e) {} }
     _numToIdx = Object.create(null);
@@ -11719,21 +11726,21 @@ function _esc(s) {
 function toggleFoodTrade(num) {
   if (foodTradeMap[num]) { delete foodTradeMap[num]; } else { foodTradeMap[num] = true; delete foodTradeDoneMap[num]; saveFoodTradeDone(); }
   saveFoodTrade();
-  _fbDoPush();
+  fbSave();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
 function toggleFoodTradeDone(num) {
   if (foodTradeDoneMap[num]) { delete foodTradeDoneMap[num]; } else { foodTradeDoneMap[num] = true; delete foodTradeMap[num]; saveFoodTrade(); }
   saveFoodTradeDone();
-  _fbDoPush();
+  fbSave();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
 function toggleGhosted(num) {
   if (ghostedMap[num]) { delete ghostedMap[num]; } else { ghostedMap[num] = true; }
   saveGhosted();
-  _fbDoPush();
+  fbSave();
   _invalidatePending(); _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
 }
@@ -12179,19 +12186,22 @@ function confirmDelete(num) {
   var r = getR(num);
   // Save snapshot for undo
   var snap = {
-    status:      statusMap[num],
-    attempts:    attemptsMap[num] ? JSON.parse(JSON.stringify(attemptsMap[num])) : null,
-    dm:          dmMap[num],
-    badIG:       badIGMap[num],
-    igOvr:       igOverrideMap[num],
-    note:        userNotesMap[num],
-    nameOvr:     nameOverrideMap[num],
-    followup:    followupMap[num],
-    interested:  interestedMap[num],
-    notInterested: notInterestedMap[num],
-    problem:     problemMap[num],
-    foodtrade:   foodTradeMap[num],
-    restaurant:  r ? JSON.parse(JSON.stringify(r)) : null,
+    status:       statusMap[num],
+    attempts:     attemptsMap[num] ? JSON.parse(JSON.stringify(attemptsMap[num])) : null,
+    dm:           dmMap[num],
+    badIG:        badIGMap[num],
+    igOvr:        igOverrideMap[num],
+    note:         userNotesMap[num],
+    nameOvr:      nameOverrideMap[num],
+    followup:     followupMap[num],
+    interested:   interestedMap[num],
+    notInterested:notInterestedMap[num],
+    problem:      problemMap[num],
+    foodtrade:    foodTradeMap[num],
+    foodtradedone:foodTradeDoneMap[num],
+    ghosted:      ghostedMap[num],
+    fieldoverride:fieldOverrideMap[num] ? JSON.parse(JSON.stringify(fieldOverrideMap[num])) : null,
+    restaurant:   r ? JSON.parse(JSON.stringify(r)) : null,
     customRecord: (function(){ for(var i=0;i<customRecords.length;i++){if(customRecords[i].num===num)return JSON.parse(JSON.stringify(customRecords[i]));} return null; })()
   };
   deletedMap[num] = true;
@@ -12200,6 +12210,7 @@ function confirmDelete(num) {
   delete badIGMap[num]; delete interestedMap[num]; delete notInterestedMap[num];
   delete igOverrideMap[num]; delete userNotesMap[num]; delete nameOverrideMap[num];
   delete followupMap[num]; delete problemMap[num]; delete foodTradeMap[num];
+  delete foodTradeDoneMap[num]; delete ghostedMap[num]; delete fieldOverrideMap[num];
   // Save to localStorage
   try {
     localStorage.setItem(LS_STATUS,       JSON.stringify(statusMap));
@@ -12534,7 +12545,13 @@ function unmarkBounced(num) {
 
 // Mark current active attempt as sent
 function markAttemptSent(num, fromEmail) {
-  var attempts = attemptsMap[num] || [];
+  if (!attemptsMap[num] || !attemptsMap[num].length) {
+    // No attempt records yet — seed one so the sent status has a backing entry
+    var _r = getR(num);
+    var _seedEmail = fromEmail || (_r && getBestEmail(num)) || (_r && _r.email) || '';
+    attemptsMap[num] = [{email: _seedEmail, status: 'pending', date: null, note: ''}];
+  }
+  var attempts = attemptsMap[num];
   var idx = -1;
   if (fromEmail) {
     for (var i=0; i<attempts.length; i++) { if(attempts[i].email===fromEmail && attempts[i].status==='pending'){idx=i;break;} }
@@ -12810,9 +12827,16 @@ function closeIGModal() {
 function saveIG() {
   if (!_igModalNum) return;
   var val = document.getElementById('ig-modal-input').value.trim();
-  if (!val || val === '@') return; // reject empty or bare '@'
-  if (val.charAt(0) !== '@') val = '@' + val;
   var num = _igModalNum;
+  if (!val || val === '@') {
+    // Empty = clear the override and restore the original handle
+    delete igOverrideMap[num];
+    try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {}
+    var _rClr = getR(num);
+    if (_rClr) { _rClr.instagram = _rClr.instagram || ''; _rClr.igHandle = (_rClr.instagram||'').replace(/^@/,''); }
+    lsSaved(); closeIGModal(); _dashDirty = true; dashRefreshCard(num); return;
+  }
+  if (val.charAt(0) !== '@') val = '@' + val;
   igOverrideMap[num] = val;
   try { localStorage.setItem(LS_IG_OVERRIDE, JSON.stringify(igOverrideMap)); } catch(e) {}
   
@@ -13322,6 +13346,7 @@ function _enterDemoMode() {
       igHandle: (igOverrideMap[r.num] || r.instagram).replace(/^@/,''),
       phone: r.phone||'', phoneLink: (function(p){ var c=(p||'').replace(/\D/g,''); return c.length>=7?c:''; })(r.phone),
       cuisine: r.cuisine, notes: r.notes||'', address: r.address||'',
+      defaultStatus: r.defaultStatus,
       attempts: attemptsMap[r.num] || [],
       status: statusMap[r.num] || r.defaultStatus || 'pending'
     };
@@ -13782,8 +13807,11 @@ function undoDelete() {
   if (d.followup)     followupMap[num]      = d.followup;
   if (d.interested)   interestedMap[num]    = d.interested;
   if (d.notInterested)notInterestedMap[num] = d.notInterested;
-  if (d.problem)      problemMap[num]       = d.problem;
-  if (d.foodtrade)    foodTradeMap[num]     = d.foodtrade;
+  if (d.problem)       problemMap[num]       = d.problem;
+  if (d.foodtrade)     foodTradeMap[num]     = d.foodtrade;
+  if (d.foodtradedone) foodTradeDoneMap[num] = d.foodtradedone;
+  if (d.ghosted)       ghostedMap[num]       = d.ghosted;
+  if (d.fieldoverride) fieldOverrideMap[num] = d.fieldoverride;
   // Re-add to RESTAURANTS
   if (d.restaurant) {
     RESTAURANTS.push(d.restaurant);
@@ -14051,7 +14079,7 @@ function setupScroller(viewId, upId, downId, trackId, thumbId, pctId, updateFn) 
 // CUSTOMER CRM — DATA MODEL & ENGINE
 // ══════════════════════════════════════════════════════
 
-var LS_CRM_CUSTOMERS = 'demo_crm_customers_v1';
+var LS_CRM_CUSTOMERS = 'lv_crm_customers_v1'; // mode-isolated by _setDemoKeys/_setFriendKeys
 var CRM_CUSTOMERS = [];
 var crmFilter = 'all';
 var crmSearch = '';
@@ -15550,12 +15578,17 @@ function advOpenEditEmail(num){
   if(!current){for(var i3=atts.length-1;i3>=0;i3--){if(atts[i3].email){current=atts[i3].email;break;}}}
   if(!current && a.email) current = a.email;
   _advPromptEdit(num,'Email',current,function(v){
-    if(!v) return;
-    if(!atts.length || atts[atts.length-1].email !== v){
+    if(!v || v.indexOf('@')<1) return; // require valid email with @ not at start
+    // If there's already a pending entry, update it in-place instead of appending
+    var _pendingIdx = -1;
+    for(var _pi=0;_pi<atts.length;_pi++){if(atts[_pi].status==='pending'){_pendingIdx=_pi;break;}}
+    if(_pendingIdx>=0){
+      atts[_pendingIdx].email=v;
+    } else if(!atts.length || atts[atts.length-1].email !== v){
       atts.push({email:v,status:'pending',date:new Date().toISOString().slice(0,10),note:''});
-      advAttemptsMap[num]=atts;
-      _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
     }
+    advAttemptsMap[num]=atts;
+    _advSaveMap('lv_adv_attempts_v1',advAttemptsMap);
   });
 }
 
@@ -15648,7 +15681,7 @@ function advOpenEmail(num){
   var name=advNameOverrideMap[num]||a.name;
   var subject='Sponsorship spot on @lasvegas_restaurants';
   var body='Hello '+name+',\n\nMy name is Shane Christensen. I am the creator of @lasvegas_restaurants on Instagram (129K followers). I have been operating this channel for the past 9.5 years.\n\nI am opening up a few sponsorship spots on the Stories page and wanted to see if you would be a fit.\n\nHere is how it works:\n$50/month, month-to-month, cancel anytime. I will repost directly from your page to my Stories twice a month, every two weeks. No extra work on your end — I pick a post or reel you already have and share it out to my audience.\n\nMost of my followers are local to Las Vegas, so it is a direct line to people in your area.\n\nLooking forward to working together.\n\nBest,\nShane Christensen\nCreator of @lasvegas_restaurants\n(949) 899-3059';
-  var url='googlegmail://co?to='+encodeURIComponent(email)+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  var url='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   // === EMAIL TIMESTAMP TOGGLE ===
   var _atts=advAttemptsMap[num]||[];
   var _isSentNow=_atts.length&&_atts[_atts.length-1].status==='sent';
