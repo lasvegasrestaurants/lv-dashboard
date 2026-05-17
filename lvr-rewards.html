@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LVR Rewards | Las Vegas Restaurants</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0B2361;
+      --bg-dark:     #071A47;
+      --panel:       rgba(255,255,255,0.07);
+      --border:      rgba(255,255,255,0.18);
+      --border-hi:   rgba(255,255,255,0.75);
+      --white:       #FFFFFF;
+      --white-80:    rgba(255,255,255,0.80);
+      --white-55:    rgba(255,255,255,0.55);
+      --white-30:    rgba(255,255,255,0.30);
+      --white-12:    rgba(255,255,255,0.12);
+      --white-06:    rgba(255,255,255,0.06);
+      --sky:         #7EB8FF;
+      --error:       #FF7096;
+      --success:     #4ADE80;
+    }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      background: linear-gradient(170deg, #1348C8 0%, #0B2361 45%, #071A47 100%);
+      background-attachment: fixed;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      min-height: 100vh;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      padding: 36px 0 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      letter-spacing: 0.14em;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    .brand-sub {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-top: 5px;
+    }
+
+    .rewards-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .chip-label {
+      font-size: 0.5rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--sky);
+    }
+
+    .chip-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 28px 0 22px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 10px;
+    }
+
+    .hero-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 11vw, 3.8rem);
+      letter-spacing: 0.06em;
+      line-height: 1.03;
+      color: var(--white);
+      margin-bottom: 14px;
+    }
+
+    .hero-body {
+      font-size: 0.875rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--white-80);
+    }
+
+    /* ── PERKS ROW ── */
+    .perks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .perk {
+      background: var(--white-06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .perk-icon { font-size: 1.4rem; margin-bottom: 6px; }
+
+    .perk-title {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+
+    .perk-desc {
+      font-size: 0.6rem;
+      font-weight: 300;
+      color: var(--white-55);
+      line-height: 1.5;
+    }
+
+    /* ── FORM ── */
+    .form-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: var(--white-80);
+      margin-bottom: 18px;
+    }
+
+    .form { display: flex; flex-direction: column; gap: 18px; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    .lbl {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white-80);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .req { color: var(--sky); font-size: 0.58rem; }
+    .opt { color: var(--white-55); font-weight: 500; font-size: 0.55rem; }
+
+    .inp {
+      width: 100%;
+      background: var(--white-12);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 400;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .inp::placeholder { color: var(--white-30); }
+
+    .inp:focus {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
+    }
+
+    .inp.err-field { border-color: var(--error); }
+
+    .ig-row { display: flex; }
+
+    .ig-at {
+      background: var(--white-12);
+      border: 1.5px solid var(--border);
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      padding: 14px 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+    }
+
+    .ig-row .inp { border-radius: 0 10px 10px 0; }
+
+    .date-selects { display: flex; gap: 8px; }
+
+    .date-selects select {
+      flex: 1;
+      background: var(--white-12);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      padding: 14px 8px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color-scheme: dark;
+    }
+
+    .date-selects select:focus {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
+    }
+
+    .date-selects select option {
+      background: #0B2361;
+      color: #ffffff;
+    }
+
+    .date-selects select.err-field { border-color: var(--error); }
+
+    .err-msg {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--error);
+      display: none;
+      padding-left: 2px;
+    }
+    .err-msg.show { display: block; }
+
+    .sec-div {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 2px 0;
+    }
+    .sec-div::before, .sec-div::after {
+      content: ''; flex: 1; height: 1px; background: var(--white-30);
+    }
+    .sec-div span {
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-55);
+      white-space: nowrap;
+    }
+
+    .date-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 420px) { .date-pair { grid-template-columns: 1fr; } }
+
+    /* ── BUTTON ── */
+    .submit-wrap { margin-top: 8px; }
+
+    .btn {
+      width: 100%;
+      background: var(--white);
+      border: none;
+      border-radius: 12px;
+      color: var(--bg-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 18px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.3);
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,0,0,0.35); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-note {
+      font-size: 0.58rem;
+      font-weight: 400;
+      color: var(--white-55);
+      text-align: center;
+      letter-spacing: 0.1em;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    /* ── SAVE STATUS ── */
+    .save-status {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    .save-status.saving {
+      display: block;
+      color: var(--sky);
+      background: rgba(126,184,255,0.1);
+      border: 1px solid rgba(126,184,255,0.25);
+    }
+    .save-status.saved {
+      display: block;
+      color: var(--success);
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.25);
+    }
+    .save-status.save-err {
+      display: block;
+      color: var(--error);
+      background: rgba(255,112,150,0.1);
+      border: 1px solid rgba(255,112,150,0.25);
+    }
+
+    /* ── SUCCESS ── */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 380px;
+      gap: 16px;
+    }
+
+    .success-screen.show {
+      display: flex;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .s-emoji { font-size: 3.5rem; }
+
+    .s-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+
+    .s-body {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--white-80);
+      line-height: 1.85;
+      max-width: 310px;
+    }
+
+    .s-body strong { color: var(--white); font-weight: 700; }
+
+    .s-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white-12);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 22px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-top: 4px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HANDLES PANEL ── */
+    .panel {
+      background: var(--white-06);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 28px;
+    }
+
+    .panel-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--white-12);
+    }
+
+    .panel-hd-left {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white-80);
+    }
+
+    .panel-hd-right {
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: var(--sky);
+      letter-spacing: 0.1em;
+    }
+
+    .panel-list { max-height: 190px; overflow-y: auto; }
+
+    .h-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--white-06);
+    }
+
+    .h-row:last-child { border-bottom: none; }
+    .h-name { font-size: 0.83rem; font-weight: 500; color: var(--white); }
+    .h-ig   { font-size: 0.78rem; font-weight: 600; color: var(--sky); }
+
+    .h-empty {
+      padding: 22px 18px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--white-55);
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 20px 0 32px;
+      border-top: 1px solid var(--white-12);
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .footer span {
+      font-size: 0.54rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white-30);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div>
+      <div class="brand-name">LVR</div>
+      <div class="brand-sub">Las Vegas Restaurants</div>
+    </div>
+    <div class="rewards-chip">
+      <span class="chip-label">Member Program</span>
+      <span class="chip-val">Rewards</span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Las Vegas Foodie Community</div>
+    <h1 class="hero-headline">Dine.<br>Earn.<br>Get Rewarded.</h1>
+    <p class="hero-body">Join the <strong>LVR Rewards Program</strong> — Las Vegas's premier dining rewards community. Earn restaurant tokens every time you dine out and redeem them at the city's top restaurants.</p>
+  </div>
+
+  <!-- Perks -->
+  <div class="perks">
+    <div class="perk">
+      <div class="perk-icon">🍽️</div>
+      <div class="perk-title">Dine & Earn</div>
+      <div class="perk-desc">Earn tokens at every participating restaurant</div>
+    </div>
+    <div class="perk">
+      <div class="perk-icon">🎟️</div>
+      <div class="perk-title">LVR Tokens</div>
+      <div class="perk-desc">Redeem tokens for dining experiences citywide</div>
+    </div>
+    <div class="perk">
+      <div class="perk-icon">🎂</div>
+      <div class="perk-title">Birthday Perks</div>
+      <div class="perk-desc">Special rewards delivered on your birthday</div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div id="formWrap">
+    <div class="form-heading">Create Your Member Profile</div>
+    <div class="form">
+
+      <div class="field">
+        <div class="lbl">Full Name <span class="req">★ Required</span></div>
+        <input class="inp" type="text" id="fname" placeholder="Your full name" autocomplete="name" />
+        <div class="err-msg" id="fnameErr">Please enter your full name</div>
+      </div>
+
+      <div class="field">
+        <div class="lbl">Phone Number <span class="req">★ Required</span></div>
+        <input class="inp" type="tel" id="phone" placeholder="(702) 000-0000" autocomplete="tel" />
+        <div class="err-msg" id="phoneErr">Please enter a valid phone number</div>
+      </div>
+
+      <div class="field">
+        <div class="lbl">Instagram Handle <span class="req">★ Required</span></div>
+        <div class="ig-row">
+          <div class="ig-at">@</div>
+          <input class="inp" type="text" id="instagram" placeholder="yourhandle" autocomplete="off" />
+        </div>
+        <div class="err-msg" id="instagramErr">Please enter your Instagram handle</div>
+      </div>
+
+      <div class="sec-div"><span>Important Dates</span></div>
+
+      <div class="date-pair">
+        <div class="field">
+          <div class="lbl">Birthday <span class="req">★ Required</span></div>
+          <div class="date-selects">
+            <select id="bdMon" aria-label="Birthday month">
+              <option value="">Mon</option>
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+              <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+              <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+            <select id="bdDay" aria-label="Birthday day">
+              <option value="">Day</option>
+            </select>
+          </div>
+          <div class="err-msg" id="birthdayErr">Birthday is required</div>
+        </div>
+
+        <div class="field">
+          <div class="lbl">Anniversary <span class="opt">Optional</span></div>
+          <div class="date-selects">
+            <select id="anMon" aria-label="Anniversary month">
+              <option value="">Mon</option>
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+              <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+              <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+            <select id="anDay" aria-label="Anniversary day">
+              <option value="">Day</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save status indicator -->
+      <div class="save-status" id="saveStatus"></div>
+
+      <div class="submit-wrap">
+        <button class="btn" id="submitBtn" onclick="handleSubmit()">🎟️ &nbsp; Join LVR Rewards</button>
+        <p class="btn-note">Free to join &nbsp;·&nbsp; LVR Tokens redeemable at participating restaurants &nbsp;·&nbsp; No cash value</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="success-screen" id="successScreen">
+    <div class="s-emoji">🎉</div>
+    <div class="s-title">Welcome, Member!</div>
+    <div class="s-body" id="sBody"></div>
+    <div class="s-badge">⭐ LVR Rewards Member</div>
+  </div>
+
+  <!-- Handles Panel -->
+  <div class="panel">
+    <div class="panel-hd">
+      <div class="panel-hd-left">📸 &nbsp; Member Instagram Handles</div>
+      <div class="panel-hd-right" id="panelCount">0 members</div>
+    </div>
+    <div class="panel-list" id="handlesList">
+      <div class="h-empty">Members will appear here once they sign up</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>las_vegas_restaurants &nbsp;·&nbsp; lvr rewards program &nbsp;·&nbsp; internal use only</span>
+  </div>
+
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // Firebase Realtime Database — REST API (no SDK needed)
+  // Same project as the main LVR dashboard
+  // ─────────────────────────────────────────────
+  var RTDB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards.json';
+
+  // ─────────────────────────────────────────────
+  // UI helpers
+  // ─────────────────────────────────────────────
+  var entries = [];
+  var $   = function(id) { return document.getElementById(id); };
+  var val = function(id) { return $(id).value.trim(); };
+
+  function fillDays(monId, dayId) {
+    var mon    = parseInt($(monId).value);
+    var daySel = $(dayId);
+    var prev   = daySel.value;
+    daySel.innerHTML = '<option value="">Day</option>';
+    if (!mon) return;
+    var days = new Date(2000, mon, 0).getDate();
+    for (var i = 1; i <= days; i++) {
+      var o = document.createElement('option');
+      o.value = i; o.textContent = i;
+      daySel.appendChild(o);
+    }
+    if (prev && parseInt(prev) <= days) daySel.value = prev;
+  }
+
+  $('bdMon').addEventListener('change', function() { fillDays('bdMon', 'bdDay'); });
+  $('anMon').addEventListener('change', function() { fillDays('anMon', 'anDay'); });
+  fillDays('bdMon', 'bdDay');
+  fillDays('anMon', 'anDay');
+
+  function setErr(id, show, elId) {
+    $(id + 'Err').classList.toggle('show', show);
+    var el = $(elId || id);
+    if (el) el.classList.toggle('err-field', show);
+  }
+
+  $('fname').addEventListener('input',     function() { setErr('fname', false); });
+  $('phone').addEventListener('input',     function() { setErr('phone', false); });
+  $('instagram').addEventListener('input', function() { setErr('instagram', false); });
+  ['bdMon','bdDay'].forEach(function(id) {
+    $(id).addEventListener('change', function() { setErr('birthday', false, 'bdMon'); });
+  });
+
+  function setSaveStatus(state, msg) {
+    var el = $('saveStatus');
+    el.className = 'save-status ' + state;
+    el.textContent = msg;
+  }
+
+  var MONTHS = ['','January','February','March','April','May','June','July',
+                'August','September','October','November','December'];
+
+  // ─────────────────────────────────────────────
+  // Submit — validates, writes to Firebase Realtime DB, shows success
+  // ─────────────────────────────────────────────
+  function handleSubmit() {
+    var ok   = true;
+    var name = val('fname');
+    var phone = val('phone');
+    var ig   = val('instagram').replace(/^@/, '');
+    var bdMon = $('bdMon').value;
+    var bdDay = $('bdDay').value;
+    var anMon = $('anMon').value;
+    var anDay = $('anDay').value;
+
+    if (!name)                                          { setErr('fname', true);             ok = false; } else setErr('fname', false);
+    if (!phone || phone.replace(/\D/g,'').length < 10)  { setErr('phone', true);             ok = false; } else setErr('phone', false);
+    if (!ig)                                            { setErr('instagram', true);          ok = false; } else setErr('instagram', false);
+    if (!bdMon || !bdDay)                               { setErr('birthday', true, 'bdMon'); ok = false; } else setErr('birthday', false, 'bdMon');
+
+    if (!ok) return;
+
+    var bdStr = MONTHS[parseInt(bdMon)] + ' ' + bdDay;
+    var anStr = (anMon && anDay) ? MONTHS[parseInt(anMon)] + ' ' + anDay : null;
+
+    // Disable button while saving
+    var btn = $('submitBtn');
+    btn.disabled = true;
+    setSaveStatus('saving', '⏳  Saving to database…');
+
+    // Write to Firebase Realtime Database via REST — POST generates a unique push key
+    fetch(RTDB_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:        name,
+        phone:       phone,
+        instagram:   '@' + ig,
+        birthday:    bdStr,
+        anniversary: anStr || null,
+        joinedAt:    Date.now(),
+        source:      'lvr-rewards-form'
+      })
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function() {
+      setSaveStatus('saved', '✅  Saved to LVR database');
+
+      // Add to local panel
+      entries.push({ name: name, instagram: '@' + ig });
+      updatePanel();
+
+      // Show success screen
+      $('formWrap').style.display = 'none';
+      $('successScreen').classList.add('show');
+
+      $('sBody').innerHTML =
+        '<strong>' + esc(name) + '</strong>, you\'re officially an LVR Rewards member!<br>' +
+        'Start earning tokens at participating Las Vegas restaurants.<br>' +
+        'We\'ll celebrate your birthday on <strong>' + bdStr + '</strong> 🎂<br>' +
+        (anStr ? 'Anniversary on <strong>' + anStr + '</strong> too! 🥂' : '');
+
+      // Reset after 5.5s
+      setTimeout(function() {
+        ['fname','phone','instagram'].forEach(function(id) { $(id).value = ''; });
+        ['bdMon','bdDay','anMon','anDay'].forEach(function(id) { $(id).value = ''; });
+        $('formWrap').style.display = 'block';
+        $('successScreen').classList.remove('show');
+        btn.disabled = false;
+        setSaveStatus('', '');
+        $('saveStatus').className = 'save-status';
+      }, 5500);
+    })
+    .catch(function(err) {
+      console.error('Database write error:', err);
+      setSaveStatus('save-err', '⚠️  Save failed — check your connection');
+      btn.disabled = false;
+    });
+  }
+
+  function updatePanel() {
+    $('panelCount').textContent = entries.length + (entries.length === 1 ? ' member' : ' members');
+    var list = $('handlesList');
+    if (!entries.length) {
+      list.innerHTML = '<div class="h-empty">Members will appear here once they sign up</div>';
+      return;
+    }
+    list.innerHTML = entries.map(function(e) {
+      return '<div class="h-row">' +
+        '<span class="h-name">' + esc(e.name) + '</span>' +
+        '<span class="h-ig">' + esc(e.instagram) + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+
+</body>
+</html>

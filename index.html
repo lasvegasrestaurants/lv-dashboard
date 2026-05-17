@@ -311,6 +311,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
          <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
+        <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
@@ -371,6 +372,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
       <div id="crm-dot" style="width:8px;height:8px;border-radius:50%;background:#F57F17;flex-shrink:0;"></div>
       <span id="crm-title" style="color:#fff;font-size:16px;font-weight:800;flex:1;">Customer CRM Demo</span>
+      <button id="crm-back-btn" onclick="closeRewardsCRM()" style="display:none;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;margin-right:6px;">← Dashboard</button>
       <button id="crm-logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
@@ -11205,6 +11207,7 @@ function saveAttempts() { try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify
 // ══════════════════════════════════════════════════════
 // ── Firebase REST API — no SDK needed, works in all iOS PWA contexts ──
 var FB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
+var REWARDS_FB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards.json';
 var _fbSaveTimer = null;
 var _fbSyncing = false;
 
@@ -13405,6 +13408,7 @@ function _enterDemoMode() {
   // Re-filter RESTAURANTS_STAGING with demo key (separate from production removals)
   var _demoRsRm = {}; try { _demoRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_demoRsRm[r.num]; });
+  CRM_CUSTOMERS = crmLoadCustomers();
   initCRM();
   _startSessionTimer();
 }
@@ -13537,6 +13541,11 @@ function logOut() {
     var el = document.getElementById(id);
     if (el) el.style.display = '';
   });
+  // Reset CRM so it re-initializes cleanly on next login
+  _crmInitialized = false;
+  CRM_CUSTOMERS = [];
+  var backBtn = document.getElementById('crm-back-btn');
+  if (backBtn) backBtn.style.display = 'none';
 }
 
 // ══════════════════════════════════════════════════════
@@ -14879,28 +14888,116 @@ function crmExportCSV() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
+// ── REWARDS CRM ──
+var _crmInitialized = false;
+var _REWARDS_MONTH_MAP = {january:'01',february:'02',march:'03',april:'04',may:'05',june:'06',july:'07',august:'08',september:'09',october:'10',november:'11',december:'12'};
+
+function _rewardsToMMDD(str) {
+  if (!str) return '';
+  var parts = str.split(' ');
+  var mon = _REWARDS_MONTH_MAP[(parts[0]||'').toLowerCase()] || '';
+  var day = (parts[1]||'').replace(/\D/g,'');
+  return mon && day ? mon + '/' + day : '';
+}
+
+function openRewardsCRM() {
+  if (isDemo || isFriend) return;
+  // Update CRM header to Rewards mode
+  var titleEl = document.getElementById('crm-title');
+  if (titleEl) titleEl.textContent = '🎟 LVR Rewards Members';
+  var dotEl = document.getElementById('crm-dot');
+  if (dotEl) dotEl.style.background = '#FFD600';
+  var backBtn = document.getElementById('crm-back-btn');
+  if (backBtn) backBtn.style.display = '';
+  // Switch views
+  document.getElementById('view-dashboard').classList.remove('active');
+  document.getElementById('view-crm').classList.add('active');
+  var dotStatus = document.getElementById('crm-dot');
+  if (dotStatus) dotStatus.style.background = '#FFD600';
+  // Fetch rewards signups from Firebase
+  fetch(REWARDS_FB_URL)
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data) {
+      var items = [];
+      if (data && typeof data === 'object') {
+        var keys = Object.keys(data);
+        for (var i = 0; i < keys.length; i++) {
+          var r = data[keys[i]];
+          if (!r || !r.name) continue;
+          var bdStr = _rewardsToMMDD(r.birthday);
+          var anStr = _rewardsToMMDD(r.anniversary);
+          var joinDate = r.joinedAt ? new Date(r.joinedAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10);
+          items.push({
+            id:               20000 + i,
+            name:             r.name || '',
+            phone:            r.phone || '',
+            email:            '',
+            instagram:        r.instagram || '',
+            birthday:         bdStr,
+            birthdayFull:     bdStr,
+            anniversary:      anStr,
+            anniversaryFull:  anStr,
+            age:              0,
+            firstVisit:       joinDate,
+            lastVisit:        joinDate,
+            visits:           1,
+            points:           0,
+            avgSpend:         0,
+            preferredContact: 'Instagram DM',
+            source:           'LVR Rewards',
+            tags:             'LVR Rewards',
+            notes:            '',
+            vip:              false,
+            optout:           false,
+            followup:         false,
+            avatarColor:      '#1348C8'
+          });
+        }
+      }
+      CRM_CUSTOMERS = items;
+      if (!_crmInitialized) { initCRM(); } else { _crmDirty = true; crmRender(); }
+    })
+    .catch(function() {
+      CRM_CUSTOMERS = [];
+      if (!_crmInitialized) { initCRM(); } else { _crmDirty = true; crmRender(); }
+    });
+}
+
+function closeRewardsCRM() {
+  document.getElementById('view-crm').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
+  var backBtn = document.getElementById('crm-back-btn');
+  if (backBtn) backBtn.style.display = 'none';
+  var titleEl = document.getElementById('crm-title');
+  if (titleEl) titleEl.textContent = 'Customer CRM Demo';
+  var dotEl = document.getElementById('crm-dot');
+  if (dotEl) dotEl.style.background = '#F57F17';
+}
+
 // ── CRM INIT ──
+// Callers must set CRM_CUSTOMERS before calling initCRM().
+// One-time setup (scroller, search listener, backdrop) runs only on first call.
 function initCRM() {
-  CRM_CUSTOMERS = crmLoadCustomers();
   _crmDirty = true;
   crmRender();
-  setupScroller('view-crm','crm-scUp','crm-scDown','crm-scTrack','crm-scThumb','crm-scPct', function(){
-    var v=document.getElementById('view-crm');
-    if(v&&v._updateSlider)v._updateSlider();
-  });
-  // Search
-  var si = document.getElementById('crm-search');
-  if (si) {
-    si.addEventListener('input', function(){
-      crmSearch = this.value.toLowerCase().trim();
-      crmFilter = 'all';
-      _crmDirty = true;
-      crmRender();
+  if (!_crmInitialized) {
+    _crmInitialized = true;
+    setupScroller('view-crm','crm-scUp','crm-scDown','crm-scTrack','crm-scThumb','crm-scPct', function(){
+      var v=document.getElementById('view-crm');
+      if(v&&v._updateSlider)v._updateSlider();
     });
+    var si = document.getElementById('crm-search');
+    if (si) {
+      si.addEventListener('input', function(){
+        crmSearch = this.value.toLowerCase().trim();
+        crmFilter = 'all';
+        _crmDirty = true;
+        crmRender();
+      });
+    }
+    document.getElementById('crm-add-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmAdd(); });
+    document.getElementById('crm-note-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmNote(); });
   }
-  // Modal backdrop clicks
-  document.getElementById('crm-add-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmAdd(); });
-  document.getElementById('crm-note-backdrop').addEventListener('click', function(e){ if(e.target===this) closeCrmNote(); });
 }
 
 // Data is stored in localStorage — no save needed on page close
