@@ -1103,6 +1103,7 @@ var ADVERTISERS_BASE = [
 
 var _advStagingRemovedMap=(function(){try{return JSON.parse(localStorage.getItem('lv_staging_removed_v1'))||{};}catch(e){return{};}})();
 var _advStagingApproved=(function(){try{return JSON.parse(localStorage.getItem('lv_staging_approved_v1'))||[];}catch(e){return[];}})();
+var _advStagingAdded=(function(){try{return JSON.parse(localStorage.getItem('lv_adv_staging_added_v1'))||[];}catch(e){return[];}})();
 // ══════════════════════════════════════════════════════
 var ADVERTISERS_STAGING = [
   {num:9006,name:"The Cochran Firm Las Vegas",cat:"Lawyer - Personal Injury",phone:"(702) 467-4400",ig:"thecochranfirm",email:"",defaultStatus:'pending'},
@@ -9305,6 +9306,13 @@ ADVERTISERS_STAGING = ADVERTISERS_STAGING.filter(function(a){return !_advStaging
     if(!ADVERTISERS_BASE.find(function(b){return b.num===r.num;}))ADVERTISERS_BASE.push(r);
   });
 })();
+// Restore UI-added staging records that haven't been approved/removed yet
+(function(){
+  _advStagingAdded.forEach(function(r){
+    if(!_advStagingRemovedMap[r.num] && !ADVERTISERS_STAGING.find(function(s){return s.num===r.num;}))
+      ADVERTISERS_STAGING.push(r);
+  });
+})();
 // RESTAURANT DATA
 // ══════════════════════════════════════════════════════
 var RESTAURANTS_BASE = [
@@ -12227,9 +12235,12 @@ function confirmDelete(num) {
     localStorage.setItem(LS_PROBLEM,      JSON.stringify(problemMap));
     localStorage.setItem(LS_FOLLOWUP,     JSON.stringify(followupMap));
     localStorage.setItem(LS_DELETED,      JSON.stringify(deletedMap));
-    localStorage.setItem(LS_FOODTRADE,    JSON.stringify(foodTradeMap));
+    localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap));
+    localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap));
+    localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap));
+    localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap));
   } catch(e) {}
-  
+
   lsSaved();
   // Remove from customRecords if it was a custom record
   for (var _cdi=customRecords.length-1; _cdi>=0; _cdi--) {
@@ -13278,6 +13289,8 @@ function _initPinTouchHandlers() {
 
 function _enterFriendMode() {
   isFriend = true; isDemo = false;
+  _rsIsStaging = false;
+  _rsStagingNums = Object.create(null);
   _setFriendKeys();
   try {
     sessionStorage.setItem('lv_friend_ok','1');
@@ -13329,6 +13342,8 @@ function _enterFriendMode() {
 
 function _enterDemoMode() {
   isDemo = true;
+  _rsIsStaging = false;
+  _rsStagingNums = Object.create(null);
   _setDemoKeys();
   try { sessionStorage.setItem('lv_demo_ok', '1'); sessionStorage.removeItem('lv_pin_ok'); } catch(e) {}
   // Re-load maps from demo storage keys (all empty on first run)
@@ -13459,6 +13474,7 @@ function _pinCheck() {
 
 function logOut() {
   clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
+  clearInterval(_fbPollTimer); _fbPollTimer = null;
   if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
   var modal = document.getElementById('demo-activity-modal');
@@ -13473,6 +13489,8 @@ function logOut() {
   // Reset demo/friend flags and restore real storage keys
   isDemo = false;
   isFriend = false;
+  _rsIsStaging = false;
+  _rsStagingNums = Object.create(null);
   _setRealKeys();
   RESTAURANTS = [];
   _numToIdx = Object.create(null);
@@ -16363,7 +16381,8 @@ function _advFbDoPush(){
     quote: advQuoteMap,
     deleted: advDeletedMap,
     staging_approved: _advStagingApproved,
-    staging_removed: _advStagingRemovedMap
+    staging_removed: _advStagingRemovedMap,
+    staging_added: _advStagingAdded
   };
   _advFbLastSavedAt = payload.savedAt;
   fetch(ADV_FB_URL, {
@@ -16433,6 +16452,14 @@ function _advApplyFirebaseData(rec){
     var _chg=false;
     _advStagingApproved.forEach(function(r){if(!_advStagingRemovedMap[r.num]){_advStagingRemovedMap[r.num]=1;_chg=true;}});
     if(_chg){ADVERTISERS_STAGING=ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));}
+  }
+  if(rec.staging_added){
+    _advStagingAdded=rec.staging_added;
+    localStorage.setItem('lv_adv_staging_added_v1',JSON.stringify(_advStagingAdded));
+    _advStagingAdded.forEach(function(r){
+      if(!_advStagingRemovedMap[r.num]&&!ADVERTISERS_STAGING.find(function(s){return s.num===r.num;}))
+        ADVERTISERS_STAGING.push(r);
+    });
   }
   if(typeof advRender==='function')advRender();
 }
@@ -17521,7 +17548,10 @@ function advSaveNewRecord(){
   ADVERTISERS_STAGING.forEach(function(a){if(a.num>maxId)maxId=a.num;});
   ADVERTISERS_BASE.forEach(function(a){if(a.num>9000&&a.num>maxId)maxId=a.num;});
   var newNum=maxId+1;
-  ADVERTISERS_STAGING.push({num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',defaultStatus:'pending',notes:''});
+  var _newRec={num:newNum,name:name,ig:ig,phone:phone,email:email,category:cat,cat:cat,status:'pending',defaultStatus:'pending',notes:''};
+  ADVERTISERS_STAGING.push(_newRec);
+  _advStagingAdded.push(_newRec);
+  try{localStorage.setItem('lv_adv_staging_added_v1',JSON.stringify(_advStagingAdded));}catch(e){}
   advCloseAddModal();
   if(typeof advFbSave==='function') advFbSave();
   // Switch to correct staging tab
@@ -17584,6 +17614,9 @@ function showStagingView(cat){
 function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;var rec=ADVERTISERS_STAGING[idx];var _matchedBase=ADVERTISERS_BASE.find(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(_matchedBase){if(advDeletedMap&&advDeletedMap[_matchedBase.num]){delete advDeletedMap[_matchedBase.num];_advSaveMap('lv_adv_deleted_v1',advDeletedMap);ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);
   _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
   if(!_advStagingApproved.find(function(r){return r.num===num;})){_advStagingApproved.push(rec);localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));}
+  // Remove from UI-added list if it was added via Add Record
+  var _appAi=_advStagingAdded.findIndex(function(r){return r.num===num;});
+  if(_appAi!==-1){_advStagingAdded.splice(_appAi,1);try{localStorage.setItem('lv_adv_staging_added_v1',JSON.stringify(_advStagingAdded));}catch(e){}}
   if(typeof advFbSave==='function')advFbSave();var _rc=_advCat(rec);var _vt='other';if(_rc.indexOf('Lawyer')===0)_vt='lawyer';else if(_rc.indexOf('Doctor')===0)_vt='doctor';else if(_rc==='Spa')_vt='spa';else if(_rc==='Salon')_vt='salon';else if(_rc==='Realtor')_vt='realtor';else if(_rc==='Catering')_vt='catering';else if(_rc==='Dealership')_vt='dealer';else if(_rc==='Liquor')_vt='liquor';else if(_rc==='Hotel')_vt='hotel';else if(_rc==='MedSpa')_vt='medspa';else if(_rc==='Dental')_vt='dental';else if(_rc==='Trainer')_vt='trainer';else if(_rc==='Wedding')_vt='wedding';else if(_rc==='Vet')_vt='vet';else if(_rc==='Tours')_vt='tours';else if(_rc==='Wine')_vt='wine';else if(_rc==='Gaming')_vt='gaming';else if(_rc==='Ecommerce')_vt='ecommerce';else if(_rc==='IGFixed')_vt='igfixed';advSetViewType(_vt);advRender();}
 function _advCleanupStagingMaps(num){
   // Remove all map entries for a staging num to prevent data bloat
@@ -17592,6 +17625,9 @@ function _advCleanupStagingMaps(num){
   for(var _ci=0;_ci<_objs.length;_ci++){
     if(_objs[_ci][num]!==undefined){delete _objs[_ci][num];try{localStorage.setItem(_maps[_ci],JSON.stringify(_objs[_ci]));}catch(e){}}
   }
+  // Also remove from UI-added staging list
+  var _ai=_advStagingAdded.findIndex(function(r){return r.num===num;});
+  if(_ai!==-1){_advStagingAdded.splice(_ai,1);try{localStorage.setItem('lv_adv_staging_added_v1',JSON.stringify(_advStagingAdded));}catch(e){}}
 }
 function advDeleteStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;if(!confirm('Delete?'))return;_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));ADVERTISERS_STAGING.splice(idx,1);_advCleanupStagingMaps(num);if(typeof advFbSave==='function')advFbSave();advRender();}
 </script>
