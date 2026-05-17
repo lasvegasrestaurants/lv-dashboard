@@ -11049,6 +11049,10 @@ var RESTAURANTS_STAGING = [
   try { _rsRm = JSON.parse(localStorage.getItem('lv_rs_removed_v1')) || {}; } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_rsRm[r.num]; });
 })();
+// Master copy — always contains the full owner-visible staging list (owner-removed items excluded).
+// Mode-entry functions reset RESTAURANTS_STAGING from this copy before applying their own filter,
+// preventing the list from shrinking further on each mode switch (Bugs 1, 12, 17).
+var RESTAURANTS_STAGING_MASTER = RESTAURANTS_STAGING.slice();
 
 // ══════════════════════════════════════════════════════
 // STORAGE — keys swap automatically when isDemo is set
@@ -11096,6 +11100,8 @@ function _setDemoKeys() {
   LS_USER_ATTEMPTS  = 'demo_user_attempts_v1';
   LS_RS_REMOVED     = 'demo_rs_removed_v1';
   if (typeof LS_CRM_CUSTOMERS !== 'undefined') LS_CRM_CUSTOMERS = 'demo_crm_customers_v1';
+  // Bug 2: demo mode must reset FB_URL so it does not inherit a stale friend URL
+  FB_URL            = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
 }
 
 function _setFriendKeys() {
@@ -11348,6 +11354,8 @@ function _applyFirebaseData(rec) {
       if (rec.crmcustomers && Array.isArray(rec.crmcustomers) && rec.crmcustomers.length > 0) {
         if (rec.crmcustomers.length >= CRM_CUSTOMERS.length) {
           CRM_CUSTOMERS = rec.crmcustomers;
+          // Bug 6: backfill avatarColor for customers that came from Firebase without one
+          CRM_CUSTOMERS.forEach(function(cu){ if (!cu.avatarColor) cu.avatarColor = _rwdAvatarColor(cu.name); });
           try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {}
         }
       }
@@ -11625,7 +11633,7 @@ function importBackup(event) {
     if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
     if (rec.fieldoverride) { fieldOverrideMap  = rec.fieldoverride; try { localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap)); } catch(e) {} }
     if (rec.userattempts)  { userAttemptsMap  = rec.userattempts;  try { localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap)); } catch(e) {} }
-    if (rec.crmcustomers && Array.isArray(rec.crmcustomers)) { CRM_CUSTOMERS = rec.crmcustomers; try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {} }
+    if (rec.crmcustomers && Array.isArray(rec.crmcustomers)) { CRM_CUSTOMERS = rec.crmcustomers; CRM_CUSTOMERS.forEach(function(cu){ if (!cu.avatarColor) cu.avatarColor = _rwdAvatarColor(cu.name); }); /* Bug 6 */ try { localStorage.setItem(LS_CRM_CUSTOMERS, JSON.stringify(CRM_CUSTOMERS)); } catch(e) {} }
     if (rec.rsremoved)     { try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(rec.rsremoved)); RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !rec.rsremoved[r.num]; }); } catch(e) {} }
     if (rec.todos)         { try { localStorage.setItem(_LT, JSON.stringify(rec.todos)); } catch(e) {} }
     if (rec.projects)      { try { localStorage.setItem(_LP, JSON.stringify(rec.projects)); } catch(e) {} }
@@ -12467,7 +12475,8 @@ function openEmail(num) {
     return;
   }
   var link = buildMailtoLink(addr, r.name);
-  setTimeout(function() { window.location.href = link; }, 50);
+  // Bug 16: use window.open so PWA doesn't navigate away; fall back to href only if blocked
+  setTimeout(function() { window.open(link, '_blank') || (window.location.href = link); }, 50);
 }
 
 function buildMailtoLink(addr, rname) {
@@ -12618,7 +12627,7 @@ function markAttemptBounced(num) {
     // No pending attempt — stamp the last one as bounced anyway
     var last = attempts[attempts.length - 1];
     last.status = 'bounced';
-    last.date   = last.date || nowStr();
+    last.date   = nowStr(); // Bug 11: always stamp NOW, never preserve a stale date
   }
   statusMap[num] = 'bounced';
   var r2=getR(num); if(r2) r2.status='bounced';
@@ -13437,8 +13446,9 @@ function _enterFriendMode() {
   });
   _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
   // Friend mode gets a clean staging view (their own removal history, not owner's)
+  // Bug 17: reset from master so repeated logins don't doubly-filter the list
   var _friendRsRm = {}; try { _friendRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
-  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_friendRsRm[r.num]; });
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING_MASTER.filter(function(r){ return !_friendRsRm[r.num]; });
   _rsUpdateCount(); // refresh staging count + dupes badges after filtering
   dashSetFilter('all'); dashUpdateStats();
   lsStatus('#7B1FA2','👥 Friend Mode');
@@ -13511,8 +13521,9 @@ function _enterDemoMode() {
   if (ghBtn) ghBtn.style.display = 'none';
   lsStatus('#F57F17', '🎭 Customer CRM Demo');
   // Re-filter RESTAURANTS_STAGING with demo key (separate from production removals)
+  // Bug 17: reset from master so repeated demo logins don't doubly-filter the list
   var _demoRsRm = {}; try { _demoRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
-  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_demoRsRm[r.num]; });
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING_MASTER.filter(function(r){ return !_demoRsRm[r.num]; });
   _rsUpdateCount(); // refresh staging count + dupes badges after filtering
   CRM_CUSTOMERS = crmLoadCustomers();
   initCRM();
@@ -13591,6 +13602,13 @@ function logOut() {
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
   var modal = document.getElementById('demo-activity-modal');
   if (modal) modal.classList.remove('open');
+  // Bug 3: hide views FIRST so no rAF renders against an empty RESTAURANTS array
+  document.getElementById('view-dashboard').classList.remove('active');
+  document.getElementById('view-crm').classList.remove('active');
+  document.getElementById('pin-screen').classList.remove('hidden');
+  // Close rewards view if open
+  var _vrEl = document.getElementById('view-rewards');
+  if (_vrEl) _vrEl.classList.remove('active');
   try {
     sessionStorage.removeItem('lv_pin_ok');
     sessionStorage.removeItem('lv_demo_ok');
@@ -13608,6 +13626,15 @@ function logOut() {
   _numToIdx = Object.create(null);
   currentFilter = "all";
   currentSearch = "";
+  // Bug 12: rebuild RESTAURANTS_STAGING from master with the real removal key so re-login
+  // sees a correct staging list regardless of which mode was just active
+  var _logoutRsRm = {}; try { _logoutRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING_MASTER.filter(function(r){ return !_logoutRsRm[r.num]; });
+  // Bug 19: reset dashboard filter & search so owner never re-opens on stale filter
+  dashFilter = 'all';
+  dashSearch = '';
+  var _si = document.getElementById('dash-search');
+  if (_si) _si.value = '';
   // Reload all maps from real localStorage
   statusMap        = loadStatuses();
   attemptsMap      = loadAttempts();
@@ -13634,10 +13661,9 @@ function logOut() {
   _dashFiltered = [];
   _dashRenderedRange = [-1, -1];
   _fbLastSavedAt = 0;
-  // Hide dashboard and CRM, show PIN screen
-  document.getElementById('view-dashboard').classList.remove('active');
-  document.getElementById('view-crm').classList.remove('active');
-  document.getElementById('pin-screen').classList.remove('hidden');
+  // Bug 15: reset PIN lock state so a locked-out session can't block the next login
+  _pinLocked = false;
+  _pinAttempts = 0;
   // Reset PIN dots
   _pinEntry = '';
   _pinUpdateDots(false);
@@ -13654,9 +13680,6 @@ function logOut() {
   CRM_CUSTOMERS = [];
   var backBtn = document.getElementById('crm-back-btn');
   if (backBtn) backBtn.style.display = 'none';
-  // Close rewards view if open
-  var _vrEl = document.getElementById('view-rewards');
-  if (_vrEl) _vrEl.classList.remove('active');
   _rewardsFbData  = Object.create(null);
   _rewardsExpKey  = null;
   _rewardsSearchQ = '';
@@ -14527,7 +14550,10 @@ var CRM_DEMO_CUSTOMERS = [
 function crmLoadCustomers() {
   try {
     var saved = JSON.parse(localStorage.getItem(LS_CRM_CUSTOMERS));
-    return saved && saved.length ? saved : JSON.parse(JSON.stringify(CRM_DEMO_CUSTOMERS));
+    var _c = (saved && saved.length) ? saved : JSON.parse(JSON.stringify(CRM_DEMO_CUSTOMERS));
+    // Bug 6: backfill avatarColor for any customers that were saved without one
+    _c.forEach(function(cu){ if (!cu.avatarColor) cu.avatarColor = _rwdAvatarColor(cu.name); });
+    return _c;
   } catch(e) { return JSON.parse(JSON.stringify(CRM_DEMO_CUSTOMERS)); }
 }
 function crmSaveCustomers() {
@@ -14883,11 +14909,15 @@ function saveCrmCustomer() {
     var c = CRM_CUSTOMERS.find(function(x){return x.id===_crmEditId;});
     if (c) {
       data.id = c.id; data.visits = c.visits; data.firstVisit = c.firstVisit; data.followup = c.followup;
+      // Bug 18: preserve existing avatarColor on edit — never overwrite with undefined
+      data.avatarColor = c.avatarColor || _rwdAvatarColor(c.name);
       var keys = Object.keys(data);
       for (var ki=0; ki<keys.length; ki++) { c[keys[ki]] = data[keys[ki]]; }
     }
   } else {
     data.id = crmGetNextId();
+    // Bug 14: assign a deterministic avatar color for new customers
+    data.avatarColor = _rwdAvatarColor(name);
     CRM_CUSTOMERS.push(data);
   }
   crmSaveCustomers();
@@ -16879,12 +16909,17 @@ function _advApplyFirebaseData(rec){
     ADVERTISERS_STAGING=ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});
   }
   if(rec.staging_approved){
-    _advStagingApproved=rec.staging_approved;
-    localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));
-    _advStagingApproved.forEach(function(r){
-      if(!ADVERTISERS_BASE.find(function(b){return b.num===r.num;}))ADVERTISERS_BASE.push(r);
-    });
-    // Also ensure those nums are in removed map so staging list stays clean
+    // Bug 9: only write localStorage and scan ADVERTISERS_BASE when data actually changed
+    var _newSA=rec.staging_approved;
+    var _saChanged=JSON.stringify(_newSA)!==JSON.stringify(_advStagingApproved);
+    if(_saChanged){
+      _advStagingApproved=_newSA;
+      localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));
+      _advStagingApproved.forEach(function(r){
+        if(!ADVERTISERS_BASE.find(function(b){return b.num===r.num;}))ADVERTISERS_BASE.push(r);
+      });
+    }
+    // Always ensure removed map is in sync (cheap object-key check, no localStorage write unless needed)
     var _chg=false;
     _advStagingApproved.forEach(function(r){if(!_advStagingRemovedMap[r.num]){_advStagingRemovedMap[r.num]=1;_chg=true;}});
     if(_chg){ADVERTISERS_STAGING=ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));}
@@ -18047,7 +18082,7 @@ function showStagingView(cat){
   ['all2','lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2','hotel2','medspa2','dental2','trainer2','wedding2','vet2','tours2','wine2','gaming2','ecommerce2','igfixed2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.toggle('ads-active',_m[advStagingCat]===id);});
   advRender();
 }
-function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;var rec=ADVERTISERS_STAGING[idx];var _matchedBase=ADVERTISERS_BASE.find(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(_matchedBase){if(advDeletedMap&&advDeletedMap[_matchedBase.num]){delete advDeletedMap[_matchedBase.num];_advSaveMap('lv_adv_deleted_v1',advDeletedMap);ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);
+function advApproveStaging(num){var idx=ADVERTISERS_STAGING.findIndex(function(a){return a.num===num;});if(idx===-1)return;var rec=ADVERTISERS_STAGING[idx];var _matchedBase=ADVERTISERS_BASE.find(function(a){return a.num===rec.num||(rec.ig&&a.ig&&a.ig===rec.ig);});if(_matchedBase){if(advDeletedMap&&advDeletedMap[_matchedBase.num]){delete advDeletedMap[_matchedBase.num];_advSaveMap('lv_adv_deleted_v1',advDeletedMap);ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));_advCleanupStagingMaps(num);/* Bug 8: clean up staging maps on match-by-IG path */if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_STAGING.splice(idx,1);_advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));_advCleanupStagingMaps(num);/* Bug 8 */if(typeof advFbSave==='function')advFbSave();advRender();return;}ADVERTISERS_BASE.push(rec);ADVERTISERS_STAGING.splice(idx,1);
   _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
   if(!_advStagingApproved.find(function(r){return r.num===num;})){_advStagingApproved.push(rec);localStorage.setItem('lv_staging_approved_v1',JSON.stringify(_advStagingApproved));}
   // Remove from UI-added list if it was added via Add Record
@@ -18105,7 +18140,10 @@ function _updateStagingCounts(){
 var _origAdvRender = advRender;
 advRender = function(){
   _updateStagingCounts();
-  if(advViewType !== 'staging') return _origAdvRender();
+  // Bug 10: always run the original render to keep filter-button counts up to date,
+  // even when the staging view is active. Then re-render the staging list on top.
+  _origAdvRender();
+  if(advViewType !== 'staging') return;
   var el = document.getElementById('adv-list');
   if(!el) return;
   var cat = advStagingCat || 'all';
