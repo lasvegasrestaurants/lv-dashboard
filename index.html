@@ -11223,6 +11223,36 @@ function fbSave() {
   _fbSaveTimer = setTimeout(_fbDoPush, 2000);
 }
 
+// ── Owner→Friend record mirror ─────────────────────────────────────────────
+// When the owner qualifies a new restaurant (manual add, staging promote, or
+// duplicate), push a stripped structural copy to dashboard_friend/ownerrecords/{num}
+// so the friend automatically sees it on next load. Keeps outreach data separate.
+var _FRIEND_BASE_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_friend';
+function _mirrorRecordToFriend(rec, oldStagingNum) {
+  if (isFriend || isDemo) return; // owner-only — never fires for friend/demo
+  var stripped = {
+    num:       rec.num,
+    name:      rec.name      || '',
+    owner:     rec.owner     || 'Local Operators',
+    instagram: rec.instagram || '',
+    phone:     rec.phone     || '',
+    email:     rec.email     || '',
+    cuisine:   rec.cuisine   || '',
+    address:   rec.address   || '',
+    notes:     ''  // don't leak owner's private notes
+  };
+  fetch(_FRIEND_BASE_URL + '/ownerrecords/' + rec.num + '.json', {
+    method: 'PUT', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(stripped)
+  }).catch(function(){});
+  // Also mark the old staging num as removed for friend so they don't see it twice
+  if (oldStagingNum) {
+    fetch(_FRIEND_BASE_URL + '/rsremoved/' + oldStagingNum + '.json', {
+      method: 'PUT', headers: {'Content-Type': 'application/json'}, body: '1'
+    }).catch(function(){});
+  }
+}
+
 function _fbDoPush() {
   if (isDemo) return; // never write demo data to real Firebase
   if (_fbSyncing) return;
@@ -11292,6 +11322,21 @@ function _applyFirebaseData(rec) {
       if (rec.deleted)       { deletedMap       = rec.deleted;       try { localStorage.setItem(LS_DELETED,        JSON.stringify(deletedMap)); } catch(e) {} }
       if (rec.problem)       { problemMap       = rec.problem;       try { localStorage.setItem(LS_PROBLEM,        JSON.stringify(problemMap)); } catch(e) {} }
       if (rec.customrecords) { customRecords    = rec.customrecords; try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {} }
+      // Merge owner-mirrored records (ownerrecords is an object keyed by num,
+      // separate from friend's own customRecords so neither clobbers the other)
+      if (rec.ownerrecords) {
+        var _ownNums = Object.keys(rec.ownerrecords);
+        for (var _oi = 0; _oi < _ownNums.length; _oi++) {
+          var _or = rec.ownerrecords[_ownNums[_oi]];
+          if (!_or || !_or.num) continue;
+          var _alreadyHave = false;
+          for (var _oci = 0; _oci < customRecords.length; _oci++) {
+            if (customRecords[_oci].num === _or.num) { _alreadyHave = true; break; }
+          }
+          if (!_alreadyHave) customRecords.push(_or);
+        }
+        try { localStorage.setItem(LS_CUSTOM_RECORDS, JSON.stringify(customRecords)); } catch(e) {}
+      }
       if (rec.foodtrade)     { foodTradeMap     = rec.foodtrade;     try { localStorage.setItem(LS_FOODTRADE,      JSON.stringify(foodTradeMap)); } catch(e) {} }
       if (rec.foodtradedone) { foodTradeDoneMap = rec.foodtradedone; try { localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap)); } catch(e) {} }
       if (rec.ghosted)       { ghostedMap       = rec.ghosted;       try { localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap)); } catch(e) {} }
@@ -11834,6 +11879,7 @@ function saveNewRecord() {
   statusMap[newNum] = 'pending';
   saveAttemptsAndStatuses();
   lsSaved(); // triggers Firebase sync for new custom record
+  _mirrorRecordToFriend(rec); // push structural copy to friend's ownerrecords
   RESTAURANTS.push({
     num: newNum, name: rec.name, owner: rec.owner,
     instagram: rec.instagram, igHandle: rec.instagram.replace(/^@/,''),
@@ -12059,6 +12105,12 @@ function rsApprove(num) {
     _rsRm[num] = 1;
     try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
     lsSaved();
+    // Mirror staging removal to friend (no new custom record needed — restaurant is already in base list)
+    if (!isFriend && !isDemo) {
+      fetch(_FRIEND_BASE_URL + '/rsremoved/' + num + '.json', {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: '1'
+      }).catch(function(){});
+    }
     rsRender();
     return;
   }
@@ -12114,6 +12166,7 @@ function rsApprove(num) {
   _rsRm2[num] = 1;
   try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm2)); } catch(e) {}
   lsSaved();
+  _mirrorRecordToFriend(rec, num); // mirror new record + staging removal to friend
   _invalidatePending(); _dashDirty = true;
   rsRender();
 }
@@ -12173,6 +12226,7 @@ function duplicateRestaurant(num) {
   statusMap[newNum] = 'pending';
   saveAttemptsAndStatuses();
   lsSaved();
+  _mirrorRecordToFriend(rec); // push structural copy to friend's ownerrecords
   RESTAURANTS.push({
     num: newNum, name: rec.name, owner: rec.owner,
     instagram: rec.instagram, igHandle: (rec.instagram||'').replace(/^@/,''),
