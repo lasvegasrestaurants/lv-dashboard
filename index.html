@@ -11883,6 +11883,29 @@ var _rsStagingNums = Object.create(null); // tracks which nums are from staging
 function _rsUpdateCount() {
   var el = document.getElementById('rs-stg-cnt');
   if (el) el.textContent = RESTAURANTS_STAGING.length;
+  // Refresh dupes badge count without opening modal
+  _rsUpdateDupesCount();
+}
+
+function _rsUpdateDupesCount() {
+  var cntEl = document.getElementById('rs-dupes-cnt');
+  if (!cntEl) return;
+  var _rsRm = {}; try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  var baseMap = Object.create(null);
+  for (var i = 0; i < RESTAURANTS.length; i++) {
+    var r = RESTAURANTS[i];
+    if (deletedMap[r.num]) continue;
+    var key = _rsNormName(r.name);
+    if (key) { if (!baseMap[key]) baseMap[key] = []; baseMap[key].push(r); }
+  }
+  var count = 0;
+  for (var j = 0; j < RESTAURANTS_STAGING.length; j++) {
+    var s = RESTAURANTS_STAGING[j];
+    if (_rsRm[s.num]) continue;
+    var sKey = _rsNormName(s.name);
+    if (sKey && baseMap[sKey]) count++;
+  }
+  cntEl.textContent = count;
 }
 
 function _rsRegisterStaging() {
@@ -16263,6 +16286,7 @@ function rsCloseDupesModal() {
 
 function rsDupesDelete(num) {
   // Remove from staging removed map → persists to localStorage + Firebase
+  var _rsRm = {}; try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   _rsRm[num] = 1;
   try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return r.num !== num; });
