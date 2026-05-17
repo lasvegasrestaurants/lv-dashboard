@@ -457,6 +457,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
          <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
+        <button onclick="openLuckyPick()" id="lucky-pick-btn" style="background:linear-gradient(135deg,#1493FF,#0a6cc4);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 0 10px rgba(20,147,255,0.4);">🎯 Pick</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
@@ -18392,5 +18393,265 @@ advRender = function(){
     <div id="rs-dupes-content" style="max-height:70vh;overflow-y:auto;"></div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════
+     LUCKY PICK MODAL — FanDuel-style random restaurant selector
+     ══════════════════════════════════════════════════════════ -->
+<div id="lucky-pick-modal" style="display:none;position:fixed;inset:0;background:linear-gradient(160deg,#060f1a 0%,#0b1826 60%,#071220 100%);z-index:99990;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;">
+
+  <!-- Shield + title -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:28px;">
+    <svg id="lp-shield" width="52" height="62" viewBox="0 0 72 84" fill="none" style="margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(20,147,255,0.7));">
+      <defs>
+        <linearGradient id="lpShieldG" x1="36" y1="2" x2="36" y2="82" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#2AABFF"/><stop offset="100%" stop-color="#0A6CC4"/>
+        </linearGradient>
+      </defs>
+      <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="url(#lpShieldG)"/>
+      <text x="36" y="56" text-anchor="middle" fill="#fff" font-size="40" font-weight="900" font-family="-apple-system,Arial,sans-serif">F</text>
+    </svg>
+    <div style="color:#fff;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;opacity:.6;">Today's</div>
+    <div style="color:#fff;font-size:22px;font-weight:900;letter-spacing:1px;">Lucky Pick</div>
+  </div>
+
+  <!-- Slot machine display -->
+  <div id="lp-slot-wrap" style="width:100%;max-width:360px;background:rgba(20,147,255,0.07);border:1.5px solid rgba(20,147,255,0.22);border-radius:18px;padding:20px 18px;margin-bottom:20px;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+    <!-- Spinning state -->
+    <div id="lp-spin-state">
+      <div style="color:rgba(111,188,255,0.5);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center;">Selecting...</div>
+      <div id="lp-spin-name" style="color:#fff;font-size:19px;font-weight:900;text-align:center;line-height:1.25;min-height:50px;display:flex;align-items:center;justify-content:center;"></div>
+    </div>
+    <!-- Result state -->
+    <div id="lp-result-state" style="display:none;width:100%;text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;">
+        <div style="background:#1493FF;color:#fff;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:3px 10px;border-radius:20px;text-transform:uppercase;">Your Pick</div>
+        <div id="lp-score-badge" style="background:rgba(20,147,255,0.15);color:#6FBCFF;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;border:1px solid rgba(20,147,255,0.3);">Match 94</div>
+      </div>
+      <div id="lp-result-name" style="color:#fff;font-size:22px;font-weight:900;line-height:1.2;margin-bottom:6px;"></div>
+      <div id="lp-result-cuisine" style="color:#6FBCFF;font-size:12px;font-weight:700;margin-bottom:4px;"></div>
+      <div id="lp-result-ig" style="color:rgba(111,188,255,0.55);font-size:12px;"></div>
+    </div>
+  </div>
+
+  <!-- Action buttons (shown after spin) -->
+  <div id="lp-actions" style="display:none;width:100%;max-width:360px;display:none;flex-direction:column;gap:10px;margin-bottom:16px;">
+    <div style="display:flex;gap:10px;">
+      <button id="lp-btn-email" onclick="closeLuckyPickAndDo('email')" style="flex:1;background:#1493FF;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;">✉️ Email Now</button>
+      <button id="lp-btn-dm" onclick="closeLuckyPickAndDo('dm')" style="flex:1;background:#2E7D32;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;">💬 DM Now</button>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="_lpReroll()" style="flex:1;background:rgba(20,147,255,0.12);color:#6FBCFF;border:1.5px solid rgba(20,147,255,0.25);border-radius:12px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">🔄 Re-Roll</button>
+      <button onclick="closeLuckyPick()" style="flex:1;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- Close while spinning -->
+  <button id="lp-close-spin" onclick="closeLuckyPick()" style="background:transparent;color:rgba(255,255,255,0.3);border:none;font-size:13px;cursor:pointer;padding:8px 16px;letter-spacing:.5px;">Cancel</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// LUCKY PICK — FanDuel-style restaurant selector
+// ══════════════════════════════════════════════
+var _lpPickedNum = null;
+
+function openLuckyPick() {
+  var modal = document.getElementById('lucky-pick-modal');
+  modal.style.display = 'flex';
+  document.getElementById('lp-result-state').style.display = 'none';
+  document.getElementById('lp-spin-state').style.display = 'block';
+  document.getElementById('lp-actions').style.display = 'none';
+  document.getElementById('lp-close-spin').style.display = 'block';
+  _lpPickedNum = null;
+  _lpStartSpin();
+}
+
+function closeLuckyPick() {
+  document.getElementById('lucky-pick-modal').style.display = 'none';
+}
+
+function closeLuckyPickAndDo(action) {
+  closeLuckyPick();
+  if (!_lpPickedNum) return;
+  if (action === 'email') { openEmail(_lpPickedNum); }
+  else if (action === 'dm') { openDM(_lpPickedNum); }
+}
+
+function _lpReroll() {
+  document.getElementById('lp-result-state').style.display = 'none';
+  document.getElementById('lp-spin-state').style.display = 'block';
+  document.getElementById('lp-actions').style.display = 'none';
+  document.getElementById('lp-close-spin').style.display = 'block';
+  _lpPickedNum = null;
+  _lpStartSpin();
+}
+
+function _lpStartSpin() {
+  var candidates = RESTAURANTS.filter(function(r) {
+    var s = statusMap[r.num] || r.defaultStatus || 'pending';
+    return s === 'pending' && !deletedMap[r.num] && !problemMap[r.num];
+  });
+  if (!candidates.length) {
+    candidates = RESTAURANTS.filter(function(r){ return !deletedMap[r.num]; });
+  }
+  if (!candidates.length) { showDMToast('No restaurants found!'); closeLuckyPick(); return; }
+
+  var chosen = candidates[Math.floor(Math.random() * candidates.length)];
+  var spinEl = document.getElementById('lp-spin-name');
+  var delay = 55;
+  var count = 0;
+  var maxCount = 26;
+
+  function tick() {
+    var r = candidates[Math.floor(Math.random() * candidates.length)];
+    spinEl.textContent = r.name;
+    spinEl.style.opacity = '0.7';
+    setTimeout(function(){ spinEl.style.opacity = '1'; }, delay * 0.4);
+    count++;
+    // Ease out — slow down over last 8 frames
+    if (count > maxCount - 8) delay = Math.min(delay + 55, 520);
+    if (count < maxCount) {
+      setTimeout(tick, delay);
+    } else {
+      _lpReveal(chosen);
+    }
+  }
+  tick();
+}
+
+function _lpReveal(r) {
+  _lpPickedNum = r.num;
+  // Swap to result state
+  document.getElementById('lp-spin-state').style.display = 'none';
+  document.getElementById('lp-close-spin').style.display = 'none';
+  var rs = document.getElementById('lp-result-state');
+  rs.style.display = 'block';
+  rs.style.opacity = '0';
+  rs.style.transform = 'scale(0.92)';
+  rs.style.transition = 'opacity .35s, transform .35s';
+  document.getElementById('lp-result-name').textContent = r.name;
+  document.getElementById('lp-result-cuisine').textContent = r.cuisine || '';
+  document.getElementById('lp-result-ig').textContent = r.instagram ? r.instagram : '';
+  var score = 82 + Math.floor(Math.random() * 17);
+  document.getElementById('lp-score-badge').textContent = 'Match ' + score;
+  setTimeout(function(){
+    rs.style.opacity = '1';
+    rs.style.transform = 'scale(1)';
+    var acts = document.getElementById('lp-actions');
+    acts.style.display = 'flex';
+    // mini confetti from the shield
+    _confettiBurst(window.innerWidth/2, 180);
+  }, 60);
+}
+
+// ══════════════════════════════════════════════
+// CONFETTI BURST
+// ══════════════════════════════════════════════
+function _confettiBurst(cx, cy) {
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:99995;';
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  var colors = ['#1493FF','#FFD600','#00C853','#FF4081','#ffffff','#FF6D00','#AA00FF'];
+  var particles = [];
+  for (var i = 0; i < 70; i++) {
+    var angle = (Math.random() * Math.PI * 2);
+    var speed = 4 + Math.random() * 9;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 4,
+      color: colors[i % colors.length],
+      w: 6 + Math.random() * 7,
+      h: 4 + Math.random() * 5,
+      alpha: 1,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - .5) * 12
+    });
+  }
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var live = false;
+    for (var j = 0; j < particles.length; j++) {
+      var p = particles[j];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.45;
+      p.alpha -= 0.017; p.rot += p.rotV;
+      if (p.alpha > 0) {
+        live = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    }
+    if (live) requestAnimationFrame(frame); else canvas.remove();
+  }
+  requestAnimationFrame(frame);
+}
+
+// ══════════════════════════════════════════════
+// CONFETTI on INTERESTED flag
+// ══════════════════════════════════════════════
+var _origToggleInterested = toggleInterested;
+toggleInterested = function(num) {
+  var wasFlagged = !!interestedMap[num];
+  _origToggleInterested(num);
+  if (!wasFlagged && interestedMap[num]) {
+    // Newly flagged — burst from center
+    _confettiBurst(window.innerWidth / 2, window.innerHeight * 0.45);
+  }
+};
+
+// ══════════════════════════════════════════════
+// ANIMATED STAT COUNTER ROLL-UP
+// ══════════════════════════════════════════════
+var _statCountupDone = false;
+var _origDashUpdateStats = dashUpdateStats;
+dashUpdateStats = function() {
+  _origDashUpdateStats();
+  if (_statCountupDone) return;
+  // Only run once per session on first login
+  var els = [
+    document.getElementById('s-total'),
+    document.getElementById('s-done'),
+    document.getElementById('s-noemail'),
+    document.getElementById('s-bounced'),
+    document.getElementById('s-badig'),
+    document.getElementById('s-interested'),
+    document.getElementById('s-notinterested'),
+    document.getElementById('s-notes'),
+    document.getElementById('s-followup'),
+    document.getElementById('s-problem'),
+    document.getElementById('s-foodtrade'),
+    document.getElementById('s-foodtradedone'),
+    document.getElementById('s-ghosted'),
+    document.getElementById('s-nodm')
+  ];
+  var targets = els.map(function(el){ return el ? parseInt(el.textContent || '0', 10) : 0; });
+  var current = targets.map(function(){ return 0; });
+  var startTime = null;
+  var duration = 900;
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function animate(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = easeOut(progress);
+    for (var i = 0; i < els.length; i++) {
+      if (!els[i]) continue;
+      var val = Math.round(targets[i] * ease);
+      if (val !== current[i]) { current[i] = val; els[i].textContent = val; }
+    }
+    if (progress < 1) requestAnimationFrame(animate);
+    else _statCountupDone = true;
+  }
+  // Reset to 0 first, then animate
+  els.forEach(function(el){ if (el) el.textContent = '0'; });
+  requestAnimationFrame(animate);
+};
+</script>
 
 </body></html>
