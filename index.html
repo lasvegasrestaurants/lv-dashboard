@@ -14948,58 +14948,69 @@ function _rewardsRender() {
   keys.sort(function(a,b){ return (_rewardsFbData[b].joinedAt||0) - (_rewardsFbData[a].joinedAt||0); });
   var total = Object.keys(_rewardsFbData).length;
   var cntEl = document.getElementById('rewards-count');
-  if (cntEl) cntEl.textContent = total + ' member' + (total !== 1 ? 's' : '');
+  if (cntEl) cntEl.textContent = total + (total !== 1 ? ' members' : ' member');
   if (!keys.length) {
     wrap.innerHTML = q
-      ? '<div style="text-align:center;color:#aaa;padding:48px 20px;font-size:14px;">No matches for &ldquo;' + _rwdEsc(q) + '&rdquo;</div>'
-      : '<div style="text-align:center;color:#aaa;padding:48px 20px;font-size:14px;line-height:1.6;">No rewards members yet.<br>Share the signup link to get started!</div>';
+      ? '<div style="text-align:center;padding:60px 20px;"><div style="font-size:2rem;margin-bottom:12px;">🔍</div><div style="color:#fff;font-size:15px;font-weight:700;margin-bottom:6px;">No matches</div><div style="color:#7EB8FF;font-size:13px;">Try a different name, phone, or Instagram</div></div>'
+      : '<div style="text-align:center;padding:70px 20px;"><div style="font-size:3.5rem;margin-bottom:14px;">🎟</div><div style="color:#fff;font-size:17px;font-weight:800;margin-bottom:8px;">No members yet</div><div style="color:#7EB8FF;font-size:13px;line-height:1.65;">Tap the gold button above to open<br>the sign-up page and share it</div></div>';
     return;
   }
   var html = keys.map(function(key) {
     var m = _rewardsFbData[key];
     if (!m || !m.name) return '';
-    var pts   = m.points || 0;
-    var isExp = (key === _rewardsExpKey);
+    var pts      = m.points || 0;
+    var isExp    = (key === _rewardsExpKey);
+    var initial  = (m.name||'?').charAt(0).toUpperCase();
+    var avatarBg = _rwdAvatarColor(m.name||'');
     var joinDate = m.joinedAt ? new Date(m.joinedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-    var detailHtml = '';
+    var expandedHtml = '';
     if (isExp) {
-      detailHtml =
-        '<div style="padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.08);">' +
-          '<div style="font-size:11px;color:#90CAF9;padding:9px 0 11px;line-height:1.9;">' +
-            (m.phone     ? '📱 ' + _rwdEsc(m.phone)     + '&emsp;' : '') +
-            (m.birthday  ? '🎂 ' + _rwdEsc(m.birthday)  + '&emsp;' : '') +
-            (m.anniversary ? '💍 ' + _rwdEsc(m.anniversary) + '&emsp;' : '') +
-            (joinDate    ? '📅 Joined ' + joinDate        : '') +
+      expandedHtml =
+        '<div style="border-top:1px solid rgba(255,255,255,0.09);padding:14px 16px 18px;">' +
+          // member details grid
+          '<div style="display:flex;flex-wrap:wrap;gap:8px 0;margin-bottom:16px;">' +
+            (m.phone ? '<div style="width:100%;display:flex;align-items:center;gap:10px;padding:7px 12px;background:rgba(255,255,255,0.05);border-radius:8px;"><span style="font-size:15px;">📱</span><span style="font-size:13px;color:#fff;font-weight:500;">' + _rwdEsc(m.phone) + '</span></div>' : '') +
+            (m.birthday ? '<div style="width:48%;display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.05);border-radius:8px;box-sizing:border-box;margin-right:4%;"><span style="font-size:14px;">🎂</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Birthday</div><div style="font-size:13px;color:#fff;font-weight:600;">' + _rwdEsc(m.birthday) + '</div></div></div>' : '') +
+            (m.anniversary ? '<div style="width:48%;display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.05);border-radius:8px;box-sizing:border-box;"><span style="font-size:14px;">💍</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Anniversary</div><div style="font-size:13px;color:#fff;font-weight:600;">' + _rwdEsc(m.anniversary) + '</div></div></div>' : '') +
+            (joinDate ? '<div style="width:100%;font-size:11px;color:rgba(255,255,255,0.4);text-align:right;padding-top:4px;">Joined ' + joinDate + '</div>' : '') +
           '</div>' +
-          '<div style="margin-bottom:7px;font-size:10px;font-weight:700;letter-spacing:0.16em;color:#aaa;text-transform:uppercase;">Add Points</div>' +
-          '<div style="display:flex;gap:7px;margin-bottom:8px;">' +
-            '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',10)"  style="flex:1;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:10px 2px;font-size:13px;font-weight:700;cursor:pointer;">+10</button>' +
-            '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',25)"  style="flex:1;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:10px 2px;font-size:13px;font-weight:700;cursor:pointer;">+25</button>' +
-            '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',50)"  style="flex:1;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:10px 2px;font-size:13px;font-weight:700;cursor:pointer;">+50</button>' +
-            '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',100)" style="flex:1;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:10px 2px;font-size:13px;font-weight:700;cursor:pointer;">+100</button>' +
+          // add points section
+          '<div style="background:rgba(255,214,0,0.06);border:1px solid rgba(255,214,0,0.18);border-radius:10px;padding:13px 14px;">' +
+            '<div style="font-size:10px;font-weight:800;letter-spacing:0.2em;color:#FFD600;text-transform:uppercase;margin-bottom:11px;">⭐ Add Points</div>' +
+            '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',10)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+10</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',25)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+25</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',50)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+50</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',100)" style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+100</button>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;align-items:center;">' +
+              '<input type="number" id="rwd-inp-' + key + '" placeholder="Set exact total…" min="0" onclick="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.18);border-radius:9px;color:#fff;padding:10px 13px;font-size:13px;outline:none;-webkit-appearance:none;">' +
+              '<button onclick="event.stopPropagation();_rewardsSet(\'' + key + '\')" style="background:#2E7D32;color:#fff;border:none;border-radius:9px;padding:11px 18px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;">Set</button>' +
+            '</div>' +
+            '<div id="rwd-msg-' + key + '" style="font-size:12px;color:#4ADE80;text-align:center;margin-top:9px;min-height:18px;font-weight:700;letter-spacing:0.04em;"></div>' +
           '</div>' +
-          '<div style="display:flex;gap:7px;">' +
-            '<input type="number" id="rwd-inp-' + key + '" placeholder="Set exact points" min="0" onclick="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;padding:9px 12px;font-size:13px;">' +
-            '<button onclick="event.stopPropagation();_rewardsSet(\'' + key + '\')" style="background:#2E7D32;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;">Set</button>' +
-          '</div>' +
-          '<div id="rwd-msg-' + key + '" style="font-size:11px;color:#4ADE80;text-align:center;margin-top:7px;min-height:16px;"></div>' +
         '</div>';
     }
-    return '<div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,' + (isExp ? '0.22' : '0.09') + ');border-radius:10px;margin-bottom:8px;cursor:pointer;overflow:hidden;" onclick="_rewardsToggle(\'' + key + '\')">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px 12px;">' +
-        '<div style="min-width:0;">' +
-          '<div style="font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + _rwdEsc(m.name||'') + '</div>' +
-          '<div style="font-size:12px;color:#90CAF9;margin-top:2px;">' + _rwdEsc(m.instagram||'') + '</div>' +
+    return '<div style="background:#1B2E4A;border:1px solid ' + (isExp ? 'rgba(255,214,0,0.4)' : 'rgba(255,255,255,0.08)') + ';border-radius:14px;margin-bottom:10px;cursor:pointer;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.3);" onclick="_rewardsToggle(\'' + key + '\')">' +
+      // collapsed header row
+      '<div style="display:flex;align-items:center;gap:13px;padding:14px 14px 14px 14px;">' +
+        '<div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:' + avatarBg + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">' + initial + '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:15px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;">' + _rwdEsc(m.name||'') + '</div>' +
+          '<div style="font-size:12px;color:#7EB8FF;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + _rwdEsc(m.instagram||'') + (m.birthday ? '<span style="color:rgba(255,255,255,0.3);margin:0 6px;">·</span><span style="color:rgba(255,255,255,0.5);">🎂 ' + _rwdEsc(m.birthday) + '</span>' : '') + '</div>' +
         '</div>' +
-        '<div style="text-align:right;margin-left:12px;flex-shrink:0;">' +
-          '<div style="font-size:22px;font-weight:800;color:#FFD600;line-height:1;">' + pts + '</div>' +
-          '<div style="font-size:9px;color:#aaa;letter-spacing:0.14em;text-transform:uppercase;">pts</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
+          '<div style="text-align:right;">' +
+            '<div style="font-size:26px;font-weight:800;color:#FFD600;line-height:1;">' + pts + '</div>' +
+            '<div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0.18em;text-transform:uppercase;margin-top:1px;">pts</div>' +
+          '</div>' +
+          '<div style="font-size:10px;color:rgba(255,255,255,0.3);width:12px;text-align:center;padding-top:2px;">' + (isExp ? '▲' : '▼') + '</div>' +
         '</div>' +
       '</div>' +
-      detailHtml +
+      expandedHtml +
     '</div>';
   }).join('');
-  wrap.innerHTML = html || '<div style="text-align:center;color:#aaa;padding:48px 20px;font-size:14px;">No results.</div>';
+  wrap.innerHTML = html;
 }
 
 function _rewardsToggle(key) {
@@ -15046,6 +15057,11 @@ function _rewardsSave(key, pts) {
 
 function _rwdEsc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _rwdAvatarColor(name) {
+  var palette = ['#1348C8','#2E7D32','#6A1B9A','#AD1457','#00695C','#E65100','#0277BD','#558B2F','#4527A0','#BF360C'];
+  return palette[(name.charCodeAt(0)||65) % palette.length];
 }
 
 // ── CRM INIT ──
@@ -17898,27 +17914,30 @@ advRender = function(){
      REWARDS ADMIN VIEW — dedicated full-screen view for managing
      LVR Rewards members and awarding points. Opened by openRewardsCRM().
      ══════════════════════════════════════════════════════════ -->
-<div class="view" id="view-rewards">
+<div class="view" id="view-rewards" style="background:#0D1B2E;">
 
-  <!-- Header -->
-  <div class="hdr" style="padding:10px 14px 8px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <button onclick="closeRewardsCRM()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">← Dashboard</button>
-      <span style="color:#FFD600;font-size:16px;font-weight:800;flex:1;">🎟 LVR Rewards</span>
-      <button onclick="_rewardsRefresh()" title="Refresh member list" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:14px;cursor:pointer;">🔄</button>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒 Log Out</button>
+  <!-- Sticky header — 2 compact rows -->
+  <div style="background:#1B2E4A;padding:11px 14px 11px;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(255,255,255,0.07);">
+
+    <!-- Row 1: back · title · sign-up · refresh · lock -->
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+      <button onclick="closeRewardsCRM()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">← Back</button>
+      <span style="color:#FFD600;font-size:15px;font-weight:800;flex:1;letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🎟 LVR Rewards</span>
+      <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="background:#FFD600;color:#071A47;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;">📋 Sign-Up</button>
+      <button onclick="_rewardsRefresh()" title="Refresh" style="background:rgba(255,255,255,0.08);color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;flex-shrink:0;">🔄</button>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;" title="Log Out">🔒</button>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="width:100%;background:#FFD600;color:#071A47;border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:0.04em;">📋 Open Sign-Up Page</button>
+
+    <!-- Row 2: search · count -->
+    <div style="display:flex;align-items:center;gap:9px;">
+      <input type="text" id="rewards-search" placeholder="Search by name, phone, or Instagram…" oninput="_rewardsSearch(this.value)" autocomplete="off" style="flex:1;padding:9px 13px;border:1.5px solid rgba(255,255,255,0.12);border-radius:9px;background:rgba(255,255,255,0.07);color:#fff;font-size:13px;box-sizing:border-box;outline:none;">
+      <span id="rewards-count" style="color:#7EB8FF;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;"></span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <input type="text" id="rewards-search" placeholder="Search members by name, phone, or IG…" oninput="_rewardsSearch(this.value)" autocomplete="off" style="flex:1;padding:9px 12px;border:1px solid #263238;border-radius:8px;background:#263238;color:#fff;font-size:13px;box-sizing:border-box;">
-      <span id="rewards-count" style="color:#aaa;font-size:12px;white-space:nowrap;min-width:60px;text-align:right;"></span>
-    </div>
+
   </div>
 
   <!-- Member list (rendered by _rewardsRender) -->
-  <div id="rewards-list-wrap" style="padding:4px 14px 60px;"></div>
+  <div id="rewards-list-wrap" style="padding:12px 14px 70px;"></div>
 
   <!-- Scroller -->
   <div class="scroller" id="rwd-scroller" style="display:flex;">
