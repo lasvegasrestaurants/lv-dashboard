@@ -58,7 +58,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+.hdr { background: #1B2E4A; padding: max(16px, calc(env(safe-area-inset-top, 0px) + 6px)) 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -14951,8 +14951,8 @@ function _rewardsRender() {
   if (cntEl) cntEl.textContent = total + (total !== 1 ? ' members' : ' member');
   if (!keys.length) {
     wrap.innerHTML = q
-      ? '<div style="text-align:center;padding:60px 20px;"><div style="font-size:2rem;margin-bottom:12px;">🔍</div><div style="color:#fff;font-size:15px;font-weight:700;margin-bottom:6px;">No matches</div><div style="color:#7EB8FF;font-size:13px;">Try a different name, phone, or Instagram</div></div>'
-      : '<div style="text-align:center;padding:70px 20px;"><div style="font-size:3.5rem;margin-bottom:14px;">🎟</div><div style="color:#fff;font-size:17px;font-weight:800;margin-bottom:8px;">No members yet</div><div style="color:#7EB8FF;font-size:13px;line-height:1.65;">Tap the gold button above to open<br>the sign-up page and share it</div></div>';
+      ? '<div style="text-align:center;padding:70px 24px;"><div style="font-size:2.5rem;margin-bottom:14px;">🔍</div><div style="color:#fff;font-size:17px;font-weight:700;margin-bottom:8px;">No matches</div><div style="color:#7EB8FF;font-size:14px;">Try a different name, phone, or Instagram</div></div>'
+      : '<div style="text-align:center;padding:80px 24px;"><div style="font-size:4rem;margin-bottom:16px;">🪙</div><div style="color:#fff;font-size:19px;font-weight:800;margin-bottom:10px;">No members yet</div><div style="color:#7EB8FF;font-size:14px;line-height:1.7;">Tap <strong style="color:#FFD600;">📋 Sign-Up</strong> above to open<br>the sign-up page and share it</div></div>';
     return;
   }
   var html = keys.map(function(key) {
@@ -14966,45 +14966,47 @@ function _rewardsRender() {
     var expandedHtml = '';
     if (isExp) {
       expandedHtml =
-        '<div style="border-top:1px solid rgba(255,255,255,0.09);padding:14px 16px 18px;">' +
-          // member details grid
-          '<div style="display:flex;flex-wrap:wrap;gap:8px 0;margin-bottom:16px;">' +
-            (m.phone ? '<div style="width:100%;display:flex;align-items:center;gap:10px;padding:7px 12px;background:rgba(255,255,255,0.05);border-radius:8px;"><span style="font-size:15px;">📱</span><span style="font-size:13px;color:#fff;font-weight:500;">' + _rwdEsc(m.phone) + '</span></div>' : '') +
-            (m.birthday ? '<div style="width:48%;display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.05);border-radius:8px;box-sizing:border-box;margin-right:4%;"><span style="font-size:14px;">🎂</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Birthday</div><div style="font-size:13px;color:#fff;font-weight:600;">' + _rwdEsc(m.birthday) + '</div></div></div>' : '') +
-            (m.anniversary ? '<div style="width:48%;display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.05);border-radius:8px;box-sizing:border-box;"><span style="font-size:14px;">💍</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Anniversary</div><div style="font-size:13px;color:#fff;font-weight:600;">' + _rwdEsc(m.anniversary) + '</div></div></div>' : '') +
-            (joinDate ? '<div style="width:100%;font-size:11px;color:rgba(255,255,255,0.4);text-align:right;padding-top:4px;">Joined ' + joinDate + '</div>' : '') +
+        '<div style="border-top:1px solid rgba(255,255,255,0.09);padding:16px 18px 20px;">' +
+          // member info tiles
+          '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">' +
+            (m.phone ? '<div style="width:100%;display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.06);border-radius:10px;"><span style="font-size:18px;">📱</span><span style="font-size:15px;color:#fff;font-weight:600;">' + _rwdEsc(m.phone) + '</span></div>' : '') +
+            (m.birthday ? '<div style="flex:1;min-width:120px;display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.06);border-radius:10px;box-sizing:border-box;"><span style="font-size:18px;">🎂</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;">Birthday</div><div style="font-size:14px;color:#fff;font-weight:700;margin-top:2px;">' + _rwdEsc(m.birthday) + '</div></div></div>' : '') +
+            (m.anniversary ? '<div style="flex:1;min-width:120px;display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.06);border-radius:10px;box-sizing:border-box;"><span style="font-size:18px;">💍</span><div><div style="font-size:10px;color:#7EB8FF;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;">Anniversary</div><div style="font-size:14px;color:#fff;font-weight:700;margin-top:2px;">' + _rwdEsc(m.anniversary) + '</div></div></div>' : '') +
+            (joinDate ? '<div style="width:100%;font-size:12px;color:rgba(255,255,255,0.35);text-align:right;">Member since ' + joinDate + '</div>' : '') +
           '</div>' +
-          // add points section
-          '<div style="background:rgba(255,214,0,0.06);border:1px solid rgba(255,214,0,0.18);border-radius:10px;padding:13px 14px;">' +
-            '<div style="font-size:10px;font-weight:800;letter-spacing:0.2em;color:#FFD600;text-transform:uppercase;margin-bottom:11px;">⭐ Add Points</div>' +
-            '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
-              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',10)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+10</button>' +
-              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',25)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+25</button>' +
-              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',50)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+50</button>' +
-              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',100)" style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:9px;padding:12px 4px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.02em;">+100</button>' +
+          // token award section
+          '<div style="background:rgba(255,214,0,0.07);border:1.5px solid rgba(255,214,0,0.25);border-radius:12px;padding:16px;">' +
+            '<div style="font-size:11px;font-weight:800;letter-spacing:0.2em;color:#FFD600;text-transform:uppercase;margin-bottom:13px;">🪙 Award Tokens</div>' +
+            // quick-add row
+            '<div style="display:flex;gap:8px;margin-bottom:11px;">' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',10)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:10px;padding:13px 4px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(0,0,0,0.3);">+10</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',25)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:10px;padding:13px 4px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(0,0,0,0.3);">+25</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',50)"  style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:10px;padding:13px 4px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(0,0,0,0.3);">+50</button>' +
+              '<button onclick="event.stopPropagation();_rewardsAdd(\'' + key + '\',100)" style="flex:1;background:#1348C8;color:#fff;border:none;border-radius:10px;padding:13px 4px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(0,0,0,0.3);">+100</button>' +
             '</div>' +
+            // manual input + voice row
             '<div style="display:flex;gap:8px;align-items:center;">' +
-              '<input type="number" id="rwd-inp-' + key + '" placeholder="Set exact total…" min="0" onclick="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.18);border-radius:9px;color:#fff;padding:10px 13px;font-size:13px;outline:none;-webkit-appearance:none;">' +
-              '<button onclick="event.stopPropagation();_rewardsSet(\'' + key + '\')" style="background:#2E7D32;color:#fff;border:none;border-radius:9px;padding:11px 18px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;">Set</button>' +
+              '<input type="number" id="rwd-inp-' + key + '" placeholder="Type any amount…" min="0" onclick="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;color:#fff;padding:12px 14px;font-size:14px;outline:none;-webkit-appearance:none;">' +
+              '<button id="rwd-mic-' + key + '" onclick="event.stopPropagation();_rewardsVoiceAdd(\'' + key + '\')" style="background:#4527A0;color:#fff;border:none;border-radius:10px;padding:12px 14px;font-size:18px;cursor:pointer;flex-shrink:0;" title="Say a number to add tokens">🎤</button>' +
+              '<button onclick="event.stopPropagation();_rewardsSet(\'' + key + '\')" style="background:#2E7D32;color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3);">Set</button>' +
             '</div>' +
-            '<div id="rwd-msg-' + key + '" style="font-size:12px;color:#4ADE80;text-align:center;margin-top:9px;min-height:18px;font-weight:700;letter-spacing:0.04em;"></div>' +
+            '<div id="rwd-msg-' + key + '" style="font-size:13px;color:#4ADE80;text-align:center;margin-top:10px;min-height:20px;font-weight:700;letter-spacing:0.03em;"></div>' +
           '</div>' +
         '</div>';
     }
-    return '<div style="background:#1B2E4A;border:1px solid ' + (isExp ? 'rgba(255,214,0,0.4)' : 'rgba(255,255,255,0.08)') + ';border-radius:14px;margin-bottom:10px;cursor:pointer;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.3);" onclick="_rewardsToggle(\'' + key + '\')">' +
-      // collapsed header row
-      '<div style="display:flex;align-items:center;gap:13px;padding:14px 14px 14px 14px;">' +
-        '<div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:' + avatarBg + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">' + initial + '</div>' +
+    return '<div style="background:#1B2E4A;border:1.5px solid ' + (isExp ? 'rgba(255,214,0,0.45)' : 'rgba(255,255,255,0.08)') + ';border-radius:16px;margin-bottom:12px;cursor:pointer;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.35);" onclick="_rewardsToggle(\'' + key + '\')">' +
+      '<div style="display:flex;align-items:center;gap:14px;padding:16px 16px;">' +
+        '<div style="width:52px;height:52px;min-width:52px;border-radius:50%;background:' + avatarBg + ';display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.4);">' + initial + '</div>' +
         '<div style="flex:1;min-width:0;">' +
-          '<div style="font-size:15px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;">' + _rwdEsc(m.name||'') + '</div>' +
-          '<div style="font-size:12px;color:#7EB8FF;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + _rwdEsc(m.instagram||'') + (m.birthday ? '<span style="color:rgba(255,255,255,0.3);margin:0 6px;">·</span><span style="color:rgba(255,255,255,0.5);">🎂 ' + _rwdEsc(m.birthday) + '</span>' : '') + '</div>' +
+          '<div style="font-size:17px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;">' + _rwdEsc(m.name||'') + '</div>' +
+          '<div style="font-size:13px;color:#7EB8FF;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + _rwdEsc(m.instagram||'') + (m.birthday ? '<span style="color:rgba(255,255,255,0.25);margin:0 7px;">·</span><span style="color:rgba(255,255,255,0.5);font-size:12px;">🎂 ' + _rwdEsc(m.birthday) + '</span>' : '') + '</div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
           '<div style="text-align:right;">' +
-            '<div style="font-size:26px;font-weight:800;color:#FFD600;line-height:1;">' + pts + '</div>' +
-            '<div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0.18em;text-transform:uppercase;margin-top:1px;">pts</div>' +
+            '<div style="font-size:11px;color:#FFD600;font-weight:800;letter-spacing:0.08em;margin-bottom:2px;">🪙 TOKENS</div>' +
+            '<div style="font-size:30px;font-weight:800;color:#FFD600;line-height:1;">' + pts + '</div>' +
           '</div>' +
-          '<div style="font-size:10px;color:rgba(255,255,255,0.3);width:12px;text-align:center;padding-top:2px;">' + (isExp ? '▲' : '▼') + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.28);width:14px;text-align:center;padding-top:4px;">' + (isExp ? '▲' : '▼') + '</div>' +
         '</div>' +
       '</div>' +
       expandedHtml +
@@ -15016,6 +15018,52 @@ function _rewardsRender() {
 function _rewardsToggle(key) {
   _rewardsExpKey = (_rewardsExpKey === key) ? null : key;
   _rewardsRender();
+}
+
+function _rewardsVoiceAdd(key) {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var micBtn = document.getElementById('rwd-mic-' + key);
+  var msg    = document.getElementById('rwd-msg-' + key);
+  if (!SR) {
+    if (msg) { msg.textContent = '⚠️ Voice not supported — use the number buttons'; msg.style.color = '#FF7096'; }
+    return;
+  }
+  var recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 3;
+  if (micBtn) { micBtn.textContent = '🔴'; micBtn.style.background = '#C62828'; }
+  if (msg)    { msg.textContent = '🎤 Listening… say a number'; msg.style.color = '#7EB8FF'; }
+  recognition.start();
+  recognition.onresult = function(e) {
+    if (micBtn) { micBtn.textContent = '🎤'; micBtn.style.background = '#4527A0'; }
+    var raw = e.results[0][0].transcript.toLowerCase().trim();
+    // word-to-digit map for common spoken numbers
+    var W2N = {'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10,
+               'fifteen':15,'twenty':20,'twenty five':25,'twenty-five':25,'thirty':30,'forty':40,
+               'fifty':50,'sixty':60,'seventy':70,'eighty':80,'ninety':90,
+               'hundred':100,'one hundred':100,'two hundred':200,'five hundred':500,'a hundred':100};
+    var pts = null;
+    var digits = raw.match(/\b(\d+)\b/);
+    if (digits) { pts = parseInt(digits[1], 10); }
+    else { for (var w in W2N) { if (raw.indexOf(w) !== -1) { pts = W2N[w]; break; } } }
+    if (pts && pts > 0 && pts <= 9999) {
+      if (msg) { msg.textContent = '🎤 Heard "' + raw + '" → +' + pts + ' 🪙'; msg.style.color = '#4ADE80'; }
+      _rewardsAdd(key, pts);
+    } else {
+      if (msg) { msg.textContent = '❓ Heard "' + raw + '" — try again'; msg.style.color = '#FF7096';
+        setTimeout(function(){ if(msg){ msg.textContent=''; msg.style.color='#4ADE80'; } }, 3500); }
+    }
+  };
+  recognition.onerror = function(e) {
+    if (micBtn) { micBtn.textContent = '🎤'; micBtn.style.background = '#4527A0'; }
+    var errMap = { 'not-allowed':'Mic blocked — allow microphone access', 'no-speech':'No speech detected', 'network':'Network error' };
+    if (msg) { msg.textContent = '⚠️ ' + (errMap[e.error] || e.error); msg.style.color = '#FF7096';
+      setTimeout(function(){ if(msg){ msg.textContent=''; msg.style.color='#4ADE80'; } }, 3500); }
+  };
+  recognition.onend = function() {
+    if (micBtn) { micBtn.textContent = '🎤'; micBtn.style.background = '#4527A0'; }
+  };
 }
 
 function _rewardsAdd(key, delta) {
@@ -17916,28 +17964,28 @@ advRender = function(){
      ══════════════════════════════════════════════════════════ -->
 <div class="view" id="view-rewards" style="background:#0D1B2E;">
 
-  <!-- Sticky header — 2 compact rows -->
-  <div style="background:#1B2E4A;padding:11px 14px 11px;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(255,255,255,0.07);">
+  <!-- Sticky header — safe-area aware, 2 rows -->
+  <div style="background:#1B2E4A;padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
 
     <!-- Row 1: back · title · sign-up · refresh · lock -->
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
-      <button onclick="closeRewardsCRM()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">← Back</button>
-      <span style="color:#FFD600;font-size:15px;font-weight:800;flex:1;letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🎟 LVR Rewards</span>
-      <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="background:#FFD600;color:#071A47;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;">📋 Sign-Up</button>
-      <button onclick="_rewardsRefresh()" title="Refresh" style="background:rgba(255,255,255,0.08);color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;flex-shrink:0;">🔄</button>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;" title="Log Out">🔒</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
+      <button onclick="closeRewardsCRM()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">← Back</button>
+      <span style="color:#FFD600;font-size:16px;font-weight:800;flex:1;letter-spacing:0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🎟 LVR Rewards</span>
+      <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="background:#FFD600;color:#071A47;border:none;border-radius:9px;padding:9px 13px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;">📋 Sign-Up</button>
+      <button onclick="_rewardsRefresh()" title="Refresh" style="background:rgba(255,255,255,0.08);color:#fff;border:none;border-radius:9px;padding:9px 11px;font-size:15px;cursor:pointer;flex-shrink:0;">🔄</button>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:9px;padding:9px 11px;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0;" title="Log Out">🔒</button>
     </div>
 
     <!-- Row 2: search · count -->
-    <div style="display:flex;align-items:center;gap:9px;">
-      <input type="text" id="rewards-search" placeholder="Search by name, phone, or Instagram…" oninput="_rewardsSearch(this.value)" autocomplete="off" style="flex:1;padding:9px 13px;border:1.5px solid rgba(255,255,255,0.12);border-radius:9px;background:rgba(255,255,255,0.07);color:#fff;font-size:13px;box-sizing:border-box;outline:none;">
-      <span id="rewards-count" style="color:#7EB8FF;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;"></span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <input type="text" id="rewards-search" placeholder="Search by name, phone, or Instagram…" oninput="_rewardsSearch(this.value)" autocomplete="off" style="flex:1;padding:11px 14px;border:1.5px solid rgba(255,255,255,0.14);border-radius:10px;background:rgba(255,255,255,0.07);color:#fff;font-size:14px;box-sizing:border-box;outline:none;">
+      <span id="rewards-count" style="color:#7EB8FF;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;"></span>
     </div>
 
   </div>
 
   <!-- Member list (rendered by _rewardsRender) -->
-  <div id="rewards-list-wrap" style="padding:12px 14px 70px;"></div>
+  <div id="rewards-list-wrap" style="padding:14px 16px 80px;"></div>
 
   <!-- Scroller -->
   <div class="scroller" id="rwd-scroller" style="display:flex;">
