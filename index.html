@@ -58,7 +58,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: max(16px, calc(env(safe-area-inset-top, 0px) + 6px)) 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+.hdr { background: #1B2E4A; padding: max(52px, calc(env(safe-area-inset-top, 0px) + 10px)) 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -301,7 +301,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 <div class="view" id="view-dashboard">
 
 
-  <div class="hdr" style="padding:8px 16px 10px;">
+  <div class="hdr">
     <div id="fb-bar">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
@@ -15257,7 +15257,7 @@ window.addEventListener('load',function(){
 </script>
 
 <div class="view" id="view-tasks" style="display:none;flex-direction:column;background:#f7f8fa;">
-  <div class="hdr" style="padding:10px 12px 0;">
+  <div class="hdr">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button onclick="showDashTab()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
       <span id="tasks-view-title" style="font-size:15px;font-weight:800;color:#111;flex:1;">✅ To-Do</span>
@@ -17953,7 +17953,7 @@ advRender = function(){
 <div class="view" id="view-rewards" style="background:#0D1B2E;">
 
   <!-- Sticky header — safe-area aware, 2 rows -->
-  <div style="background:#1B2E4A;padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+  <div style="background:#1B2E4A;padding:max(52px, calc(env(safe-area-inset-top, 0px) + 12px)) 16px 12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
 
     <!-- Row 1: back · title · sign-up · refresh · lock -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
