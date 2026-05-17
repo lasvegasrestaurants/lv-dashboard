@@ -9300,6 +9300,8 @@ var ADVERTISERS_STAGING = [
   {num:17319, name:'702 Protein Snack Brand LV', ig:'702proteinsnack', cat:'Other'},
   {num:17320, name:'Vegas Smoothie Franchise LV', ig:'vegassmoothie', cat:'Other'},
 ];
+// Preserve full staging list so friend mode can restore it to a clean slate
+var ADVERTISERS_STAGING_FULL = ADVERTISERS_STAGING.slice();
 // Filter out staging records that have been approved or deleted (persist across restarts)
 ADVERTISERS_STAGING = ADVERTISERS_STAGING.filter(function(a){return !_advStagingRemovedMap[a.num];});
 // Load approved staging records (from localStorage) back into BASE if not already present
@@ -13315,6 +13317,15 @@ function _enterFriendMode() {
   deletedMap={}; problemMap={}; customRecords=[];
   foodTradeMap={}; foodTradeDoneMap={}; ghostedMap={};
   fieldOverrideMap={}; userAttemptsMap={};
+  // Reset ALL ads maps for clean friend session
+  advAttemptsMap={}; advDmMap={}; advBadIGMap={}; advInterestedMap={}; advNotInterestedMap={};
+  advFollowupMap={}; advProblemMap={}; advGhostedMap={}; advTradeMap={}; advMetaAdsMap={};
+  advTradeDoneMap={}; advNotesMap={}; advNameOverrideMap={}; advIGOverrideMap={};
+  advFieldOverrideMap={}; advPriorityMap={}; advWebsiteMap={}; advLastContactedMap={};
+  advQuoteMap={}; advDeletedMap={};
+  _advStagingRemovedMap={}; _advStagingApproved=[]; _advStagingAdded=[];
+  // Restore full unfiltered staging list so friend sees all 8500 records
+  ADVERTISERS_STAGING = ADVERTISERS_STAGING_FULL.slice();
   // Rebuild RESTAURANTS clean from base list
   _numToIdx=Object.create(null);
   RESTAURANTS=RESTAURANTS_BASE.filter(function(r){return !deletedMap[r.num];}).map(function(r,i){
@@ -13343,6 +13354,8 @@ function _enterFriendMode() {
   lsStatus('#7B1FA2','👥 Friend Mode');
   _startSessionTimer();
   fbLoad();
+  // Load friend's own ads data (separate Firebase node, clean slate on first login)
+  if(typeof advFbLoad==='function') advFbLoad();
 }
 
 function _enterDemoMode() {
@@ -14902,7 +14915,7 @@ var _rewardsExpKey  = null;                // currently expanded member card key
 var _rewardsSearchQ = '';
 
 function openRewardsCRM() {
-  if (isDemo || isFriend) return;
+  if (isDemo) return;
   document.getElementById('view-dashboard').classList.remove('active');
   document.getElementById('view-rewards').classList.add('active');
   _rewardsRefresh();
@@ -16419,137 +16432,115 @@ function advSearchInput(v){
 
 // ADVERTISERS NAVIGATION
 function showDealershipsView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('dealer');
   showAdvertisersView();
 }
 function showSpasView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('spa');
   showAdvertisersView();
 }
 function showSalonsView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('salon');
   showAdvertisersView();
 }
 function showRealtorsView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('realtor');
   showAdvertisersView();
 }
 function showCateringView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('catering');
   showAdvertisersView();
 }
 function showHotelView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('hotel');
   showAdvertisersView();
 }
 function showMedSpaView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('medspa');
   showAdvertisersView();
 }
 function showDentalView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('dental');
   showAdvertisersView();
 }
 function showTrainerView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('trainer');
   showAdvertisersView();
 }
 function showWeddingView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('wedding');
   showAdvertisersView();
 }
 function showVetView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('vet');
   showAdvertisersView();
 }
 function showToursView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('tours');
   showAdvertisersView();
 }
 function showWineView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('wine');
   showAdvertisersView();
 }
 function showGamingView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('gaming');
   showAdvertisersView();
 }
 function showEcommerceView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('ecommerce');
   showAdvertisersView();
 }
 function showIGFixedView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advSetViewType('igfixed');
   showAdvertisersView();
 }
 function showDoctorsView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('doctor');
   showAdvertisersView();
 }
 function showLawyersView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('lawyer');
   showAdvertisersView();
 }
 
 function showLiquorView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advFilter='all';
   advSetViewType('liquor');
   showAdvertisersView();
 }
 function showMiscView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advFilter='all';
   advSetViewType('other');
   showAdvertisersView();
 }
 function showBadIGView(){
-  if(typeof isFriend!=='undefined'&&isFriend)return;
   if(typeof isDemo!=='undefined'&&isDemo)return;
   advFilter='all';
   advSetViewType('badig');
   showAdvertisersView();
 }
 function showAllAdsView(){
-  if(typeof isFriend!=='undefined' && isFriend) return;
   if(typeof isDemo!=='undefined' && isDemo) return;
   advSetViewType('all');
   showAdvertisersView();
@@ -16559,7 +16550,6 @@ function showAdvertisersView(){
   // Refresh header + nav highlight based on current viewType
   setTimeout(function(){if(advViewType==='staging'){showStagingView(advStagingCat);}else{advSetViewType(advViewType);}},10);
   // Block Friend and Demo modes — owner only
-  if(typeof isFriend!=="undefined" && isFriend) return;
   if(typeof isDemo!=="undefined" && isDemo) return;
   var vd=document.getElementById("view-dashboard");
   if(vd){vd.classList.remove("active");vd.style.display="none";}
@@ -16576,15 +16566,17 @@ function showAdvertisersView(){
 
 
 // === FIREBASE SYNC FOR ADVERTISERS (Patch 2D) ===
-var ADV_FB_URL = "https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_advertisers.json";
+var ADV_FB_URL        = "https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_advertisers.json";
+var ADV_FB_URL_FRIEND = "https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard_advertisers_friend.json";
 var _advFbSaveTimer = null;
 var _advFbLastSavedAt = 0;
 var _advFbSyncing = false;
 var _advFbPendingRetry = false;
 
+function _advFbUrl(){ return (typeof isFriend!=='undefined'&&isFriend) ? ADV_FB_URL_FRIEND : ADV_FB_URL; }
+function _advFbBy(){  return (typeof isFriend!=='undefined'&&isFriend) ? 'friend' : 'owner'; }
+
 function advFbSave(){
-  // Owner only — friend/demo never write
-  if(typeof isFriend!=="undefined" && isFriend) return;
   if(typeof isDemo!=="undefined" && isDemo) return;
   if(_advFbSaveTimer)clearTimeout(_advFbSaveTimer);
   _advFbSaveTimer = setTimeout(_advFbDoPush, 2000);
@@ -16595,7 +16587,7 @@ function _advFbDoPush(){
   _advFbSyncing = true;
   var payload = {
     savedAt: Date.now(),
-    savedBy: 'owner',
+    savedBy: _advFbBy(),
     attempts: advAttemptsMap,
     dm: advDmMap,
     badig: advBadIGMap,
@@ -16621,7 +16613,7 @@ function _advFbDoPush(){
     staging_added: _advStagingAdded
   };
   _advFbLastSavedAt = payload.savedAt;
-  fetch(ADV_FB_URL, {
+  fetch(_advFbUrl(), {
     method: 'PUT',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(payload)
@@ -16635,15 +16627,12 @@ function _advFbDoPush(){
 }
 
 function advFbLoad(){
-  // Skip for friend/demo
-  if(typeof isFriend!=="undefined" && isFriend) return;
   if(typeof isDemo!=="undefined" && isDemo) return;
-  fetch(ADV_FB_URL)
+  fetch(_advFbUrl())
     .then(function(r){return r.ok?r.json():null;})
     .then(function(rec){
       if(!rec) return;
-      // savedBy guard
-      if(rec.savedBy && rec.savedBy !== 'owner') return;
+      if(rec.savedBy && rec.savedBy !== _advFbBy()) return;
       if(rec.savedAt && rec.savedAt <= _advFbLastSavedAt) return;
       _advFbLastSavedAt = rec.savedAt || Date.now();
       _advApplyFirebaseData(rec);
