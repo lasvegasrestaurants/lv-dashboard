@@ -17908,6 +17908,9 @@ advRender = function(){
       <button onclick="_rewardsRefresh()" title="Refresh member list" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:14px;cursor:pointer;">🔄</button>
       <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒 Log Out</button>
     </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="width:100%;background:#FFD600;color:#071A47;border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:0.04em;">📋 Open Sign-Up Page</button>
+    </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <input type="text" id="rewards-search" placeholder="Search members by name, phone, or IG…" oninput="_rewardsSearch(this.value)" autocomplete="off" style="flex:1;padding:9px 12px;border:1px solid #263238;border-radius:8px;background:#263238;color:#fff;font-size:13px;box-sizing:border-box;">
       <span id="rewards-count" style="color:#aaa;font-size:12px;white-space:nowrap;min-width:60px;text-align:right;"></span>
