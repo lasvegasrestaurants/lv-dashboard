@@ -293,6 +293,60 @@
     .date-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     @media (max-width: 420px) { .date-pair { grid-template-columns: 1fr; } }
 
+    /* ── CONSENT CHECKBOXES ── */
+    .consent-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .consent-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+
+    .consent-cb {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      margin-top: 2px;
+      accent-color: var(--sky);
+      cursor: pointer;
+    }
+
+    .consent-text {
+      font-size: 0.68rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+    }
+
+    .consent-text strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .consent-text .stop-word {
+      font-family: 'Montserrat', monospace;
+      background: rgba(255,255,255,0.12);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-weight: 700;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+    }
+
+    .consent-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
     /* ── BUTTON ── */
     .submit-wrap { margin-top: 8px; }
 
@@ -318,13 +372,13 @@
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .btn-note {
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 400;
       color: var(--white-55);
       text-align: center;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       margin-top: 12px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     /* ── SAVE STATUS ── */
@@ -412,75 +466,54 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── HANDLES PANEL ── */
-    .panel {
-      background: var(--white-06);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 28px;
+    /* ── PRIVACY NOTICE BOX ── */
+    .privacy-notice {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 24px;
     }
 
-    .panel-hd {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 13px 18px;
-      border-bottom: 1px solid var(--white-12);
-    }
-
-    .panel-hd-left {
-      font-size: 0.58rem;
+    .privacy-notice-title {
+      font-size: 0.56rem;
       font-weight: 700;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--white-80);
-    }
-
-    .panel-hd-right {
-      font-size: 0.58rem;
-      font-weight: 600;
       color: var(--sky);
-      letter-spacing: 0.1em;
+      margin-bottom: 10px;
     }
 
-    .panel-list { max-height: 190px; overflow-y: auto; }
-
-    .h-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 11px 18px;
-      border-bottom: 1px solid var(--white-06);
+    .privacy-notice p {
+      font-size: 0.64rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+      margin-bottom: 6px;
     }
 
-    .h-row:last-child { border-bottom: none; }
-    .h-name { font-size: 0.83rem; font-weight: 500; color: var(--white); }
-    .h-ig   { font-size: 0.78rem; font-weight: 600; color: var(--sky); }
+    .privacy-notice p:last-child { margin-bottom: 0; }
 
-    .h-empty {
-      padding: 22px 18px;
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: 300;
-      color: var(--white-55);
-      font-style: italic;
+    .privacy-notice strong {
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
     }
 
     /* ── FOOTER ── */
     .footer {
-      padding: 20px 0 32px;
+      padding: 20px 0 36px;
       border-top: 1px solid var(--white-12);
-      margin-top: 20px;
+      margin-top: 28px;
       text-align: center;
     }
 
     .footer span {
-      font-size: 0.54rem;
+      font-size: 0.52rem;
       font-weight: 500;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--white-30);
+      line-height: 2;
     }
   </style>
 </head>
@@ -539,7 +572,7 @@
       <div class="field">
         <div class="lbl">Phone Number <span class="req">★ Required</span></div>
         <input class="inp" type="tel" id="phone" placeholder="(702) 000-0000" autocomplete="tel" />
-        <div class="err-msg" id="phoneErr">Please enter a valid phone number</div>
+        <div class="err-msg" id="phoneErr">Please enter a valid 10-digit phone number</div>
       </div>
 
       <div class="field">
@@ -588,12 +621,56 @@
         </div>
       </div>
 
+      <!-- Legal Consent -->
+      <div class="sec-div"><span>Permissions &amp; Privacy</span></div>
+
+      <div class="consent-block">
+
+        <!-- SMS Consent (TCPA) -->
+        <div class="field" style="gap:6px;">
+          <label class="consent-row" for="consentSms">
+            <input type="checkbox" id="consentSms" class="consent-cb" />
+            <span class="consent-text">
+              <strong>I agree to receive text messages from Las Vegas Restaurants (LVR)</strong>
+              at the phone number I provided. Rewards notifications, birthday perks, and program
+              updates will be sent by text. Message frequency: <strong>no more than 1 message per week.</strong>
+              Msg &amp; data rates may apply. Reply <span class="stop-word">STOP</span> to opt out at any time.
+              Reply <span class="stop-word">HELP</span> for assistance.
+              Consent is not a condition of joining the program.
+            </span>
+          </label>
+          <div class="err-msg" id="consentSmsErr" style="margin-left:30px;">Please agree to receive texts to join the program</div>
+        </div>
+
+        <div class="consent-divider"></div>
+
+        <!-- Privacy Consent -->
+        <div class="field" style="gap:6px;">
+          <label class="consent-row" for="consentPrivacy">
+            <input type="checkbox" id="consentPrivacy" class="consent-cb" />
+            <span class="consent-text">
+              I understand that LVR will collect and use my name, phone number, and Instagram
+              handle solely to operate the LVR Rewards Program.
+              <strong>LVR does not sell, rent, or share my personal information with third parties
+              for marketing purposes.</strong>
+              I may request deletion of my data at any time by messaging
+              <strong>@las_vegas_restaurants</strong> on Instagram.
+            </span>
+          </label>
+          <div class="err-msg" id="consentPrivacyErr" style="margin-left:30px;">Please accept the privacy terms to continue</div>
+        </div>
+
+      </div>
+
       <!-- Save status indicator -->
       <div class="save-status" id="saveStatus"></div>
 
       <div class="submit-wrap">
         <button class="btn" id="submitBtn" onclick="handleSubmit()">🎟️ &nbsp; Join LVR Rewards</button>
-        <p class="btn-note">Free to join &nbsp;·&nbsp; LVR Tokens redeemable at participating restaurants &nbsp;·&nbsp; No cash value</p>
+        <p class="btn-note">
+          Free to join &nbsp;·&nbsp; LVR Tokens redeemable at participating restaurants &nbsp;·&nbsp; No cash value<br>
+          By joining you agree to the SMS and privacy terms above &nbsp;·&nbsp; Reply STOP to opt out anytime
+        </p>
       </div>
 
     </div>
@@ -607,20 +684,23 @@
     <div class="s-badge">⭐ LVR Rewards Member</div>
   </div>
 
-  <!-- Handles Panel -->
-  <div class="panel">
-    <div class="panel-hd">
-      <div class="panel-hd-left">📸 &nbsp; Member Instagram Handles</div>
-      <div class="panel-hd-right" id="panelCount">0 members</div>
-    </div>
-    <div class="panel-list" id="handlesList">
-      <div class="h-empty">Members will appear here once they sign up</div>
-    </div>
+  <!-- Privacy Notice -->
+  <div class="privacy-notice">
+    <div class="privacy-notice-title">🔒 Your Privacy &amp; Your Rights</div>
+    <p><strong>What we collect:</strong> Your name, phone number, Instagram handle, birthday, and anniversary (optional) for the sole purpose of operating the LVR Rewards Program.</p>
+    <p><strong>We never sell your data.</strong> Your information is never sold, rented, or shared with third parties for advertising or marketing purposes.</p>
+    <p><strong>SMS communications:</strong> By joining, you consent to receive no more than 1 promotional or transactional text message per week from Las Vegas Restaurants. Standard message and data rates from your carrier may apply. You may opt out at any time by replying <strong>STOP</strong> to any message. This program complies with the Telephone Consumer Protection Act (TCPA).</p>
+    <p><strong>Data storage:</strong> Your data is stored securely on Google Firebase infrastructure. You may request full deletion of your account data at any time by contacting <strong>@las_vegas_restaurants</strong> on Instagram.</p>
+    <p><strong>No purchase required.</strong> Joining the LVR Rewards Program is free and no purchase is necessary to participate.</p>
   </div>
 
   <!-- Footer -->
   <div class="footer">
-    <span>las_vegas_restaurants &nbsp;·&nbsp; lvr rewards program &nbsp;·&nbsp; internal use only</span>
+    <span>
+      Las Vegas Restaurants &nbsp;·&nbsp; LVR Rewards Program<br>
+      @las_vegas_restaurants &nbsp;·&nbsp; Las Vegas, NV<br>
+      © 2026 Las Vegas Restaurants. All rights reserved.
+    </span>
   </div>
 
 </div>
@@ -635,7 +715,6 @@
   // ─────────────────────────────────────────────
   // UI helpers
   // ─────────────────────────────────────────────
-  var entries = [];
   var $   = function(id) { return document.getElementById(id); };
   var val = function(id) { return $(id).value.trim(); };
 
@@ -665,9 +744,15 @@
     if (el) el.classList.toggle('err-field', show);
   }
 
-  $('fname').addEventListener('input',     function() { setErr('fname', false); });
-  $('phone').addEventListener('input',     function() { setErr('phone', false); });
-  $('instagram').addEventListener('input', function() { setErr('instagram', false); });
+  function setCheckboxErr(id, show) {
+    $(id + 'Err').classList.toggle('show', show);
+  }
+
+  $('fname').addEventListener('input',        function() { setErr('fname', false); });
+  $('phone').addEventListener('input',        function() { setErr('phone', false); });
+  $('instagram').addEventListener('input',    function() { setErr('instagram', false); });
+  $('consentSms').addEventListener('change',  function() { setCheckboxErr('consentSms', false); });
+  $('consentPrivacy').addEventListener('change', function() { setCheckboxErr('consentPrivacy', false); });
   ['bdMon','bdDay'].forEach(function(id) {
     $(id).addEventListener('change', function() { setErr('birthday', false, 'bdMon'); });
   });
@@ -686,23 +771,28 @@
   // ─────────────────────────────────────────────
   function handleSubmit() {
     var ok   = true;
-    var name = val('fname');
+    var name  = val('fname');
     var phone = val('phone');
-    var ig   = val('instagram').replace(/^@/, '');
+    var ig    = val('instagram').replace(/^@/, '');
     var bdMon = $('bdMon').value;
     var bdDay = $('bdDay').value;
     var anMon = $('anMon').value;
     var anDay = $('anDay').value;
+    var consentSms     = $('consentSms').checked;
+    var consentPrivacy = $('consentPrivacy').checked;
 
-    if (!name)                                          { setErr('fname', true);             ok = false; } else setErr('fname', false);
-    if (!phone || phone.replace(/\D/g,'').length < 10)  { setErr('phone', true);             ok = false; } else setErr('phone', false);
-    if (!ig)                                            { setErr('instagram', true);          ok = false; } else setErr('instagram', false);
-    if (!bdMon || !bdDay)                               { setErr('birthday', true, 'bdMon'); ok = false; } else setErr('birthday', false, 'bdMon');
+    if (!name)                                           { setErr('fname', true);                   ok = false; } else setErr('fname', false);
+    if (!phone || phone.replace(/\D/g,'').length < 10)   { setErr('phone', true);                   ok = false; } else setErr('phone', false);
+    if (!ig)                                             { setErr('instagram', true);                ok = false; } else setErr('instagram', false);
+    if (!bdMon || !bdDay)                                { setErr('birthday', true, 'bdMon');        ok = false; } else setErr('birthday', false, 'bdMon');
+    if (!consentSms)                                     { setCheckboxErr('consentSms', true);       ok = false; } else setCheckboxErr('consentSms', false);
+    if (!consentPrivacy)                                 { setCheckboxErr('consentPrivacy', true);   ok = false; } else setCheckboxErr('consentPrivacy', false);
 
     if (!ok) return;
 
     var bdStr = MONTHS[parseInt(bdMon)] + ' ' + bdDay;
     var anStr = (anMon && anDay) ? MONTHS[parseInt(anMon)] + ' ' + anDay : null;
+    var nowTs = Date.now();
 
     // Disable button while saving
     var btn = $('submitBtn');
@@ -714,13 +804,17 @@
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name:        name,
-        phone:       phone,
-        instagram:   '@' + ig,
-        birthday:    bdStr,
-        anniversary: anStr || null,
-        joinedAt:    Date.now(),
-        source:      'lvr-rewards-form'
+        name:            name,
+        phone:           phone,
+        instagram:       '@' + ig,
+        birthday:        bdStr,
+        anniversary:     anStr || null,
+        joinedAt:        nowTs,
+        source:          'lvr-rewards-form',
+        points:          0,
+        consent_sms:     true,
+        consent_privacy: true,
+        consent_ts:      nowTs
       })
     })
     .then(function(r) {
@@ -728,11 +822,7 @@
       return r.json();
     })
     .then(function() {
-      setSaveStatus('saved', '✅  Saved to LVR database');
-
-      // Add to local panel
-      entries.push({ name: name, instagram: '@' + ig });
-      updatePanel();
+      setSaveStatus('saved', '✅  You\'re in the LVR Rewards database');
 
       // Show success screen
       $('formWrap').style.display = 'none';
@@ -742,39 +832,27 @@
         '<strong>' + esc(name) + '</strong>, you\'re officially an LVR Rewards member!<br>' +
         'Start earning tokens at participating Las Vegas restaurants.<br>' +
         'We\'ll celebrate your birthday on <strong>' + bdStr + '</strong> 🎂<br>' +
-        (anStr ? 'Anniversary on <strong>' + anStr + '</strong> too! 🥂' : '');
+        (anStr ? 'Anniversary on <strong>' + anStr + '</strong> too! 🥂<br>' : '') +
+        '<br><span style="font-size:0.78em;opacity:0.7;">You\'ll receive program updates by text. Reply STOP anytime to opt out.</span>';
 
-      // Reset after 5.5s
+      // Reset after 6s
       setTimeout(function() {
         ['fname','phone','instagram'].forEach(function(id) { $(id).value = ''; });
         ['bdMon','bdDay','anMon','anDay'].forEach(function(id) { $(id).value = ''; });
+        $('consentSms').checked = false;
+        $('consentPrivacy').checked = false;
         $('formWrap').style.display = 'block';
         $('successScreen').classList.remove('show');
         btn.disabled = false;
-        setSaveStatus('', '');
         $('saveStatus').className = 'save-status';
-      }, 5500);
+        $('saveStatus').textContent = '';
+      }, 6000);
     })
     .catch(function(err) {
       console.error('Database write error:', err);
-      setSaveStatus('save-err', '⚠️  Save failed — check your connection');
+      setSaveStatus('save-err', '⚠️  Save failed — check your connection and try again');
       btn.disabled = false;
     });
-  }
-
-  function updatePanel() {
-    $('panelCount').textContent = entries.length + (entries.length === 1 ? ' member' : ' members');
-    var list = $('handlesList');
-    if (!entries.length) {
-      list.innerHTML = '<div class="h-empty">Members will appear here once they sign up</div>';
-      return;
-    }
-    list.innerHTML = entries.map(function(e) {
-      return '<div class="h-row">' +
-        '<span class="h-name">' + esc(e.name) + '</span>' +
-        '<span class="h-ig">' + esc(e.instagram) + '</span>' +
-        '</div>';
-    }).join('');
   }
 
   function esc(s) {
