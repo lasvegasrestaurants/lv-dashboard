@@ -259,14 +259,155 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .tmod-cancel{background:#eee;color:#333;}
 .tasks-empty{text-align:center;color:#aaa;padding:40px 20px;font-size:15px;}
 
+/* ══════════════════════════════════════════════════
+   FANDUEL THEME — electric blue + deep navy
+   ══════════════════════════════════════════════════ */
+
+/* ── FanDuel PIN Screen ── */
+#pin-screen {
+  background: linear-gradient(160deg, #060f1a 0%, #0b1826 55%, #071220 100%);
+}
+.pin-shield {
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 18px rgba(20,147,255,0.55));
+  animation: fd-pulse 3s ease-in-out infinite;
+}
+@keyframes fd-pulse {
+  0%,100% { filter: drop-shadow(0 0 14px rgba(20,147,255,0.5)); }
+  50%      { filter: drop-shadow(0 0 28px rgba(20,147,255,0.85)); }
+}
+.pin-logo {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.pin-sub { color: rgba(111,188,255,0.65); font-size: 12px; margin-bottom: 34px; letter-spacing: .5px; }
+.pin-dot { border: 2px solid rgba(20,147,255,0.35); background: transparent; }
+.pin-dot.filled {
+  background: #1493FF;
+  border-color: #1493FF;
+  box-shadow: 0 0 10px rgba(20,147,255,0.75), 0 0 20px rgba(20,147,255,0.35);
+}
+.pin-dot.error { background: #EF5350; border-color: #EF5350; box-shadow: none; }
+.pin-key {
+  background: rgba(20,147,255,0.09);
+  border: 1.5px solid rgba(20,147,255,0.18);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  transition: background .12s, border-color .12s;
+}
+.pin-key:active, .pin-key.pressed {
+  background: rgba(20,147,255,0.32);
+  border-color: rgba(20,147,255,0.55);
+}
+.pin-key.del { color: #1493FF; font-size: 15px; }
+.pin-key.empty { background: transparent; border-color: transparent; }
+.demo-pin-btn {
+  background: rgba(20,147,255,0.1);
+  color: rgba(111,188,255,0.75);
+  border: 1.5px solid rgba(20,147,255,0.25);
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 13px;
+  letter-spacing: .4px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.demo-pin-btn:active { background: rgba(20,147,255,0.25); }
+
+/* ── FanDuel Navigation / Header ── */
+.hdr, #fb-bar, .stats {
+  background: #0b1826;
+}
+.hdr { border-bottom: 1px solid rgba(20,147,255,0.15); }
+.sub, #fb-msg { color: #1493FF !important; }
+#fb-bar .hdr h1 { color: #fff; }
+
+/* ── Stats bar background ── */
+.stats { border-bottom: 1px solid rgba(20,147,255,0.12); }
+.b-total { background: #1a3a6b; }
+
+/* ── Scroller ── */
+.scroller { background: rgba(7,18,32,0.92); }
+.sc-thumb { background: linear-gradient(180deg, #1493FF, #0a6cc4); }
+.sc-pct { color: rgba(111,188,255,0.8); }
+
+/* ── Search bar ── */
+.search-wrap input:focus {
+  border-color: #1493FF;
+  box-shadow: 0 0 0 3px rgba(20,147,255,0.14);
+}
+
+/* ── Primary action buttons → FanDuel electric blue ── */
+.btn-email    { background: #1493FF; }
+.btn-add-email { background: #1493FF; }
+.btn-add-record { background: #1493FF; }
+.btn-save { background: #1493FF; }
+.tmod-save { background: #1493FF; }
+.tasks-nav-btn.active { color: #1493FF; border-bottom-color: #1493FF; }
+.task-card { border-left-color: #1493FF; }
+.attempt-email.pending-em { color: #1493FF; }
+.attempt-status.s-pending { background: #e3f2fd; color: #1493FF; }
+
+/* ── Modal focus rings ── */
+.modal input:focus, .modal textarea:focus,
+.tmod input:focus, .tmod textarea:focus {
+  border-color: #1493FF;
+  box-shadow: 0 0 0 3px rgba(20,147,255,0.14);
+}
+.modal h2 { color: #0b1826; }
+#note-modal-input::-webkit-scrollbar-thumb { background: #1493FF; }
+
+/* ── Toast ── */
+#dm-toast {
+  background: #0b1826;
+  border: 1px solid rgba(20,147,255,0.3);
+  box-shadow: 0 4px 20px rgba(20,147,255,0.2);
+}
+
+/* ── CRM retheme ── */
+.crm-name { color: #0b1826; }
+.crm-stat-val { color: #0b1826; }
+
+/* ── Ads view header accent ── */
+#adv-filter-problem.adv-active { background: #C62828 !important; box-shadow: 0 0 0 2.5px #fff !important; }
 </style>
 </head>
 <body>
 
 <!-- PIN LOCK SCREEN -->
 <div id="pin-screen">
-  <div class="pin-logo">LV Master Dashboard</div>
+
+  <!-- FanDuel-style shield logo -->
+  <svg class="pin-shield" width="72" height="84" viewBox="0 0 72 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fdShieldGrad" x1="36" y1="2" x2="36" y2="82" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#2AABFF"/>
+        <stop offset="100%" stop-color="#0A6CC4"/>
+      </linearGradient>
+      <linearGradient id="fdShineGrad" x1="20" y1="4" x2="52" y2="36" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </linearGradient>
+    </defs>
+    <!-- Shield body -->
+    <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="url(#fdShieldGrad)"/>
+    <!-- Shine overlay -->
+    <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="url(#fdShineGrad)"/>
+    <!-- Border highlight -->
+    <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+    <!-- F letter -->
+    <text x="36" y="56" text-anchor="middle" fill="#ffffff" font-size="40" font-weight="900" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" letter-spacing="-1">F</text>
+  </svg>
+
+  <div class="pin-logo">LV&nbsp;&nbsp;DASHBOARD</div>
   <div class="pin-sub">Enter your PIN to continue</div>
+
   <div class="pin-dots">
     <div class="pin-dot" id="pd0"></div>
     <div class="pin-dot" id="pd1"></div>
@@ -275,6 +416,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <div class="pin-dot" id="pd4"></div>
     <div class="pin-dot" id="pd5"></div>
   </div>
+
   <div class="pin-grid">
     <button class="pin-key" onclick="pinKey('1')">1</button>
     <button class="pin-key" onclick="pinKey('2')">2</button>
@@ -287,14 +429,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <button class="pin-key" onclick="pinKey('9')">9</button>
     <div class="pin-key empty"></div>
     <button class="pin-key" onclick="pinKey('0')">0</button>
-    <button class="pin-key del" onclick="pinDel()">Del</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
   </div>
+
   <div class="pin-msg" id="pin-msg"></div>
   <button class="demo-pin-btn" onclick="pinDemoQuick()">Try Demo Mode</button>
-  <div style="margin-top:20px;display:flex;align-items:center;gap:6px;opacity:.45;">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V5l-8-3z" fill="#4285F4"/><path d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12V2z" fill="#34A853"/></svg>
-    <span style="font-size:11px;color:#fff;font-weight:600;letter-spacing:.3px;">Secured by Google Cloud</span>
+
+  <div style="margin-top:22px;display:flex;align-items:center;gap:7px;opacity:.38;">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V5l-8-3z" fill="#4285F4"/><path d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12V2z" fill="#34A853"/></svg>
+    <span style="font-size:11px;color:#fff;font-weight:600;letter-spacing:.4px;">Secured by Google Cloud</span>
   </div>
+
 </div>
 
 <!-- ═══════════════════════════════ DASHBOARD VIEW ═══════════════════════════════ -->
