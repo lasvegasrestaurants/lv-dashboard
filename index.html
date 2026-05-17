@@ -11209,7 +11209,10 @@ function saveAttempts() { try { localStorage.setItem(LS_ATTEMPTS, JSON.stringify
 // ══════════════════════════════════════════════════════
 // ── Firebase REST API — no SDK needed, works in all iOS PWA contexts ──
 var FB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard.json';
-var REWARDS_FB_URL = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards.json';
+var REWARDS_FB_URL        = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards.json';
+var REWARDS_FB_URL_FRIEND = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards_friend.json';
+function _rwdFbUrl() { return (typeof isFriend!=='undefined'&&isFriend) ? REWARDS_FB_URL_FRIEND : REWARDS_FB_URL; }
+function _rwdFbBase(){ return (typeof isFriend!=='undefined'&&isFriend) ? 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards_friend/' : 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards/'; }
 var _fbSaveTimer = null;
 var _fbSyncing = false;
 
@@ -14929,7 +14932,7 @@ function closeRewardsCRM() {
 function _rewardsRefresh() {
   var wrap = document.getElementById('rewards-list-wrap');
   if (wrap) wrap.innerHTML = '<div style="text-align:center;color:#aaa;padding:48px 20px;font-size:14px;">Loading members…</div>';
-  fetch(REWARDS_FB_URL)
+  fetch(_rwdFbUrl())
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(data) {
       _rewardsFbData = data || Object.create(null);
@@ -15098,7 +15101,7 @@ function _rewardsSave(key, pts) {
   _rewardsRender();                             // optimistic UI update
   var msg = document.getElementById('rwd-msg-' + key);
   if (msg) msg.textContent = '⏳ Saving…';
-  fetch('https://lvr-data-a60c1-default-rtdb.firebaseio.com/lvr_rewards/' + key + '.json', {
+  fetch(_rwdFbBase() + key + '.json', {
     method: 'PATCH',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({points: pts})
