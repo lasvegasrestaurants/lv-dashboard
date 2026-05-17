@@ -12307,6 +12307,7 @@ function confirmDelete(num) {
   delete igOverrideMap[num]; delete userNotesMap[num]; delete nameOverrideMap[num];
   delete followupMap[num]; delete problemMap[num]; delete foodTradeMap[num];
   delete foodTradeDoneMap[num]; delete ghostedMap[num]; delete fieldOverrideMap[num];
+  delete userAttemptsMap[num];
   // Save to localStorage
   try {
     localStorage.setItem(LS_STATUS,       JSON.stringify(statusMap));
@@ -12325,6 +12326,7 @@ function confirmDelete(num) {
     localStorage.setItem(LS_FOODTRADE_DONE, JSON.stringify(foodTradeDoneMap));
     localStorage.setItem(LS_GHOSTED,        JSON.stringify(ghostedMap));
     localStorage.setItem(LS_FIELD_OVERRIDE, JSON.stringify(fieldOverrideMap));
+    localStorage.setItem(LS_USER_ATTEMPTS,  JSON.stringify(userAttemptsMap));
   } catch(e) {}
 
   lsSaved();
@@ -12425,9 +12427,10 @@ function copyDM(num) {
     var ta = document.createElement('textarea');
     ta.value = msg; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
+    var _copyOk = false;
+    try { _copyOk = document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
-    showDMToast('DM copied!');
+    showDMToast(_copyOk ? 'DM copied!' : 'Copy failed — try again');
   }
 }
 var _toastTimer = null;
@@ -12451,7 +12454,7 @@ function openDM(num) {
   }
   _dashDirty = true;
   dashRefreshCard(num); dashUpdateStats();
-  window.location.href = 'https://ig.me/m/' + r.igHandle;
+  window.open('https://ig.me/m/' + r.igHandle, '_blank');
 }
 
 function openEmail(num) {
@@ -13431,6 +13434,7 @@ function _enterFriendMode() {
   // Friend mode gets a clean staging view (their own removal history, not owner's)
   var _friendRsRm = {}; try { _friendRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_friendRsRm[r.num]; });
+  _rsUpdateCount(); // refresh staging count + dupes badges after filtering
   dashSetFilter('all'); dashUpdateStats();
   lsStatus('#7B1FA2','👥 Friend Mode');
   _startSessionTimer();
@@ -13504,6 +13508,7 @@ function _enterDemoMode() {
   // Re-filter RESTAURANTS_STAGING with demo key (separate from production removals)
   var _demoRsRm = {}; try { _demoRsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return !_demoRsRm[r.num]; });
+  _rsUpdateCount(); // refresh staging count + dupes badges after filtering
   CRM_CUSTOMERS = crmLoadCustomers();
   initCRM();
   _startSessionTimer();
@@ -13575,6 +13580,8 @@ function _pinCheck() {
 function logOut() {
   clearTimeout(_fbSaveTimer); _fbSaveTimer = null;
   clearInterval(_fbPollTimer); _fbPollTimer = null;
+  if (typeof _advFbSaveTimer !== 'undefined') { clearTimeout(_advFbSaveTimer); _advFbSaveTimer = null; }
+  if (typeof _advFbPollTimer !== 'undefined') { clearInterval(_advFbPollTimer); _advFbPollTimer = null; }
   if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
   if (isDemo) { _demoSessionEnd(); clearTimeout(_demoActivityTimer); clearInterval(_demoBootTimer); }
   var modal = document.getElementById('demo-activity-modal');
@@ -14015,9 +14022,9 @@ function savePinChange() {
   var conf = document.getElementById('pin-change-confirm').value.trim();
   var msg  = document.getElementById('pin-change-msg');
   if (cur !== _pinCorrect) { msg.textContent = 'Current PIN is incorrect.'; return; }
-  if (!/^\d{6}$/.test(nw)) { msg.textContent = 'New PIN must be exactly 6 digits.'; return; }
   if (nw === DEMO_PIN)      { msg.textContent = 'Cannot use 123456 — that is the demo PIN.'; return; }
   if (nw === FRIEND_PIN)    { msg.textContent = 'Cannot use that PIN — it is reserved.'; return; }
+  if (!/^\d{6}$/.test(nw)) { msg.textContent = 'New PIN must be exactly 6 digits.'; return; }
   if (nw !== conf)          { msg.textContent = 'New PINs do not match.'; return; }
   try {
     localStorage.setItem('lv_pin', nw);
@@ -15161,7 +15168,7 @@ function _rewardsVoiceAdd(key) {
 
 function _rewardsAdd(key, delta) {
   if (!_rewardsFbData[key]) return;
-  _rewardsSave(key, (_rewardsFbData[key].points || 0) + delta);
+  _rewardsSave(key, Math.max(0, (_rewardsFbData[key].points || 0) + delta));
 }
 
 function _rewardsSet(key) {
@@ -16175,7 +16182,7 @@ function advOpenDM(num){
     if(typeof advFbSave==='function')advFbSave();
   }
   _advUpdateDmButton(num);
-  window.location.href='https://ig.me/m/'+handle;
+  window.open('https://ig.me/m/'+handle, '_blank');
 }
 
 function advUnmarkDM(num){
@@ -16192,6 +16199,7 @@ function advDeleteRecord(num){
     if(!confirm('Remove '+ADVERTISERS_STAGING[_si].name+' from staging?'))return;
     _advStagingRemovedMap[num]=1;localStorage.setItem('lv_staging_removed_v1',JSON.stringify(_advStagingRemovedMap));
     ADVERTISERS_STAGING.splice(_si,1);
+    if(typeof advFbSave==='function')advFbSave(); // sync removal to Firebase so other devices see it
     advRender();
     return;
   }
@@ -16806,6 +16814,7 @@ function _advFbDoPush(){
   });
 }
 
+var _advFbPollTimer = null;
 function advFbLoad(){
   if(typeof isDemo!=="undefined" && isDemo) return;
   fetch(_advFbUrl())
@@ -16818,6 +16827,23 @@ function advFbLoad(){
       _advApplyFirebaseData(rec);
     })
     .catch(function(){});
+  // Poll every 10 seconds for changes from other devices (mirrors restaurant polling)
+  clearInterval(_advFbPollTimer);
+  _advFbPollTimer = setInterval(function(){
+    if(document.visibilityState !== 'visible') return;
+    if(_advFbSyncing) return;
+    fetch(_advFbUrl())
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(rec){
+        if(!rec) return;
+        if(rec.savedBy && rec.savedBy !== _advFbBy()) return;
+        if(rec.savedAt && rec.savedAt > _advFbLastSavedAt){
+          _advFbLastSavedAt = rec.savedAt;
+          _advApplyFirebaseData(rec);
+        }
+      })
+      .catch(function(){});
+  }, 10000);
 }
 
 function _advApplyFirebaseData(rec){
