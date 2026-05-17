@@ -70,7 +70,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .b-problem.active-badge { outline: 3px solid #000 !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.5) !important; opacity: 1 !important; }
 .adv-fbtn { margin: 3px !important; }
 .adv-fbtn.adv-active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(0,0,0,0.25) !important; }
-#adv-filter-problem.adv-active { box-shadow: 0 0 0 3px #000, 0 0 0 6px #fff, 0 0 0 9px #000 !important; }
+#adv-filter-problem.adv-active { background: #C62828 !important; box-shadow: 0 0 0 2.5px #fff !important; }
 .ads-subtab.ads-active{box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(0,0,0,0.25);}
 
 .b-total    { background: #2E4057; }
@@ -189,8 +189,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-note.has-note { background: #F57F17; color: #fff; }
 .note-preview { font-size: 11px; color: #F57F17; font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .btn-delete { background: #B71C1C; color: #fff; border: none !important; font-size: 13px; padding: 8px 13px; }
-.btn-problem { background: #C62828; color: #fff; border: none; font-size: 13px; padding: 8px 13px; transition: background .2s, box-shadow .2s; }
-.btn-problem.flagged { background: #7F0000; color: #fff; border: none; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #000; }
+.btn-problem { background: #C62828; color: #fff; border: none; font-size: 13px; padding: 8px 13px; transition: box-shadow .2s; }
+.btn-problem.flagged { background: #C62828; color: #fff; border: none; box-shadow: 0 0 0 2.5px #fff; }
 .b-problem { background: #C62828; }
 .b-foodtrade  { background: #2E7D32; }
 .b-foodtradedone { background: #F57F17; }
@@ -13295,7 +13295,10 @@ function _getStatEls() {
 function dashUpdateStats(){
   var total=RESTAURANTS.length,sent=0,bounced=0,badig=0,interested=0,notinterested=0,notes=0,followup=0,problem=0,foodtrade=0,foodtradedone=0,ghosted=0,nodm=0,noemail=0;
   for(var i=0;i<total;i++){
-    var r=RESTAURANTS[i],s=statusMap[r.num]||r.defaultStatus;
+    var r=RESTAURANTS[i];
+    // In friend mode statusMap starts empty — default to 'pending' so friends see a clean slate
+    // (not the base data's defaultStatus which can be 'bounced' or 'sent')
+    var s=statusMap[r.num]||(isFriend?'pending':r.defaultStatus);
     if(s==='sent')sent++;
     else if(s==='bounced')bounced++;
     if(badIGMap[r.num])badig++;
@@ -13308,7 +13311,9 @@ function dashUpdateStats(){
     if(foodTradeDoneMap[r.num])foodtradedone++;
     if(ghostedMap[r.num])ghosted++;
     if(s==='pending')noemail++;
-    if(!dmMap[r.num]&&!badIGMap[r.num]&&(r.instagram||igOverrideMap[r.num]))nodm++;
+    // Waiting DM: any record not yet DM'd and not flagged bad IG
+    // (matches what the nodm filter view actually shows — no Instagram-handle gate)
+    if(!dmMap[r.num]&&!badIGMap[r.num])nodm++;
   }
   var el=_getStatEls();
   el.total.textContent=total; el.done.textContent=sent;
