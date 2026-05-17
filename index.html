@@ -340,6 +340,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div id="rs-staging-bar" style="padding:4px 12px 8px;background:rgba(255,179,0,0.04);border-top:2px dashed #37474F;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
     <button onclick="rsShowStaging()" id="rs-stg-btn" style="background:#E65100;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">📋 Staging <span id="rs-stg-cnt" style="background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 7px;margin-left:4px;font-size:12px;">0</span></button>
     <button onclick="rsShowMain()" id="rs-back-btn" style="display:none;background:#1565C0;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back to Outreach</button>
+    <button onclick="rsShowDupesModal()" id="rs-dupes-btn" style="background:#6A1B9A;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔍 Dupes <span id="rs-dupes-cnt" style="background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 7px;margin-left:4px;font-size:12px;">0</span></button>
     <span id="rs-stg-title" style="display:none;color:#FFD600;font-size:13px;font-weight:700;"></span>
   </div>
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
@@ -16181,6 +16182,104 @@ function advDupesDelete(num){
 }
 
 
+// ══════════════════════════════════════════════════════
+// RESTAURANT STAGING DUPLICATES
+// ══════════════════════════════════════════════════════
+function _rsNormName(n) {
+  return (n||'').toLowerCase()
+    .replace(/['']/g,"'").replace(/[^a-z0-9 '&]/g,' ')
+    .replace(/\b(las vegas|henderson|north las vegas|the strip|lv|nv)\b/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+
+function rsShowDupesModal() {
+  var _rsRm = {}; try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+
+  // Build a name→base entry map from the current live RESTAURANTS list
+  var baseMap = Object.create(null);
+  for (var i = 0; i < RESTAURANTS.length; i++) {
+    var r = RESTAURANTS[i];
+    if (deletedMap[r.num]) continue;
+    var key = _rsNormName(r.name);
+    if (key) { if (!baseMap[key]) baseMap[key] = []; baseMap[key].push(r); }
+  }
+
+  // Find staging entries that match a base entry by normalized name
+  var dupes = [];
+  for (var j = 0; j < RESTAURANTS_STAGING.length; j++) {
+    var s = RESTAURANTS_STAGING[j];
+    if (_rsRm[s.num]) continue; // already removed
+    var sKey = _rsNormName(s.name);
+    if (sKey && baseMap[sKey]) {
+      dupes.push({ staging: s, matches: baseMap[sKey] });
+    }
+  }
+
+  // Update count badge
+  var cntEl = document.getElementById('rs-dupes-cnt');
+  if (cntEl) cntEl.textContent = dupes.length;
+
+  var modal = document.getElementById('rs-dupes-modal');
+  var content = document.getElementById('rs-dupes-content');
+  if (!modal || !content) return;
+
+  if (dupes.length === 0) {
+    content.innerHTML = '<div style="text-align:center;color:#90CAF9;padding:32px 16px;font-size:14px;">No duplicates found 🎉</div>';
+  } else {
+    var html = '<div style="color:#FF9800;font-size:12px;font-weight:700;margin-bottom:14px;padding:8px 12px;background:rgba(255,152,0,0.1);border-radius:8px;">' +
+      dupes.length + ' staging entr' + (dupes.length===1?'y':'ies') + ' already exist in your main list. Click Remove to delete from staging.</div>';
+    for (var d = 0; d < dupes.length; d++) {
+      var stg = dupes[d].staging;
+      var matches = dupes[d].matches;
+      html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;margin-bottom:10px;padding:12px 14px;">';
+      html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">' + _rsEsc(stg.name) + '</div>';
+      html += '<div style="font-size:11px;color:#FFD600;">📋 Staging #' + stg.num + (stg.ig ? ' · @' + stg.ig : '') + (stg.cat ? ' · ' + stg.cat : '') + '</div>';
+      html += '<div style="font-size:11px;color:#4ADE80;margin-top:4px;">✓ Already in main list as: ';
+      for (var m = 0; m < matches.length; m++) {
+        var mt = matches[m];
+        html += '<strong style="color:#fff;">' + _rsEsc(mt.name) + '</strong> (#' + mt.num + ')';
+        if (m < matches.length-1) html += ', ';
+      }
+      html += '</div></div>';
+      html += '<button onclick="rsDupesDelete(' + stg.num + ')" style="background:#C62828;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Remove</button>';
+      html += '</div></div>';
+    }
+    content.innerHTML = html;
+  }
+
+  modal.style.display = 'flex';
+}
+
+function _rsEsc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function rsCloseDupesModal() {
+  var modal = document.getElementById('rs-dupes-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function rsDupesDelete(num) {
+  // Remove from staging removed map → persists to localStorage + Firebase
+  _rsRm[num] = 1;
+  try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return r.num !== num; });
+  // Persist to Firebase so it sticks across devices
+  var _rsPayload = {}; _rsPayload[num] = 1;
+  fetch(FB_URL.replace('.json','') + '/rsremoved/' + num + '.json', {
+    method:'PUT', headers:{'Content-Type':'application/json'}, body:'1'
+  }).catch(function(){});
+  // Update count badge
+  var cntEl = document.getElementById('rs-dupes-cnt');
+  if (cntEl) cntEl.textContent = Math.max(0, parseInt(cntEl.textContent||'0') - 1);
+  var stgEl = document.getElementById('rs-stg-cnt');
+  if (stgEl) stgEl.textContent = RESTAURANTS_STAGING.length;
+  // Refresh modal
+  rsShowDupesModal();
+}
+
 function advOpenCatModal(num){
   var cats=[
     {key:'Lawyer',    label:'Lawyers',     color:'#004D40'},
@@ -17986,6 +18085,20 @@ advRender = function(){
     <div class="sc-pct" id="rwd-scPct">0%</div>
   </div>
 
+</div>
+
+<!-- ── RESTAURANT DUPES MODAL ── -->
+<div id="rs-dupes-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9999;align-items:flex-start;justify-content:center;padding:20px;box-sizing:border-box;overflow-y:auto;">
+  <div style="max-width:580px;width:100%;background:#1B2E4A;border-radius:14px;padding:20px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;">
+      <div>
+        <div style="color:#FFD600;font-size:17px;font-weight:800;">🔍 Staging Duplicates</div>
+        <div style="color:#90CAF9;font-size:12px;margin-top:3px;">Staging entries that already exist in your main restaurant list</div>
+      </div>
+      <button onclick="rsCloseDupesModal()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✕ Close</button>
+    </div>
+    <div id="rs-dupes-content" style="max-height:70vh;overflow-y:auto;"></div>
+  </div>
 </div>
 
 </body></html>
