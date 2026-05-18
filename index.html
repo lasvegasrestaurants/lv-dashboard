@@ -90,14 +90,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .search-wrap input { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid #ccc; border-radius: 24px; font-size: 14px; outline: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 14px center; }
 .search-wrap input:focus { border-color: #1B2E4A; box-shadow: 0 0 0 3px rgba(27,46,74,.1); }
 
-/* ── CARDS ── */
+/* ── CARDS — unified dark navy ── */
 #list { padding: 4px 14px 40px; }
-.card { border-radius: 14px; margin-bottom: 10px; padding: 13px 14px; border: 1.5px solid; }
-.card.pending  { background: #FFFFFF; border-color: #E0E0E0; }
-.card.sent     { background: #C8E6C9; border-color: #4CAF50; }
-.card.bounced  { background: #FFF0F0; border-color: #FFCDD2; }
+.card { border-radius: 14px; margin-bottom: 10px; padding: 13px 14px; background: #0d1f35; border: 1.5px solid rgba(20,147,255,0.13); border-left: 4px solid rgba(20,147,255,0.3); }
+.card.pending  { background: #0d1f35; border-left-color: rgba(20,147,255,0.35); }
+.card.sent     { background: #0d1f35; border-left-color: #4CAF50; }
+.card.bounced  { background: #0d1f35; border-left-color: #546E7A; }
 .card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; max-width: 100%; }
-.card-num { font-size: 13px; font-weight: 700; color: #666; min-width: 28px; }
+.card-num { font-size: 13px; font-weight: 700; color: rgba(111,188,255,0.45); min-width: 28px; }
 
 /* ── BUTTONS ── */
 .btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 13px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; border: none; color: #fff; -webkit-user-select: none; user-select: none; transition: filter .1s; white-space: nowrap; }
@@ -105,22 +105,22 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .btn-email   { background: #1565C0; font-size: 13px; padding: 8px 13px; }
 .btn-dm      { background: #2E7D32; font-size: 13px; padding: 8px 13px; }
 .btn-dm.marked { background: #388E3C; font-size: 13px; padding: 8px 13px; }
-.btn-verify  { background: #fff; color: #F57F17; border: 2px solid #F57F17; font-size: 13px; padding: 8px 13px; }
+.btn-verify  { background: rgba(245,127,23,0.12); color: #FFB74D; border: 2px solid rgba(245,127,23,0.4); font-size: 13px; padding: 8px 13px; }
 .btn-verify.marked { background: #AD1457; color: #fff; font-size: 13px; padding: 8px 13px; }
-.btn-bounce-off { background: #fff; color: #546E7A; border: 2px solid #546E7A; font-size: 13px; padding: 8px 13px; }
+.btn-bounce-off { background: rgba(84,110,122,0.15); color: #90A4AE; border: 2px solid rgba(84,110,122,0.4); font-size: 13px; padding: 8px 13px; }
 .btn-bounce-on  { background: #546E7A; color: #fff; font-size: 13px; padding: 8px 13px; }
 
-/* ── CARD CONTENT ── */
-.ctag { display: inline-block; background: #EEEEEE; color: #555; border-radius: 7px; padding: 4px 12px; font-size: 13px; margin-bottom: 6px; }
-.card.bounced .ctag  { background: #FFCDD2; color: #B71C1C; }
-.card.sent .ctag { background: #A5D6A7; color: #F57F17; }
-.rname { font-size: 20px; font-weight: 800; color: #1B2E4A; margin-bottom: 5px; line-height: 1.2; }
-.card.bounced .rname { color: #C62828; }
-.card.sent .rname { color: #F57F17; }
-.info { font-size: 14px; color: #444; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
-.ig { color: #1565C0; }
-.ig.bad-ig { color: #7B1FA2; font-weight: 800; }
-.btn-bad-ig { background: #fff; color: #7B1FA2; border: 2px solid #7B1FA2; font-size: 13px; padding: 8px 13px; }
+/* ── CARD CONTENT — dark theme ── */
+.ctag { display: inline-block; background: rgba(20,147,255,0.12); color: #6FBCFF; border-radius: 7px; padding: 4px 12px; font-size: 13px; margin-bottom: 6px; }
+.card.bounced .ctag  { background: rgba(84,110,122,0.2); color: #90A4AE; }
+.card.sent .ctag { background: rgba(76,175,80,0.15); color: #81C784; }
+.rname { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 5px; line-height: 1.2; }
+.card.bounced .rname { color: #90A4AE; }
+.card.sent .rname { color: #81C784; }
+.info { font-size: 14px; color: #90CAF9; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
+.ig { color: #1493FF; }
+.ig.bad-ig { color: #CE93D8; font-weight: 800; }
+.btn-bad-ig { background: rgba(123,31,162,0.15); color: #CE93D8; border: 2px solid rgba(123,31,162,0.4); font-size: 13px; padding: 8px 13px; }
 .btn-bad-ig.flagged { background: #7B1FA2; color: #fff; }
 .addr-line { font-size: 13px; color: #666; margin-bottom: 3px; display: flex; align-items: flex-start; gap: 5px; }
 
@@ -342,6 +342,9 @@ body { background: #0b1826 !important; }
 .sc-thumb { background: linear-gradient(180deg, #1493FF, #0a6cc4); }
 .sc-pct { color: rgba(111,188,255,0.8); }
 
+/* ── Nav scroll strip — hide scrollbar ── */
+#fb-bar div::-webkit-scrollbar { display: none; }
+
 /* ── Search bar — dark theme ── */
 .search-wrap { background: #0b1826; padding: 8px 14px; }
 .search-wrap input {
@@ -464,15 +467,15 @@ body { background: #0b1826 !important; }
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
         <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;">Ready</span>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-        <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
-        <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
-         <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
-        <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
-        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⛳ Golf</button>
-        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💎 Models</button>
-        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Influencers</button>
-        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
+      <div style="display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;">
+        <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">✅ To-Do</button>
+        <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🚀 Projects</button>
+        <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">💼 ADS</button>
+        <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🎟 Rewards</button>
+        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">⛳ Golf</button>
+        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">💎 Models</button>
+        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">📱 Influencers</button>
+        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
     </div>
