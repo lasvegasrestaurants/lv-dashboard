@@ -476,9 +476,6 @@ body { background: #0b1826 !important; }
   <div id="main-tab-row" style="display:flex;border-bottom:2px solid rgba(20,147,255,0.12);background:#0b1826;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
     <button id="mtab-outreach" class="main-tab active" onclick="switchMainTab('outreach')">🍽 Outreach</button>
     <button id="mtab-staging" class="main-tab" onclick="switchMainTab('staging')">📋 Staging <span id="rs-stg-cnt" style="background:rgba(20,147,255,0.15);border-radius:4px;padding:1px 5px;margin-left:3px;font-size:11px;">0</span></button>
-    <button id="mtab-golf" class="main-tab" onclick="switchMainTab('golf')">⛳ Golf</button>
-    <button id="mtab-models" class="main-tab" onclick="switchMainTab('models')">💎 Models</button>
-    <button id="mtab-infl" class="main-tab" onclick="switchMainTab('infl')">📱 Influencers</button>
   </div>
   <!-- Hidden compat elements referenced by JS -->
   <div id="rs-staging-bar" style="display:none;">
@@ -15597,6 +15594,9 @@ window.addEventListener('load',function(){
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0 4px;">
       <button onclick="showDashTab()" style="background:#1B2E4A;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
       <span style="color:#00BCD4;font-size:18px;font-weight:800;flex:1;"><span id="adv-view-header">💼 ADS</span></span>
+      <button onclick="openGolfView()" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">⛳ Golf</button>
+      <button onclick="openModelsView()" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💎 Models</button>
+      <button onclick="openInflView()" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Influencers</button>
     </div>
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
@@ -16470,6 +16470,37 @@ function advDupesDelete(num){
   advShowDupesModal();
 }
 
+function advDeleteAllDupes() {
+  var igMap = {};
+  var all = ADVERTISERS_BASE.concat(ADVERTISERS_STAGING);
+  all.forEach(function(a) {
+    if (advDeletedMap[a.num] || _advStagingRemovedMap[a.num]) return;
+    var ig = (advIGOverrideMap[a.num] !== undefined ? advIGOverrideMap[a.num] : (a.ig || '')).toLowerCase().trim();
+    if (!ig) return;
+    if (!igMap[ig]) igMap[ig] = [];
+    igMap[ig].push(a);
+  });
+  Object.keys(igMap).forEach(function(ig) {
+    var recs = igMap[ig];
+    if (recs.length <= 1) return;
+    recs.sort(function(a, b) { return a.num - b.num; }); // keep lowest num
+    for (var i = 1; i < recs.length; i++) {
+      var num = recs[i].num;
+      var si = ADVERTISERS_STAGING.findIndex(function(x) { return x.num === num; });
+      if (si !== -1) {
+        _advStagingRemovedMap[num] = 1;
+        ADVERTISERS_STAGING.splice(si, 1);
+      } else {
+        advDeletedMap[num] = true;
+      }
+    }
+  });
+  localStorage.setItem('lv_staging_removed_v1', JSON.stringify(_advStagingRemovedMap));
+  _advSaveMap('lv_adv_deleted_v1', advDeletedMap);
+  if (typeof advFbSave === 'function') advFbSave();
+  advCloseDupesModal();
+  advRender();
+}
 
 // ══════════════════════════════════════════════════════
 // RESTAURANT STAGING DUPLICATES
@@ -16548,6 +16579,35 @@ function _rsEsc(s) {
 function rsCloseDupesModal() {
   var modal = document.getElementById('rs-dupes-modal');
   if (modal) modal.style.display = 'none';
+}
+
+function rsDeleteAllDupes() {
+  var _rsRm = {};
+  try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
+  var baseMap = Object.create(null);
+  for (var i = 0; i < RESTAURANTS.length; i++) {
+    var r = RESTAURANTS[i];
+    if (deletedMap[r.num]) continue;
+    var key = _rsNormName(r.name);
+    if (key) { if (!baseMap[key]) baseMap[key] = []; baseMap[key].push(r); }
+  }
+  RESTAURANTS_STAGING.forEach(function(s) {
+    if (_rsRm[s.num]) return;
+    var sKey = _rsNormName(s.name);
+    if (sKey && baseMap[sKey]) {
+      _rsRm[s.num] = 1;
+      fetch(FB_URL.replace('.json','') + '/rsremoved/' + s.num + '.json', {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: '1'
+      }).catch(function(){});
+    }
+  });
+  try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+  RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r) { return !_rsRm[r.num]; });
+  var cntEl = document.getElementById('rs-dupes-cnt');
+  if (cntEl) cntEl.textContent = '0';
+  var stgEl = document.getElementById('rs-stg-cnt');
+  if (stgEl) stgEl.textContent = RESTAURANTS_STAGING.length;
+  rsShowDupesModal();
 }
 
 function rsDupesDelete(num) {
@@ -18205,7 +18265,10 @@ function advSaveNewRecord(){
   <div style="max-width:560px;width:100%;background:#1B2E4A;border-radius:12px;padding:20px;max-height:80vh;display:flex;flex-direction:column;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0;">
       <h2 style="color:#FFD600;margin:0;font-size:18px;">Duplicate Instagram Handles</h2>
-      <button onclick="advCloseDupesModal()" style="background:#0277BD;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">&#10005; Close</button>
+      <div style="display:flex;gap:8px;">
+        <button onclick="advDeleteAllDupes()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑 Delete All</button>
+        <button onclick="advCloseDupesModal()" style="background:#0277BD;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;">✕ Close</button>
+      </div>
     </div>
     <div id="adv-dupes-content" style="overflow-y:auto;flex:1;"></div>
   </div>
@@ -18411,7 +18474,10 @@ advRender = function(){
         <div style="color:#FFD600;font-size:17px;font-weight:800;">🔍 Staging Duplicates</div>
         <div style="color:#90CAF9;font-size:12px;margin-top:3px;">Staging entries that already exist in your main restaurant list</div>
       </div>
-      <button onclick="rsCloseDupesModal()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✕ Close</button>
+      <div style="display:flex;gap:8px;">
+        <button onclick="rsDeleteAllDupes()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑 Delete All</button>
+        <button onclick="rsCloseDupesModal()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✕ Close</button>
+      </div>
     </div>
     <div id="rs-dupes-content" style="max-height:70vh;overflow-y:auto;"></div>
   </div>
