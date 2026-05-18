@@ -457,6 +457,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
          <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
+        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⛳ Golf</button>
+        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">💎 Models</button>
+        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Influencers</button>
         <button onclick="openLuckyPick()" id="lucky-pick-btn" style="background:linear-gradient(135deg,#1493FF,#0a6cc4);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 0 10px rgba(20,147,255,0.4);">🎯 Pick</button>
         <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
@@ -13590,6 +13593,18 @@ function _enterFriendMode() {
   ['gh-push-btn','friend-hide-backup','friend-hide-excel','restore-btn'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
+  // Hide staging bars — friends never see staging
+  var _rsStgBar = document.getElementById('rs-staging-bar');
+  if (_rsStgBar) _rsStgBar.style.display = 'none';
+  var _adsStgRows = document.getElementById('ads-staging-rows');
+  if (_adsStgRows) _adsStgRows.style.display = 'none';
+  var _mStgBar = document.getElementById('model-staging-bar');
+  if (_mStgBar) _mStgBar.style.display = 'none';
+  var _iStgBar = document.getElementById('infl-staging-bar');
+  if (_iStgBar) _iStgBar.style.display = 'none';
+  // Reset ads view type away from staging so friend never lands there
+  advViewType = 'all';
+  try { localStorage.removeItem('lv_adv_viewtype_v1'); } catch(e) {}
   _invalidatePending(); _cachedMaxNum=0; _statEls=null; _dashDirty=true;
   // Friend mode gets a clean staging view (their own removal history, not owner's)
   // Bug 17: reset from master so repeated logins don't doubly-filter the list
@@ -13818,6 +13833,11 @@ function logOut() {
   var banner = document.getElementById('demo-banner');
   // Restore ALL admin buttons that Friend mode may have hidden
   ['gh-push-btn','friend-hide-backup','friend-hide-excel','restore-btn'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = '';
+  });
+  // Restore staging bars hidden during friend mode
+  ['rs-staging-bar','ads-staging-rows','model-staging-bar','infl-staging-bar'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.style.display = '';
   });
@@ -15577,7 +15597,7 @@ window.addEventListener('load',function(){
     </div>
   </div>
   <div style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;background:#1B2E4A;">
-    <div id="ads-subtabs" style="background:#0d1929;border-bottom:1px solid #1B2E4A;"><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;"><button onclick="showAllAdsView();['all2','lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2','hotel2','medspa2','dental2','trainer2','wedding2','vet2','tours2','wine2','gaming2','ecommerce2','igfixed2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');})" id="ads-sub-all" class="ads-subtab" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showMiscView()" id="ads-sub-misc" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Misc <span id="ads-sub-cnt-misc">0</span></button><button onclick="showLiquorView()" id="ads-sub-liquor" class="ads-subtab" style="background:#6A0DAD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Liquor <span id="ads-sub-cnt-liquor">0</span></button><button onclick="showBadIGView()" id="ads-sub-badig" class="ads-subtab" style="background:#B71C1C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bad IG <span id="ads-sub-cnt-badig">0</span></button><button onclick="showHotelView()" id="ads-sub-hotel" class="ads-subtab" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Hotels <span id="ads-sub-cnt-hotel">0</span></button><button onclick="showMedSpaView()" id="ads-sub-medspa" class="ads-subtab" style="background:#AD1457;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Med Spas <span id="ads-sub-cnt-medspa">0</span></button><button onclick="showDentalView()" id="ads-sub-dental" class="ads-subtab" style="background:#006064;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dentists <span id="ads-sub-cnt-dental">0</span></button><button onclick="showTrainerView()" id="ads-sub-trainer" class="ads-subtab" style="background:#558B2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trainers <span id="ads-sub-cnt-trainer">0</span></button><button onclick="showWeddingView()" id="ads-sub-wedding" class="ads-subtab" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Wedding <span id="ads-sub-cnt-wedding">0</span></button><button onclick="showVetView()" id="ads-sub-vet" class="ads-subtab" style="background:#2E7D32;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Vets <span id="ads-sub-cnt-vet">0</span></button><button onclick="showToursView()" id="ads-sub-tours" class="ads-subtab" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Tours <span id="ads-sub-cnt-tours">0</span></button><button onclick="showWineView()" id="ads-sub-wine" class="ads-subtab" style="background:#4A0072;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Wine <span id="ads-sub-cnt-wine">0</span></button><button onclick="showGamingView()" id="ads-sub-gaming" class="ads-subtab" style="background:#6200EA;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Gaming <span id="ads-sub-cnt-gaming">0</span></button><button onclick="showEcommerceView()" id="ads-sub-ecommerce" class="ads-subtab" style="background:#1A237E;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Ecommerce <span id="ads-sub-cnt-ecommerce">0</span></button><button onclick="showIGFixedView()" id="ads-sub-igfixed" class="ads-subtab" style="background:#00C853;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">✅ IG Fixed <span id="ads-sub-cnt-igfixed">0</span></button></div><div style="height:10px;"></div><div style="margin:0 10px;border-top:2px dashed #455A64;"></div><div style="height:4px;"></div><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;background:rgba(255,179,0,0.05);"><button onclick="showStagingView('all')" id="ads-sub-all2" class="ads-subtab" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-s2-cnt-all" style="font-size:11px;opacity:0.7;">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px 10px;flex-wrap:wrap;background:rgba(255,179,0,0.05);"><button onclick="showStagingView('lawyer')" id="ads-sub-lawyers2" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Lawyers <span id="ads-s2-cnt-lawyer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('doctor')" id="ads-sub-doctors2" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Doctors <span id="ads-s2-cnt-doctor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('spa')" id="ads-sub-spas2" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Spas <span id="ads-s2-cnt-spa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('salon')" id="ads-sub-salons2" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Salons <span id="ads-s2-cnt-salon" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('realtor')" id="ads-sub-realtors2" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Realtors <span id="ads-s2-cnt-realtor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('catering')" id="ads-sub-catering2" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Catering <span id="ads-s2-cnt-catering" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dealer')" id="ads-sub-dealers2" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dealerships <span id="ads-s2-cnt-dealer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('other')" id="ads-sub-other2" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Misc <span id="ads-s2-cnt-other" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('liquor')" id="ads-sub-liquor2" class="ads-subtab" style="background:#6A0DAD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Liquor <span id="ads-s2-cnt-liquor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('hotel')" id="ads-sub-hotel2" class="ads-subtab" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Hotels <span id="ads-s2-cnt-hotel" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('medspa')" id="ads-sub-medspa2" class="ads-subtab" style="background:#AD1457;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Med Spas <span id="ads-s2-cnt-medspa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dental')" id="ads-sub-dental2" class="ads-subtab" style="background:#006064;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dentists <span id="ads-s2-cnt-dental" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('trainer')" id="ads-sub-trainer2" class="ads-subtab" style="background:#558B2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Trainers <span id="ads-s2-cnt-trainer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('wedding')" id="ads-sub-wedding2" class="ads-subtab" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Wedding <span id="ads-s2-cnt-wedding" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('vet')" id="ads-sub-vet2" class="ads-subtab" style="background:#2E7D32;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Vets <span id="ads-s2-cnt-vet" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('tours')" id="ads-sub-tours2" class="ads-subtab" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Tours <span id="ads-s2-cnt-tours" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('wine')" id="ads-sub-wine2" class="ads-subtab" style="background:#4A0072;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Wine <span id="ads-s2-cnt-wine" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('gaming')" id="ads-sub-gaming2" class="ads-subtab" style="background:#6200EA;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Gaming <span id="ads-s2-cnt-gaming" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('ecommerce')" id="ads-sub-ecommerce2" class="ads-subtab" style="background:#1A237E;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Ecommerce <span id="ads-s2-cnt-ecommerce" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('igfixed')" id="ads-sub-igfixed2" class="ads-subtab" style="background:#00C853;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• IG Fixed <span id="ads-s2-cnt-igfixed" style="font-size:11px;opacity:0.85;">0</span></button></div></div>
+    <div id="ads-subtabs" style="background:#0d1929;border-bottom:1px solid #1B2E4A;"><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;"><button onclick="showAllAdsView();['all2','lawyers2','doctors2','spas2','salons2','realtors2','catering2','dealers2','other2','liquor2','hotel2','medspa2','dental2','trainer2','wedding2','vet2','tours2','wine2','gaming2','ecommerce2','igfixed2'].forEach(function(id){var el=document.getElementById('ads-sub-'+id);if(el)el.classList.remove('ads-active');})" id="ads-sub-all" class="ads-subtab" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-sub-cnt-all">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px;flex-wrap:wrap;border-top:1px solid #263238;"><button onclick="showLawyersView()" id="ads-sub-lawyers" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Lawyers <span id="ads-sub-cnt-lawyers">0</span></button><button onclick="showDoctorsView()" id="ads-sub-doctors" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Doctors <span id="ads-sub-cnt-doctors">0</span></button><button onclick="showSpasView()" id="ads-sub-spas" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Spas <span id="ads-sub-cnt-spas">0</span></button><button onclick="showSalonsView()" id="ads-sub-salons" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Salons <span id="ads-sub-cnt-salons">0</span></button><button onclick="showRealtorsView()" id="ads-sub-realtors" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Realtors <span id="ads-sub-cnt-realtors">0</span></button><button onclick="showCateringView()" id="ads-sub-catering" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Catering <span id="ads-sub-cnt-catering">0</span></button><button onclick="showDealershipsView()" id="ads-sub-dealers" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dealerships <span id="ads-sub-cnt-dealers">0</span></button><button onclick="showMiscView()" id="ads-sub-misc" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Misc <span id="ads-sub-cnt-misc">0</span></button><button onclick="showLiquorView()" id="ads-sub-liquor" class="ads-subtab" style="background:#6A0DAD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Liquor <span id="ads-sub-cnt-liquor">0</span></button><button onclick="showBadIGView()" id="ads-sub-badig" class="ads-subtab" style="background:#B71C1C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bad IG <span id="ads-sub-cnt-badig">0</span></button><button onclick="showHotelView()" id="ads-sub-hotel" class="ads-subtab" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Hotels <span id="ads-sub-cnt-hotel">0</span></button><button onclick="showMedSpaView()" id="ads-sub-medspa" class="ads-subtab" style="background:#AD1457;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Med Spas <span id="ads-sub-cnt-medspa">0</span></button><button onclick="showDentalView()" id="ads-sub-dental" class="ads-subtab" style="background:#006064;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dentists <span id="ads-sub-cnt-dental">0</span></button><button onclick="showTrainerView()" id="ads-sub-trainer" class="ads-subtab" style="background:#558B2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Trainers <span id="ads-sub-cnt-trainer">0</span></button><button onclick="showWeddingView()" id="ads-sub-wedding" class="ads-subtab" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Wedding <span id="ads-sub-cnt-wedding">0</span></button><button onclick="showVetView()" id="ads-sub-vet" class="ads-subtab" style="background:#2E7D32;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Vets <span id="ads-sub-cnt-vet">0</span></button><button onclick="showToursView()" id="ads-sub-tours" class="ads-subtab" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Tours <span id="ads-sub-cnt-tours">0</span></button><button onclick="showWineView()" id="ads-sub-wine" class="ads-subtab" style="background:#4A0072;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Wine <span id="ads-sub-cnt-wine">0</span></button><button onclick="showGamingView()" id="ads-sub-gaming" class="ads-subtab" style="background:#6200EA;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Gaming <span id="ads-sub-cnt-gaming">0</span></button><button onclick="showEcommerceView()" id="ads-sub-ecommerce" class="ads-subtab" style="background:#1A237E;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Ecommerce <span id="ads-sub-cnt-ecommerce">0</span></button><button onclick="showIGFixedView()" id="ads-sub-igfixed" class="ads-subtab" style="background:#00C853;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">✅ IG Fixed <span id="ads-sub-cnt-igfixed">0</span></button></div><div id="ads-staging-rows"><div style="height:10px;"></div><div style="margin:0 10px;border-top:2px dashed #455A64;"></div><div style="height:4px;"></div><div style="display:flex;gap:6px;padding:8px 12px 4px;flex-wrap:wrap;background:rgba(255,179,0,0.05);"><button onclick="showStagingView('all')" id="ads-sub-all2" class="ads-subtab" style="background:#FFD600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">All <span id="ads-s2-cnt-all" style="font-size:11px;opacity:0.7;">0</span></button></div><div style="display:flex;gap:6px;padding:4px 12px 10px;flex-wrap:wrap;background:rgba(255,179,0,0.05);"><button onclick="showStagingView('lawyer')" id="ads-sub-lawyers2" class="ads-subtab" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Lawyers <span id="ads-s2-cnt-lawyer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('doctor')" id="ads-sub-doctors2" class="ads-subtab" style="background:#4A148C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Doctors <span id="ads-s2-cnt-doctor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('spa')" id="ads-sub-spas2" class="ads-subtab" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Spas <span id="ads-s2-cnt-spa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('salon')" id="ads-sub-salons2" class="ads-subtab" style="background:#0277BD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Salons <span id="ads-s2-cnt-salon" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('realtor')" id="ads-sub-realtors2" class="ads-subtab" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Realtors <span id="ads-s2-cnt-realtor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('catering')" id="ads-sub-catering2" class="ads-subtab" style="background:#BF360C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Catering <span id="ads-s2-cnt-catering" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dealer')" id="ads-sub-dealers2" class="ads-subtab" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dealerships <span id="ads-s2-cnt-dealer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('other')" id="ads-sub-other2" class="ads-subtab" style="background:#00BCD4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Misc <span id="ads-s2-cnt-other" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('liquor')" id="ads-sub-liquor2" class="ads-subtab" style="background:#6A0DAD;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Liquor <span id="ads-s2-cnt-liquor" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('hotel')" id="ads-sub-hotel2" class="ads-subtab" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Hotels <span id="ads-s2-cnt-hotel" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('medspa')" id="ads-sub-medspa2" class="ads-subtab" style="background:#AD1457;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Med Spas <span id="ads-s2-cnt-medspa" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('dental')" id="ads-sub-dental2" class="ads-subtab" style="background:#006064;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Dentists <span id="ads-s2-cnt-dental" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('trainer')" id="ads-sub-trainer2" class="ads-subtab" style="background:#558B2F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Trainers <span id="ads-s2-cnt-trainer" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('wedding')" id="ads-sub-wedding2" class="ads-subtab" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Wedding <span id="ads-s2-cnt-wedding" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('vet')" id="ads-sub-vet2" class="ads-subtab" style="background:#2E7D32;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Vets <span id="ads-s2-cnt-vet" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('tours')" id="ads-sub-tours2" class="ads-subtab" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Tours <span id="ads-s2-cnt-tours" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('wine')" id="ads-sub-wine2" class="ads-subtab" style="background:#4A0072;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Wine <span id="ads-s2-cnt-wine" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('gaming')" id="ads-sub-gaming2" class="ads-subtab" style="background:#6200EA;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Gaming <span id="ads-s2-cnt-gaming" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('ecommerce')" id="ads-sub-ecommerce2" class="ads-subtab" style="background:#1A237E;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• Ecommerce <span id="ads-s2-cnt-ecommerce" style="font-size:11px;opacity:0.85;">0</span></button><button onclick="showStagingView('igfixed')" id="ads-sub-igfixed2" class="ads-subtab" style="background:#00C853;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">• IG Fixed <span id="ads-s2-cnt-igfixed" style="font-size:11px;opacity:0.85;">0</span></button></div></div></div>
     <button onclick="advSetFilter('sent')" id="adv-filter-sent" class="adv-fbtn" style="background:#388E3C;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Sent <span id="adv-cnt-sent">0</span></button>
     <button onclick="advSetFilter('bounced')" id="adv-filter-bounced" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Bounced <span id="adv-cnt-bounced">0</span></button>
     <button onclick="advSetFilter('needdm')" id="adv-filter-needdm" class="adv-fbtn" style="background:#004D40;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Need DM <span id="adv-cnt-needdm">0</span></button><button onclick="advSetFilter('noemail')" id="adv-filter-noemail" class="adv-fbtn" style="background:#880E4F;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">No Email <span id="adv-cnt-noemail">0</span></button><button onclick="advSetFilter('interested')" id="adv-filter-interested" class="adv-fbtn" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Interested <span id="adv-cnt-interested">0</span></button><button onclick="advSetFilter('notes')" id="adv-filter-notes" class="adv-fbtn" style="background:#EF6C00;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Notes <span id="adv-cnt-notes">0</span></button><button onclick="advSetFilter('followup')" id="adv-filter-followup" class="adv-fbtn" style="background:#1565C0;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Follow Up <span id="adv-cnt-followup">0</span></button><button onclick="advSetFilter('problem')" id="adv-filter-problem" class="adv-fbtn" style="background:#C62828;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Problem <span id="adv-cnt-problem">0</span></button><button onclick="advShowDupesModal()" id="adv-filter-dupes" class="adv-fbtn" style="background:#6A1B9A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Dupes</button>
@@ -18395,6 +18415,445 @@ advRender = function(){
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
+     VEGAS MODELS VIEW
+     ══════════════════════════════════════════════════════════ -->
+<div class="view" id="view-models" style="background:#f5f7fa;">
+  <div id="model-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(173,20,87,0.25);">
+    <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;">
+      <button onclick="closeModelsView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
+      <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">💎 Vegas Models</span>
+      <button onclick="modelShowStaging()" id="model-stg-btn" style="background:#AD1457;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;">📋 Staging <span id="model-stg-cnt" style="background:rgba(0,0,0,0.25);border-radius:4px;padding:1px 6px;margin-left:3px;">0</span></button>
+    </div>
+    <!-- Staging bar (owner only) -->
+    <div id="model-staging-bar" style="display:none;padding:6px 0 8px;border-top:2px dashed rgba(173,20,87,0.4);">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button onclick="modelShowMain()" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">← Back to List</button>
+        <button onclick="modelOpenAdd()" style="background:#AD1457;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">+ Add New Model</button>
+        <span id="model-stg-label" style="color:#F48FB1;font-size:12px;font-weight:700;">Staging: pending review</span>
+      </div>
+    </div>
+    <div id="model-stats" style="display:flex;flex-wrap:wrap;gap:6px;padding-bottom:10px;">
+      <div onclick="modelSetFilter('all')"        id="ms-all"        style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#5c1a3a;">Total: <span id="mc-total">0</span></div>
+      <div onclick="modelSetFilter('pending')"    id="ms-pending"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#283593;">Pending: <span id="mc-pending">0</span></div>
+      <div onclick="modelSetFilter('sent')"       id="ms-sent"       style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#F57F17;">Sent: <span id="mc-sent">0</span></div>
+      <div onclick="modelSetFilter('bounced')"    id="ms-bounced"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#C62828;">Bounced: <span id="mc-bounced">0</span></div>
+      <div onclick="modelSetFilter('interested')" id="ms-interested" style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00838F;">👍 <span id="mc-interested">0</span></div>
+      <div onclick="modelSetFilter('followup')"   id="ms-followup"   style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00695C;">Follow Up: <span id="mc-followup">0</span></div>
+    </div>
+    <div style="padding-bottom:10px;">
+      <input id="model-search-input" type="text" placeholder="Search models…" autocomplete="off" oninput="modelSearch(this.value)" style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.15);border-radius:22px;font-size:14px;background:rgba(255,255,255,0.08);color:#fff;outline:none;box-sizing:border-box;">
+    </div>
+  </div>
+  <div id="model-list" style="padding:8px 14px 60px;"></div>
+</div>
+
+<!-- Model Note Modal -->
+<div id="model-note-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 30px;width:100%;max-width:560px;box-sizing:border-box;">
+    <div style="font-size:16px;font-weight:800;color:#0b1826;margin-bottom:4px;" id="model-note-title">Note</div>
+    <div style="font-size:11px;color:#888;margin-bottom:10px;">Private note — not sent to the model.</div>
+    <textarea id="model-note-input" style="width:100%;height:110px;padding:10px 12px;border:1.5px solid #ccc;border-radius:10px;font-size:14px;resize:none;outline:none;font-family:inherit;box-sizing:border-box;" placeholder="Add notes…"></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button onclick="modelSaveNote()" style="flex:1;background:#AD1457;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Save</button>
+      <button onclick="modelCloseNote()" style="flex:1;background:#eee;color:#555;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Model Add (Staging) Modal -->
+<div id="model-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:20001;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 34px;width:100%;max-width:560px;box-sizing:border-box;">
+    <div style="font-size:17px;font-weight:900;color:#AD1457;margin-bottom:14px;">+ Add Model to Staging</div>
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Name *</label>
+    <input id="madd-name" type="text" placeholder="Full name or handle" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Instagram Handle *</label>
+    <input id="madd-ig" type="text" placeholder="@handle" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Category</label>
+    <select id="madd-cat" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <option>Fitness</option><option>Lifestyle</option><option>Glamour</option>
+      <option>Brand Ambassador</option><option>Swimwear</option><option>Runway</option><option>Fashion</option>
+    </select>
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Followers</label>
+    <input id="madd-followers" type="text" placeholder="e.g. 45K" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Notes</label>
+    <input id="madd-notes" type="text" placeholder="Quick notes…" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:14px;box-sizing:border-box;">
+    <div style="display:flex;gap:10px;">
+      <button onclick="modelSubmitAdd()" style="flex:1;background:#AD1457;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Add to Staging</button>
+      <button onclick="modelCloseAdd()" style="flex:1;background:#eee;color:#555;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     VEGAS INFLUENCERS VIEW
+     ══════════════════════════════════════════════════════════ -->
+<div class="view" id="view-influencers" style="background:#f5f7fa;">
+  <div id="infl-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(98,0,234,0.25);">
+    <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;">
+      <button onclick="closeInflView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
+      <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">📱 Vegas Influencers</span>
+      <button onclick="inflShowStaging()" id="infl-stg-btn" style="background:#6200EA;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;">📋 Staging <span id="infl-stg-cnt" style="background:rgba(0,0,0,0.25);border-radius:4px;padding:1px 6px;margin-left:3px;">0</span></button>
+    </div>
+    <!-- Staging bar (owner only) -->
+    <div id="infl-staging-bar" style="display:none;padding:6px 0 8px;border-top:2px dashed rgba(98,0,234,0.4);">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button onclick="inflShowMain()" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">← Back to List</button>
+        <button onclick="inflOpenAdd()" style="background:#6200EA;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">+ Add New Influencer</button>
+        <span id="infl-stg-label" style="color:#CE93D8;font-size:12px;font-weight:700;">Staging: pending review</span>
+      </div>
+    </div>
+    <div id="infl-stats" style="display:flex;flex-wrap:wrap;gap:6px;padding-bottom:10px;">
+      <div onclick="inflSetFilter('all')"        id="is-all"        style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#2d1060;">Total: <span id="ic-total">0</span></div>
+      <div onclick="inflSetFilter('pending')"    id="is-pending"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#283593;">Pending: <span id="ic-pending">0</span></div>
+      <div onclick="inflSetFilter('sent')"       id="is-sent"       style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#F57F17;">Sent: <span id="ic-sent">0</span></div>
+      <div onclick="inflSetFilter('bounced')"    id="is-bounced"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#C62828;">Bounced: <span id="ic-bounced">0</span></div>
+      <div onclick="inflSetFilter('interested')" id="is-interested" style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00838F;">👍 <span id="ic-interested">0</span></div>
+      <div onclick="inflSetFilter('followup')"   id="is-followup"   style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00695C;">Follow Up: <span id="ic-followup">0</span></div>
+    </div>
+    <div style="padding-bottom:10px;">
+      <input id="infl-search-input" type="text" placeholder="Search influencers…" autocomplete="off" oninput="inflSearch(this.value)" style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.15);border-radius:22px;font-size:14px;background:rgba(255,255,255,0.08);color:#fff;outline:none;box-sizing:border-box;">
+    </div>
+  </div>
+  <div id="infl-list" style="padding:8px 14px 60px;"></div>
+</div>
+
+<!-- Influencer Note Modal -->
+<div id="infl-note-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 30px;width:100%;max-width:560px;box-sizing:border-box;">
+    <div style="font-size:16px;font-weight:800;color:#0b1826;margin-bottom:4px;" id="infl-note-title">Note</div>
+    <div style="font-size:11px;color:#888;margin-bottom:10px;">Private note — not sent to the influencer.</div>
+    <textarea id="infl-note-input" style="width:100%;height:110px;padding:10px 12px;border:1.5px solid #ccc;border-radius:10px;font-size:14px;resize:none;outline:none;font-family:inherit;box-sizing:border-box;" placeholder="Add notes…"></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button onclick="inflSaveNote()" style="flex:1;background:#6200EA;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Save</button>
+      <button onclick="inflCloseNote()" style="flex:1;background:#eee;color:#555;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Influencer Add (Staging) Modal -->
+<div id="infl-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:20001;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 34px;width:100%;max-width:560px;box-sizing:border-box;">
+    <div style="font-size:17px;font-weight:900;color:#6200EA;margin-bottom:14px;">+ Add Influencer to Staging</div>
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Name / Handle *</label>
+    <input id="iadd-name" type="text" placeholder="Account name" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Instagram Handle *</label>
+    <input id="iadd-ig" type="text" placeholder="@handle" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Category</label>
+    <select id="iadd-cat" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <option>Food &amp; Dining</option><option>Nightlife</option><option>Lifestyle</option>
+      <option>Beauty &amp; Fashion</option><option>Health &amp; Fitness</option>
+      <option>Family</option><option>Travel</option><option>Food &amp; Drinks</option>
+    </select>
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Followers</label>
+    <input id="iadd-followers" type="text" placeholder="e.g. 120K" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:3px;">Notes</label>
+    <input id="iadd-notes" type="text" placeholder="Quick notes…" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:14px;box-sizing:border-box;">
+    <div style="display:flex;gap:10px;">
+      <button onclick="inflSubmitAdd()" style="flex:1;background:#6200EA;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Add to Staging</button>
+      <button onclick="inflCloseAdd()" style="flex:1;background:#eee;color:#555;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     GOLF COURSES VIEW
+     ══════════════════════════════════════════════════════════ -->
+<div class="view" id="view-golf" style="background:#f5f7fa;">
+
+  <!-- Sticky header -->
+  <div id="golf-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(20,147,255,0.15);">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <button onclick="closeGolfView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
+      <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">⛳ Golf Courses</span>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">🔒</button>
+    </div>
+    <!-- Stat badges -->
+    <div id="golf-stats" style="display:flex;flex-wrap:wrap;gap:6px;padding-bottom:10px;">
+      <div onclick="golfSetFilter('all')"         id="gs-all"        style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#1a3a6b;">Total: <span id="gc-total">0</span></div>
+      <div onclick="golfSetFilter('pending')"     id="gs-pending"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#283593;">Pending: <span id="gc-pending">0</span></div>
+      <div onclick="golfSetFilter('sent')"        id="gs-sent"       style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#F57F17;">Sent: <span id="gc-sent">0</span></div>
+      <div onclick="golfSetFilter('bounced')"     id="gs-bounced"    style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#C62828;">Bounced: <span id="gc-bounced">0</span></div>
+      <div onclick="golfSetFilter('interested')"  id="gs-interested" style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00838F;">👍 <span id="gc-interested">0</span></div>
+      <div onclick="golfSetFilter('followup')"    id="gs-followup"   style="padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#00695C;">Follow Up: <span id="gc-followup">0</span></div>
+    </div>
+    <!-- Search -->
+    <div style="padding-bottom:10px;">
+      <input id="golf-search-input" type="text" placeholder="Search golf courses…" autocomplete="off" oninput="golfSearch(this.value)" style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.15);border-radius:22px;font-size:14px;background:rgba(255,255,255,0.08);color:#fff;outline:none;box-sizing:border-box;">
+    </div>
+  </div>
+
+  <!-- Card list -->
+  <div id="golf-list" style="padding:8px 14px 60px;"></div>
+
+</div>
+
+<!-- Golf Note Modal -->
+<div id="golf-note-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px 18px 36px;width:100%;max-width:520px;">
+    <div style="font-size:16px;font-weight:800;color:#0b1826;margin-bottom:4px;" id="golf-note-title">Note</div>
+    <div style="font-size:12px;color:#888;margin-bottom:12px;">Private note for this course</div>
+    <textarea id="golf-note-input" style="width:100%;height:110px;padding:10px 12px;border:1.5px solid #ccc;border-radius:10px;font-size:14px;resize:none;outline:none;font-family:inherit;box-sizing:border-box;" placeholder="Add notes…"></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="golfSaveNote()" style="flex:1;background:#1493FF;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Save</button>
+      <button onclick="golfCloseNote()" style="flex:1;background:#eee;color:#555;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// GOLF COURSES — Las Vegas Outreach Tracker
+// ══════════════════════════════════════════════════════════
+
+var GOLF_COURSES = [
+  {num:3001,name:'Shadow Creek Golf Club',type:'Resort',instagram:'@shadowcreeklv',phone:'(702) 399-7111',email:'shadowcreek@mgmresorts.com',address:'3 Shadow Creek Dr, North Las Vegas, NV 89031',owner:'MGM Resorts International',notes:'Ultra-private, invitation only. Top-100 US course.'},
+  {num:3002,name:'Wynn Golf Club',type:'Resort',instagram:'@wynngolf',phone:'(702) 770-7000',email:'golf@wynnlasvegas.com',address:'3131 Las Vegas Blvd S, Las Vegas, NV 89109',owner:'Wynn Resorts',notes:'18-hole championship on the Strip.'},
+  {num:3003,name:'TPC Las Vegas',type:'Semi-Private',instagram:'@tpclasvegas',phone:'(702) 256-2000',email:'info@tpclasvegas.com',address:'9851 Canyon Run Dr, Las Vegas, NV 89117',owner:'TPC Network / PGA Tour',notes:'Host of former Las Vegas Invitational.'},
+  {num:3004,name:'TPC Summerlin',type:'Semi-Private',instagram:'@tpcsummerlin',phone:'(702) 256-0111',email:'info@tpcsummerlin.com',address:'1700 Village Center Cir, Las Vegas, NV 89134',owner:'TPC Network / PGA Tour',notes:'Home of the Shriners Children\'s Open.'},
+  {num:3005,name:'Bali Hai Golf Club',type:'Public',instagram:'@balihailv',phone:'(702) 450-8000',email:'info@balihailv.com',address:'5160 Las Vegas Blvd S, Las Vegas, NV 89119',owner:'Billy Casper Golf',notes:'Tropical-themed course steps from the Strip.'},
+  {num:3006,name:'Rio Secco Golf Club',type:'Resort',instagram:'@rioseccogolf',phone:'(702) 252-7777',email:'info@riosecco.com',address:'2851 Grand Hills Dr, Henderson, NV 89052',owner:'Caesars Entertainment',notes:'Butch Harmon School of Golf on-site.'},
+  {num:3007,name:'Bear\'s Best Las Vegas',type:'Public',instagram:'@bearsbestlv',phone:'(702) 804-8500',email:'info@bearsbestlv.com',address:'11111 W Flamingo Rd, Las Vegas, NV 89135',owner:'Jack Nicklaus',notes:'Best holes from 11 Nicklaus-designed courses.'},
+  {num:3008,name:'Las Vegas Paiute — Snow Mountain',type:'Resort',instagram:'@lvpaitegolf',phone:'(702) 658-1400',email:'info@lvpaiutegolf.com',address:'10325 Nu-Wav Kaiv Blvd, Las Vegas, NV 89124',owner:'Las Vegas Paiute Tribe',notes:'Part of the 3-course Paiute Golf Resort.'},
+  {num:3009,name:'Las Vegas Paiute — Sun Mountain',type:'Resort',instagram:'@lvpaitegolf',phone:'(702) 658-1400',email:'info@lvpaiutegolf.com',address:'10325 Nu-Wav Kaiv Blvd, Las Vegas, NV 89124',owner:'Las Vegas Paiute Tribe',notes:'Pete Dye design with desert terrain.'},
+  {num:3010,name:'Las Vegas Paiute — Wolf Course',type:'Resort',instagram:'@lvpaitegolf',phone:'(702) 658-1400',email:'info@lvpaiutegolf.com',address:'10325 Nu-Wav Kaiv Blvd, Las Vegas, NV 89124',owner:'Las Vegas Paiute Tribe',notes:'Highest rated of the three Paiute courses.'},
+  {num:3011,name:'Angel Park Golf Club — Palm',type:'Public',instagram:'@angelparkgolf',phone:'(702) 254-4653',email:'info@angelpark.com',address:'100 S Rampart Blvd, Las Vegas, NV 89145',owner:'City of Las Vegas',notes:'Arnold Palmer-designed. Cloud 9 par-3 course on-site.'},
+  {num:3012,name:'Angel Park Golf Club — Mountain',type:'Public',instagram:'@angelparkgolf',phone:'(702) 254-4653',email:'info@angelpark.com',address:'100 S Rampart Blvd, Las Vegas, NV 89145',owner:'City of Las Vegas',notes:'Second 18-hole Arnold Palmer course.'},
+  {num:3013,name:'Las Vegas National Golf Club',type:'Semi-Private',instagram:'@lvnationalgolf',phone:'(702) 734-1796',email:'info@lasvegasnational.com',address:'1911 E Desert Inn Rd, Las Vegas, NV 89169',owner:'Las Vegas National Holdings',notes:'Where Tiger won his first PGA Tour event in 1996.'},
+  {num:3014,name:'Desert Pines Golf Club',type:'Public',instagram:'@desertpinesgolf',phone:'(702) 450-8090',email:'info@desertpinesgolf.com',address:'3415 E Bonanza Rd, Las Vegas, NV 89101',owner:'Walters Golf',notes:'Lowcountry feel with pine trees in the desert.'},
+  {num:3015,name:'Reflection Bay Golf Club',type:'Resort',instagram:'@reflectionbaygolf',phone:'(702) 740-4653',email:'info@reflectionbay.com',address:'75 Montelago Blvd, Henderson, NV 89011',owner:'Lake Las Vegas Resort',notes:'Jack Nicklaus design on Lake Las Vegas.'},
+  {num:3016,name:'Legacy Golf Club',type:'Public',instagram:'@legacygolfclub',phone:'(702) 897-2187',email:'info@thelegacygc.com',address:'130 Par Excellence Dr, Henderson, NV 89074',owner:'American Golf Corp',notes:'Arthur Hills design rated among top LV public courses.'},
+  {num:3017,name:'Revere Golf Club — Lexington',type:'Public',instagram:'@reveregolfclub',phone:'(702) 259-4653',email:'info@reveregolf.com',address:'2600 Hampton Rd, Henderson, NV 89052',owner:'Revere Golf',notes:'Billy Casper / Greg Nash design with mountain views.'},
+  {num:3018,name:'Revere Golf Club — Concord',type:'Public',instagram:'@reveregolfclub',phone:'(702) 259-4653',email:'info@reveregolf.com',address:'2600 Hampton Rd, Henderson, NV 89052',owner:'Revere Golf',notes:'Second 18-hole course at Revere. Tournament caliber.'},
+  {num:3019,name:'DragonRidge Country Club',type:'Private',instagram:'@dragonridgecc',phone:'(702) 614-4444',email:'info@dragonridgecc.com',address:'552 S Stephanie St, Henderson, NV 89012',owner:'DragonRidge Holdings',notes:'Private club with dramatic canyon views.'},
+  {num:3020,name:'Cascata Golf Club',type:'Resort',instagram:'@cascatagolf',phone:'(702) 294-2000',email:'info@cascatagolf.com',address:'1 Cascata Dr, Boulder City, NV 89005',owner:'Caesars Entertainment',notes:'Rees Jones design — one of the most scenic in Nevada.'},
+  {num:3021,name:'Primm Valley Golf Club — Lakes',type:'Public',instagram:'@primmvalleygolf',phone:'(702) 679-5599',email:'info@primmvalleygolf.com',address:'I-15 & State Line Rd, Primm, NV 89019',owner:'MGM Resorts / AEW',notes:'Tom Fazio lakes course on the CA/NV border.'},
+  {num:3022,name:'Primm Valley Golf Club — Desert',type:'Public',instagram:'@primmvalleygolf',phone:'(702) 679-5599',email:'info@primmvalleygolf.com',address:'I-15 & State Line Rd, Primm, NV 89019',owner:'MGM Resorts / AEW',notes:'Tom Fazio desert course. Former LPGA stop.'},
+  {num:3023,name:'Royal Links Golf Club',type:'Public',instagram:'@royallinksgolf',phone:'(702) 450-8123',email:'info@royallinkslv.com',address:'5995 E Vegas Valley Dr, Las Vegas, NV 89142',owner:'Walters Golf',notes:'18 holes inspired by famous British Open venues.'},
+  {num:3024,name:'Eagle Crest Golf Club',type:'Public',instagram:'@eaglecrestgolf',phone:'(702) 240-1320',email:'info@eaglecrestgolf.com',address:'2203 Thomas W Ryan Blvd, Las Vegas, NV 89128',owner:'Eagle Crest Golf',notes:'Executive-style course, great for quick rounds.'},
+  {num:3025,name:'Painted Desert Golf Course',type:'Public',instagram:'@painteddesertgolf',phone:'(702) 645-2568',email:'info@painteddesertgolf.com',address:'5555 Painted Mirage Rd, Las Vegas, NV 89149',owner:'City of Las Vegas',notes:'Jay Morrish design with stunning Mojave views.'},
+  {num:3026,name:'Rhodes Ranch Golf Club',type:'Semi-Private',instagram:'@rhodesranchgolf',phone:'(702) 617-7803',email:'info@rhodesranch.com',address:'20 Rhodes Ranch Pkwy, Las Vegas, NV 89148',owner:'Rhodes Ranch HOA',notes:'Ted Robinson design in master-planned community.'},
+  {num:3027,name:'Palm Valley Golf Course',type:'Public',instagram:'@palmvalleygolf',phone:'(702) 363-4373',email:'info@palmvalleygolf.com',address:'9201 Del Webb Blvd, Las Vegas, NV 89134',owner:'City of Las Vegas',notes:'Arnold Palmer design in Sun City Summerlin.'},
+  {num:3028,name:'Badlands Golf Club',type:'Public',instagram:'@badlandsgolfclub',phone:'(702) 363-0754',email:'info@badlandsgolf.com',address:'9119 Alta Dr, Las Vegas, NV 89145',owner:'Club Corp / Walters Golf',notes:'Three 9-hole loops (Desperado, Diablo, Outlaw) by Chi-Chi Rodriguez.'}
+];
+
+// ── Storage ──────────────────────────────────────────────
+var LS_GOLF_STATUS     = 'lv_golf_status_v1';
+var LS_GOLF_DM         = 'lv_golf_dm_v1';
+var LS_GOLF_NOTES      = 'lv_golf_notes_v1';
+var LS_GOLF_INTERESTED = 'lv_golf_interested_v1';
+var LS_GOLF_FOLLOWUP   = 'lv_golf_followup_v1';
+
+var golfStatusMap     = (function(){ try{ return JSON.parse(localStorage.getItem(LS_GOLF_STATUS))||{}; }catch(e){return{};} })();
+var golfDmMap         = (function(){ try{ return JSON.parse(localStorage.getItem(LS_GOLF_DM))||{}; }catch(e){return{};} })();
+var golfNotesMap      = (function(){ try{ return JSON.parse(localStorage.getItem(LS_GOLF_NOTES))||{}; }catch(e){return{};} })();
+var golfInterestedMap = (function(){ try{ return JSON.parse(localStorage.getItem(LS_GOLF_INTERESTED))||{}; }catch(e){return{};} })();
+var golfFollowupMap   = (function(){ try{ return JSON.parse(localStorage.getItem(LS_GOLF_FOLLOWUP))||{}; }catch(e){return{};} })();
+
+function _golfSave(key, obj){ try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){} }
+
+// ── Filter / Search state ─────────────────────────────────
+var _golfFilter = 'all';
+var _golfSearchQ = '';
+
+// ── View open/close ───────────────────────────────────────
+function openGolfView() {
+  document.getElementById('view-dashboard').classList.remove('active');
+  var v = document.getElementById('view-golf');
+  v.classList.add('active');
+  v.scrollTop = 0;
+  _golfFilter = 'all'; _golfSearchQ = '';
+  var si = document.getElementById('golf-search-input');
+  if (si) si.value = '';
+  golfRender();
+}
+function closeGolfView() {
+  document.getElementById('view-golf').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
+}
+
+// ── Set filter ────────────────────────────────────────────
+function golfSetFilter(f) {
+  _golfFilter = f;
+  var ids = ['all','pending','sent','bounced','interested','followup'];
+  ids.forEach(function(id){
+    var el = document.getElementById('gs-'+id);
+    if (!el) return;
+    el.style.outline = (id === f) ? '3px solid #fff' : 'none';
+    el.style.opacity = (id === f) ? '1' : '0.8';
+  });
+  golfRender();
+}
+
+// ── Search ────────────────────────────────────────────────
+function golfSearch(q) {
+  _golfSearchQ = (q||'').toLowerCase().trim();
+  golfRender();
+}
+
+// ── Render ────────────────────────────────────────────────
+function golfRender() {
+  var list = document.getElementById('golf-list');
+  if (!list) return;
+  var counts = {all:0, pending:0, sent:0, bounced:0, interested:0, followup:0};
+  var html = '';
+  for (var i = 0; i < GOLF_COURSES.length; i++) {
+    var c = GOLF_COURSES[i];
+    var st = golfStatusMap[c.num] || 'pending';
+    counts.all++;
+    if (st === 'pending') counts.pending++;
+    else if (st === 'sent') counts.sent++;
+    else if (st === 'bounced') counts.bounced++;
+    if (golfInterestedMap[c.num]) counts.interested++;
+    if (golfFollowupMap[c.num]) counts.followup++;
+
+    // Filter
+    if (_golfFilter !== 'all') {
+      if (_golfFilter === 'pending' && st !== 'pending') continue;
+      if (_golfFilter === 'sent' && st !== 'sent') continue;
+      if (_golfFilter === 'bounced' && st !== 'bounced') continue;
+      if (_golfFilter === 'interested' && !golfInterestedMap[c.num]) continue;
+      if (_golfFilter === 'followup' && !golfFollowupMap[c.num]) continue;
+    }
+    // Search
+    if (_golfSearchQ) {
+      var hay = (c.name+' '+c.type+' '+c.address+' '+(c.owner||'')).toLowerCase();
+      if (hay.indexOf(_golfSearchQ) < 0) continue;
+    }
+    html += _golfBuildCard(c, st);
+  }
+  // Update badges
+  ['all','pending','sent','bounced','interested','followup'].forEach(function(k){
+    var el = document.getElementById('gc-'+k);
+    if (el) el.textContent = counts[k];
+  });
+  list.innerHTML = html || '<div style="text-align:center;color:#aaa;padding:60px 20px;font-size:15px;">No courses match.</div>';
+}
+
+function _golfBuildCard(c, st) {
+  var bgColor = st === 'sent' ? '#C8E6C9' : st === 'bounced' ? '#FFF0F0' : '#FFFFFF';
+  var borderColor = st === 'sent' ? '#4CAF50' : st === 'bounced' ? '#FFCDD2' : '#E0E0E0';
+  var nameColor = st === 'sent' ? '#F57F17' : st === 'bounced' ? '#C62828' : '#0b1826';
+  var typeColors = {Resort:'#1493FF',Public:'#2E7D32','Semi-Private':'#E65100',Private:'#6A1B9A'};
+  var typeColor = typeColors[c.type] || '#888';
+  var note = golfNotesMap[c.num] || '';
+  var interested = golfInterestedMap[c.num];
+  var followup = golfFollowupMap[c.num];
+  var dmDone = !!golfDmMap[c.num];
+  return '<div class="card" style="background:'+bgColor+';border-color:'+borderColor+';">'
+    + '<div class="card-top">'
+    + '<span style="background:'+typeColor+';color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">'+c.type.toUpperCase()+'</span>'
+    + (st==='sent'   ? '<span style="background:#C8E6C9;color:#2E7D32;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✓ SENT</span>' : '')
+    + (st==='bounced'? '<span style="background:#FFCDD2;color:#C62828;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✗ BOUNCED</span>' : '')
+    + (interested    ? '<span style="background:#E0F7FA;color:#00838F;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">👍 INTERESTED</span>' : '')
+    + (followup      ? '<span style="background:#E8F5E9;color:#00695C;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">🔖 FOLLOW UP</span>' : '')
+    + '</div>'
+    + '<div style="font-size:19px;font-weight:900;color:'+nameColor+';margin-bottom:5px;line-height:1.2;">'+_esc(c.name)+'</div>'
+    + (c.owner ? '<div style="font-size:12px;color:#888;margin-bottom:4px;">'+_esc(c.owner)+'</div>' : '')
+    + '<div style="font-size:13px;color:#444;margin-bottom:3px;">📍 '+_esc(c.address)+'</div>'
+    + (c.phone ? '<div style="font-size:13px;color:#444;margin-bottom:3px;">📞 <a href="tel:'+c.phone.replace(/[^0-9]/g,'')+'" style="color:#1493FF;text-decoration:none;font-weight:600;">'+c.phone+'</a></div>' : '')
+    + (c.instagram ? '<div style="font-size:13px;color:#1493FF;font-weight:600;margin-bottom:3px;">'+_esc(c.instagram)+'</div>' : '')
+    + (note ? '<div style="font-size:11px;color:#F57F17;font-style:italic;margin:4px 0 6px;background:#FFF8E1;padding:5px 9px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+_esc(note)+'</div>' : '')
+    + (c.notes ? '<div style="font-size:11px;color:#888;margin-bottom:6px;font-style:italic;">'+_esc(c.notes)+'</div>' : '')
+    // Action buttons row 1
+    + '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'
+    + '<button class="btn btn-email" onclick="golfEmail('+c.num+')">✉️ Email</button>'
+    + '<button class="btn" style="background:'+(dmDone?'#388E3C':'#2E7D32')+';" onclick="golfDM('+c.num+')">'+(dmDone?'✓ DM\'d':'💬 DM')+'</button>'
+    + (st!=='bounced'
+        ? '<button class="btn" style="background:#C62828;" onclick="golfBounce('+c.num+')">✗ Bounce</button>'
+        : '<button class="btn" style="background:#fff;color:#C62828;border:2px solid #C62828;" onclick="golfUnbounce('+c.num+')">Unbounce</button>')
+    + (st!=='sent'
+        ? '<button class="btn" style="background:#2E7D32;" onclick="golfMarkSent('+c.num+')">✓ Mark Sent</button>'
+        : '')
+    + '</div>'
+    // Action buttons row 2
+    + '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">'
+    + '<button class="btn" style="background:'+(interested?'#00838F':'#fff')+';color:'+(interested?'#fff':'#00838F')+';border:2px solid #00838F;" onclick="golfToggleInterested('+c.num+')">'+(interested?'👍 Interested':'👍 Interested')+'</button>'
+    + '<button class="btn" style="background:'+(followup?'#00695C':'#fff')+';color:'+(followup?'#fff':'#00695C')+';border:2px solid #00695C;" onclick="golfToggleFollowup('+c.num+')">'+(followup?'🔖 Following Up':'🔖 Follow Up')+'</button>'
+    + '<button class="btn" style="background:'+(note?'#F57F17':'#fff')+';color:'+(note?'#fff':'#F57F17')+';border:2px solid #F57F17;" onclick="golfOpenNote('+c.num+')">📝 Note</button>'
+    + '</div>'
+    + '</div>';
+}
+
+// ── Actions ───────────────────────────────────────────────
+function golfEmail(num) {
+  var c = GOLF_COURSES.find(function(x){ return x.num===num; });
+  if (!c || !c.email) { showDMToast('No email on file for this course'); return; }
+  var subj = encodeURIComponent('Partnership Opportunity — @lasvegas_restaurants');
+  var body = encodeURIComponent('Hello,\n\nMy name is Shane Christensen, creator of @lasvegas_restaurants (129K followers). We love covering amazing Las Vegas golf experiences for our engaged local audience.\n\nWould you be open to a quick conversation about a partnership?\n\nBest,\nShane Christensen\nShane@LasVegasRestaurants.net');
+  window.open('mailto:'+c.email+'?subject='+subj+'&body='+body, '_blank') || (window.location.href = 'mailto:'+c.email+'?subject='+subj+'&body='+body);
+}
+
+function golfDM(num) {
+  var c = GOLF_COURSES.find(function(x){ return x.num===num; });
+  if (!c || !c.instagram) { showDMToast('No Instagram handle for this course'); return; }
+  if (!golfDmMap[num]) { golfDmMap[num] = (new Date()).toLocaleDateString(); _golfSave(LS_GOLF_DM, golfDmMap); }
+  window.open('https://ig.me/m/'+c.instagram.replace(/^@/,''), '_blank');
+  golfRender();
+}
+
+function golfMarkSent(num) {
+  golfStatusMap[num] = 'sent';
+  _golfSave(LS_GOLF_STATUS, golfStatusMap);
+  showDMToast('Marked as Sent ✓');
+  golfRender();
+}
+
+function golfBounce(num) {
+  golfStatusMap[num] = 'bounced';
+  _golfSave(LS_GOLF_STATUS, golfStatusMap);
+  golfRender();
+}
+
+function golfUnbounce(num) {
+  golfStatusMap[num] = 'pending';
+  _golfSave(LS_GOLF_STATUS, golfStatusMap);
+  golfRender();
+}
+
+function golfToggleInterested(num) {
+  if (golfInterestedMap[num]) { delete golfInterestedMap[num]; }
+  else {
+    golfInterestedMap[num] = true;
+    _confettiBurst(window.innerWidth/2, window.innerHeight*0.45);
+  }
+  _golfSave(LS_GOLF_INTERESTED, golfInterestedMap);
+  golfRender();
+}
+
+function golfToggleFollowup(num) {
+  if (golfFollowupMap[num]) delete golfFollowupMap[num];
+  else golfFollowupMap[num] = true;
+  _golfSave(LS_GOLF_FOLLOWUP, golfFollowupMap);
+  golfRender();
+}
+
+// ── Notes modal ───────────────────────────────────────────
+var _golfNoteNum = null;
+function golfOpenNote(num) {
+  _golfNoteNum = num;
+  var c = GOLF_COURSES.find(function(x){ return x.num===num; });
+  if (c) document.getElementById('golf-note-title').textContent = c.name;
+  document.getElementById('golf-note-input').value = golfNotesMap[num] || '';
+  var m = document.getElementById('golf-note-modal');
+  m.style.display = 'flex';
+  setTimeout(function(){ document.getElementById('golf-note-input').focus(); }, 150);
+}
+function golfCloseNote() {
+  document.getElementById('golf-note-modal').style.display = 'none';
+  _golfNoteNum = null;
+}
+function golfSaveNote() {
+  if (!_golfNoteNum) return;
+  var val = document.getElementById('golf-note-input').value.trim();
+  if (val) golfNotesMap[_golfNoteNum] = val;
+  else delete golfNotesMap[_golfNoteNum];
+  _golfSave(LS_GOLF_NOTES, golfNotesMap);
+  golfCloseNote();
+  golfRender();
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
      LUCKY PICK MODAL — FanDuel-style random restaurant selector
      ══════════════════════════════════════════════════════════ -->
 <div id="lucky-pick-modal" style="display:none;position:fixed;inset:0;background:linear-gradient(160deg,#060f1a 0%,#0b1826 60%,#071220 100%);z-index:99990;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;">
@@ -18605,6 +19064,552 @@ toggleInterested = function(num) {
     _confettiBurst(window.innerWidth / 2, window.innerHeight * 0.45);
   }
 };
+
+// ══════════════════════════════════════════════
+// VEGAS MODELS — Outreach Tracker
+// ══════════════════════════════════════════════
+
+// ── Base list (25 pre-seeded Las Vegas models) ─
+var MODELS_BASE = [
+  {num:4001,name:'Lexi Storm',ig:'lexistorm_lv',cat:'Fitness',followers:'78K',notes:'Top fitness model on the Strip, works pool events & gym collabs'},
+  {num:4002,name:'Celeste Vega',ig:'celestevegalv',cat:'Lifestyle',followers:'112K',notes:'Luxury lifestyle & travel content creator based in Summerlin'},
+  {num:4003,name:'Tara Monroe',ig:'taramonroe_lv',cat:'Glamour',followers:'54K',notes:'High-fashion glamour model, frequent Vegas show features'},
+  {num:4004,name:'Jade Phoenix',ig:'jadephoenixlv',cat:'Brand Ambassador',followers:'93K',notes:'Brand ambassador specializing in Vegas nightlife brands'},
+  {num:4005,name:'Mia Soleil',ig:'miasoleil_lv',cat:'Swimwear',followers:'67K',notes:'Swimwear & resort lifestyle model, regular pool party host'},
+  {num:4006,name:'Adriana Kane',ig:'adrianakane_lv',cat:'Runway',followers:'41K',notes:'Runway & print model, represented by Vegas-based agency'},
+  {num:4007,name:'Naomi Cruz',ig:'naomicruzhvega',cat:'Lifestyle',followers:'88K',notes:'Latina lifestyle creator, huge foodie content crossover'},
+  {num:4008,name:'Sierra Blaze',ig:'sierrablaze_lv',cat:'Fitness',followers:'55K',notes:'CrossFit & nutrition advocate, large female fitness following'},
+  {num:4009,name:'Bianca Morrow',ig:'biancamorrow_lv',cat:'Glamour',followers:'71K',notes:'Glamour model, strong Vegas entertainer network'},
+  {num:4010,name:'Kylie Reign',ig:'kyliereignlv',cat:'Brand Ambassador',followers:'96K',notes:'Frequent MGM & Caesars pool event ambassador'},
+  {num:4011,name:'Luna Voss',ig:'lunavoss_lv',cat:'Fashion',followers:'43K',notes:'Streetwear & high fashion model based in Downtown LV'},
+  {num:4012,name:'Priya Desai',ig:'priyadesailv',cat:'Lifestyle',followers:'62K',notes:'South Asian influencer-model, food & culture content'},
+  {num:4013,name:'Cali Rhodes',ig:'calirhodeslv',cat:'Swimwear',followers:'85K',notes:'Pool & beach lifestyle, frequent Vegas pool event appearances'},
+  {num:4014,name:'Nova Bliss',ig:'novabliss_lv',cat:'Fitness',followers:'49K',notes:'Yoga & wellness model, health-forward brand partnerships'},
+  {num:4015,name:'Valentina Rose',ig:'valentinarose_lv',cat:'Brand Ambassador',followers:'107K',notes:'Major Strip brand ambassador, nightclub & restaurant network'},
+  {num:4016,name:'Harper Wells',ig:'harperwellslv',cat:'Lifestyle',followers:'72K',notes:'Luxury travel & lifestyle, frequent high-end restaurant content'},
+  {num:4017,name:'Zara Night',ig:'zaranight_lv',cat:'Glamour',followers:'58K',notes:'Model specializing in club and lounge promotional content'},
+  {num:4018,name:'Diana Storm',ig:'dianastorm_lv',cat:'Fitness',followers:'39K',notes:'Track & bodybuilding competitor, strong niche following'},
+  {num:4019,name:'Maya Luxe',ig:'mayaluxelv',cat:'Brand Ambassador',followers:'83K',notes:'Luxury goods & hospitality ambassador, Wynn/Encore connections'},
+  {num:4020,name:'Bella Fontaine',ig:'bellafontaine_lv',cat:'Runway',followers:'46K',notes:'Local couture & editorial runway model, Vegas Fashion Week'},
+  {num:4021,name:'Ria Starr',ig:'riastarr_lv',cat:'Lifestyle',followers:'91K',notes:'Pop culture & entertainment model-creator, diverse audience'},
+  {num:4022,name:'Sage Wolfe',ig:'sagewolfe_lv',cat:'Fitness',followers:'53K',notes:'HIIT & nutrition creator, female empowerment focus'},
+  {num:4023,name:'Carmen Luxor',ig:'carmenluxorlv',cat:'Glamour',followers:'66K',notes:'Entertainment model, specialty in theatrical & show content'},
+  {num:4024,name:'Tatum Sky',ig:'tatumskylv',cat:'Brand Ambassador',followers:'77K',notes:'Spirits & hospitality brand ambassador, major event host'},
+  {num:4025,name:'Nikki Diamond',ig:'nikkidiamond_lv',cat:'Lifestyle',followers:'102K',notes:'Diamond-tier lifestyle creator, cross-platform mega following'}
+];
+
+// ── Staging (owner-added, not shown to friends) ─
+var LS_MODEL_STAGING   = 'lv_model_staging_v1';
+var LS_MODEL_STGAPP    = 'lv_model_staging_approved_v1';
+var MODELS_STAGING     = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_STAGING))||[]; }catch(e){return[];} })();
+var _modelStagingApp   = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_STGAPP))||[]; }catch(e){return[];} })();
+// Merge previously-approved staging records into base
+(function(){ _modelStagingApp.forEach(function(r){ if(!MODELS_BASE.find(function(m){return m.num===r.num;})) MODELS_BASE.push(r); }); })();
+
+// ── Outreach state ─────────────────────────────
+var LS_MODEL_STATUS     = 'lv_model_status_v1';
+var LS_MODEL_DM         = 'lv_model_dm_v1';
+var LS_MODEL_NOTES      = 'lv_model_notes_v1';
+var LS_MODEL_INTERESTED = 'lv_model_interested_v1';
+var LS_MODEL_FOLLOWUP   = 'lv_model_followup_v1';
+
+var modelStatusMap     = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_STATUS))||{}; }catch(e){return{};} })();
+var modelDmMap         = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_DM))||{}; }catch(e){return{};} })();
+var modelNotesMap      = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_NOTES))||{}; }catch(e){return{};} })();
+var modelInterestedMap = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_INTERESTED))||{}; }catch(e){return{};} })();
+var modelFollowupMap   = (function(){ try{ return JSON.parse(localStorage.getItem(LS_MODEL_FOLLOWUP))||{}; }catch(e){return{};} })();
+
+function _modelSave(key, obj){ try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){} }
+
+// ── View state ─────────────────────────────────
+var _modelFilter   = 'all';
+var _modelSearchQ  = '';
+var _modelStaging  = false; // true = showing staging list
+
+// ── Open / close ──────────────────────────────
+function openModelsView() {
+  document.getElementById('view-dashboard').classList.remove('active');
+  var v = document.getElementById('view-models');
+  v.classList.add('active'); v.scrollTop = 0;
+  _modelFilter = 'all'; _modelSearchQ = ''; _modelStaging = false;
+  var si = document.getElementById('model-search-input'); if(si) si.value='';
+  _modelUpdateStagingCount();
+  modelRender();
+}
+function closeModelsView() {
+  document.getElementById('view-models').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
+}
+
+// ── Staging show/hide ─────────────────────────
+function _modelUpdateStagingCount() {
+  var el = document.getElementById('model-stg-cnt');
+  if(el) el.textContent = MODELS_STAGING.length;
+}
+function modelShowStaging() {
+  _modelStaging = true;
+  var bar = document.getElementById('model-staging-bar'); if(bar) bar.style.display='block';
+  var lbl = document.getElementById('model-stg-label');
+  if(lbl) lbl.textContent = MODELS_STAGING.length + ' record(s) pending review';
+  modelRender();
+}
+function modelShowMain() {
+  _modelStaging = false;
+  var bar = document.getElementById('model-staging-bar'); if(bar) bar.style.display='none';
+  modelRender();
+}
+
+// ── Filter / search ───────────────────────────
+function modelSetFilter(f) {
+  _modelFilter = f;
+  ['all','pending','sent','bounced','interested','followup'].forEach(function(id){
+    var el = document.getElementById('ms-'+id); if(!el) return;
+    el.style.outline = (id===f) ? '3px solid #fff' : 'none';
+    el.style.opacity  = (id===f) ? '1' : '0.8';
+  });
+  modelRender();
+}
+function modelSearch(q) { _modelSearchQ = (q||'').toLowerCase().trim(); modelRender(); }
+
+// ── Render ────────────────────────────────────
+function modelRender() {
+  var list = document.getElementById('model-list'); if(!list) return;
+  if (_modelStaging) { _modelRenderStaging(list); return; }
+  var arr = MODELS_BASE;
+  var counts = {all:0,pending:0,sent:0,bounced:0,interested:0,followup:0};
+  var html = '';
+  for(var i=0; i<arr.length; i++){
+    var c = arr[i];
+    var st = modelStatusMap[c.num]||'pending';
+    counts.all++; counts[st]=counts[st]+1 || 1;
+    if(modelInterestedMap[c.num]) counts.interested++;
+    if(modelFollowupMap[c.num])   counts.followup++;
+    if(_modelFilter!=='all'){
+      if(_modelFilter==='pending'    && st!=='pending')           continue;
+      if(_modelFilter==='sent'       && st!=='sent')              continue;
+      if(_modelFilter==='bounced'    && st!=='bounced')           continue;
+      if(_modelFilter==='interested' && !modelInterestedMap[c.num]) continue;
+      if(_modelFilter==='followup'   && !modelFollowupMap[c.num])   continue;
+    }
+    if(_modelSearchQ){
+      var hay=(c.name+' '+c.ig+' '+c.cat+' '+(c.followers||'')).toLowerCase();
+      if(hay.indexOf(_modelSearchQ)<0) continue;
+    }
+    html += _modelBuildCard(c, st, false);
+  }
+  ['all','pending','sent','bounced','interested','followup'].forEach(function(k){
+    var el=document.getElementById('mc-'+k); if(el) el.textContent=counts[k]||0;
+  });
+  list.innerHTML = html || '<div style="text-align:center;color:#aaa;padding:60px 20px;font-size:15px;">No models match.</div>';
+}
+function _modelRenderStaging(list) {
+  if(!MODELS_STAGING.length){ list.innerHTML='<div style="text-align:center;color:#aaa;padding:60px 20px;font-size:15px;">No staging records. Use "Add New Model" to add one.</div>'; return; }
+  var html='';
+  for(var i=0;i<MODELS_STAGING.length;i++) html+=_modelBuildCard(MODELS_STAGING[i],'pending',true);
+  list.innerHTML=html;
+}
+function _modelCatColor(cat){
+  var m={'Fitness':'#2E7D32','Lifestyle':'#1493FF','Glamour':'#AD1457','Brand Ambassador':'#E65100','Swimwear':'#0277BD','Runway':'#4A148C','Fashion':'#6A1B9A'};
+  return m[cat]||'#555';
+}
+function _modelBuildCard(c, st, isStaging) {
+  var bgColor   = st==='sent'?'#C8E6C9':st==='bounced'?'#FFF0F0':'#FFFFFF';
+  var borderColor= st==='sent'?'#4CAF50':st==='bounced'?'#FFCDD2':'#E0E0E0';
+  var nameColor = st==='sent'?'#F57F17':st==='bounced'?'#C62828':'#0b1826';
+  var catColor  = _modelCatColor(c.cat);
+  var note      = modelNotesMap[c.num]||'';
+  var interested= modelInterestedMap[c.num];
+  var followup  = modelFollowupMap[c.num];
+  var dmDone    = !!modelDmMap[c.num];
+  var stagingBtns = isStaging
+    ? '<button class="btn" style="background:#1B5E20;font-size:13px;padding:8px 13px;" onclick="modelPromote('+c.num+')">✅ Promote</button>'
+      +'<button class="btn" style="background:#C62828;font-size:13px;padding:8px 13px;" onclick="modelRemoveStaging('+c.num+')">✕ Remove</button>'
+    : '';
+  return '<div class="card" style="background:'+bgColor+';border-color:'+borderColor+';">'
+    +'<div class="card-top">'
+    +'<span style="background:'+catColor+';color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">'+_esc(c.cat).toUpperCase()+'</span>'
+    +(c.followers?'<span style="background:#f0f4ff;color:#1493FF;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">'+_esc(c.followers)+'</span>':'')
+    +(st==='sent'?'<span style="background:#C8E6C9;color:#2E7D32;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✓ SENT</span>':'')
+    +(st==='bounced'?'<span style="background:#FFCDD2;color:#C62828;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✗ BOUNCED</span>':'')
+    +(interested?'<span style="background:#E0F7FA;color:#00838F;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">👍 INTERESTED</span>':'')
+    +(followup?'<span style="background:#E8F5E9;color:#00695C;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">🔖 FOLLOW UP</span>':'')
+    +(isStaging?'<span style="background:#FFF9C4;color:#F57F17;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">📋 STAGING</span>':'')
+    +'</div>'
+    +'<div style="font-size:19px;font-weight:900;color:'+nameColor+';margin-bottom:4px;line-height:1.2;">'+_esc(c.name)+'</div>'
+    +(c.ig?'<div style="font-size:13px;color:#AD1457;font-weight:700;margin-bottom:3px;"><a href="https://instagram.com/'+_esc(c.ig.replace(/^@/,''))+'" target="_blank" style="color:#AD1457;text-decoration:none;">@'+_esc(c.ig.replace(/^@/,''))+'</a></div>':'')
+    +(note?'<div style="font-size:11px;color:#F57F17;font-style:italic;margin:4px 0 6px;background:#FFF8E1;padding:5px 9px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+_esc(note)+'</div>':'')
+    +(c.notes?'<div style="font-size:11px;color:#888;margin-bottom:6px;font-style:italic;">'+_esc(c.notes)+'</div>':'')
+    +(isStaging
+      ? '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'+stagingBtns+'</div>'
+      : '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'
+        +'<button class="btn" style="background:#AD1457;" onclick="modelDM('+c.num+')">'+( dmDone?'✓ DM\'d':'💬 DM')+'</button>'
+        +(st!=='bounced'?'<button class="btn" style="background:#C62828;" onclick="modelBounce('+c.num+')">✗ Bounce</button>':'<button class="btn" style="background:#fff;color:#C62828;border:2px solid #C62828;" onclick="modelUnbounce('+c.num+')">Unbounce</button>')
+        +(st!=='sent'?'<button class="btn" style="background:#2E7D32;" onclick="modelMarkSent('+c.num+')">✓ Mark Sent</button>':'')
+        +'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">'
+        +'<button class="btn" style="background:'+(interested?'#00838F':'#fff')+';color:'+(interested?'#fff':'#00838F')+';border:2px solid #00838F;" onclick="modelToggleInterested('+c.num+')">'+(interested?'👍 Interested':'👍 Interested')+'</button>'
+        +'<button class="btn" style="background:'+(followup?'#00695C':'#fff')+';color:'+(followup?'#fff':'#00695C')+';border:2px solid #00695C;" onclick="modelToggleFollowup('+c.num+')">'+(followup?'🔖 Following Up':'🔖 Follow Up')+'</button>'
+        +'<button class="btn" style="background:'+(note?'#F57F17':'#fff')+';color:'+(note?'#fff':'#F57F17')+';border:2px solid #F57F17;" onclick="modelOpenNote('+c.num+')">📝 Note</button>'
+        +'</div>')
+    +'</div>';
+}
+
+// ── Actions ───────────────────────────────────
+function modelDM(num) {
+  var c=MODELS_BASE.find(function(x){return x.num===num;}); if(!c) return;
+  if(!modelDmMap[num]){ modelDmMap[num]=(new Date()).toLocaleDateString(); _modelSave(LS_MODEL_DM,modelDmMap); }
+  window.open('https://ig.me/m/'+c.ig.replace(/^@/,''),'_blank');
+  modelRender();
+}
+function modelMarkSent(num){ modelStatusMap[num]='sent'; _modelSave(LS_MODEL_STATUS,modelStatusMap); showDMToast('Marked as Sent ✓'); modelRender(); }
+function modelBounce(num){  modelStatusMap[num]='bounced'; _modelSave(LS_MODEL_STATUS,modelStatusMap); modelRender(); }
+function modelUnbounce(num){ modelStatusMap[num]='pending'; _modelSave(LS_MODEL_STATUS,modelStatusMap); modelRender(); }
+function modelToggleInterested(num){
+  if(modelInterestedMap[num]){ delete modelInterestedMap[num]; }
+  else{ modelInterestedMap[num]=true; _confettiBurst(window.innerWidth/2, window.innerHeight*0.45); }
+  _modelSave(LS_MODEL_INTERESTED,modelInterestedMap); modelRender();
+}
+function modelToggleFollowup(num){
+  if(modelFollowupMap[num]) delete modelFollowupMap[num];
+  else modelFollowupMap[num]=true;
+  _modelSave(LS_MODEL_FOLLOWUP,modelFollowupMap); modelRender();
+}
+
+// ── Note modal ────────────────────────────────
+var _modelNoteNum=null;
+function modelOpenNote(num){
+  _modelNoteNum=num;
+  var c=MODELS_BASE.find(function(x){return x.num===num;});
+  if(c) document.getElementById('model-note-title').textContent=c.name;
+  document.getElementById('model-note-input').value=modelNotesMap[num]||'';
+  var m=document.getElementById('model-note-modal'); m.style.display='flex';
+  setTimeout(function(){ document.getElementById('model-note-input').focus(); },150);
+}
+function modelCloseNote(){ document.getElementById('model-note-modal').style.display='none'; _modelNoteNum=null; }
+function modelSaveNote(){
+  if(!_modelNoteNum) return;
+  var val=document.getElementById('model-note-input').value.trim();
+  if(val) modelNotesMap[_modelNoteNum]=val; else delete modelNotesMap[_modelNoteNum];
+  _modelSave(LS_MODEL_NOTES,modelNotesMap); modelCloseNote(); modelRender();
+}
+
+// ── Staging add / promote / remove ────────────
+var _modelNextStagingNum = 4900;
+function modelOpenAdd(){ document.getElementById('model-add-modal').style.display='flex'; }
+function modelCloseAdd(){ document.getElementById('model-add-modal').style.display='none'; }
+function modelSubmitAdd(){
+  var name=(document.getElementById('madd-name').value||'').trim();
+  var ig  =(document.getElementById('madd-ig').value||'').trim().replace(/^@/,'');
+  if(!name||!ig){ alert('Name and Instagram handle are required.'); return; }
+  var num = _modelNextStagingNum++;
+  var rec = {
+    num:num, name:name, ig:ig,
+    cat:document.getElementById('madd-cat').value,
+    followers:(document.getElementById('madd-followers').value||'').trim(),
+    notes:(document.getElementById('madd-notes').value||'').trim()
+  };
+  MODELS_STAGING.push(rec);
+  _modelSave(LS_MODEL_STAGING, MODELS_STAGING);
+  _modelUpdateStagingCount();
+  modelCloseAdd();
+  // Clear form
+  ['madd-name','madd-ig','madd-followers','madd-notes'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  showDMToast('Added to Models staging ✓');
+  modelRender();
+}
+function modelPromote(num){
+  var idx=MODELS_STAGING.findIndex(function(r){return r.num===num;});
+  if(idx===-1) return;
+  var rec=MODELS_STAGING[idx];
+  MODELS_BASE.push(rec);
+  MODELS_STAGING.splice(idx,1);
+  _modelSave(LS_MODEL_STAGING,MODELS_STAGING);
+  _modelStagingApp.push(rec);
+  _modelSave(LS_MODEL_STGAPP,_modelStagingApp);
+  _modelUpdateStagingCount();
+  showDMToast('Model promoted to main list ✓');
+  modelRender();
+}
+function modelRemoveStaging(num){
+  var idx=MODELS_STAGING.findIndex(function(r){return r.num===num;});
+  if(idx===-1) return;
+  if(!confirm('Remove this model from staging?')) return;
+  MODELS_STAGING.splice(idx,1);
+  _modelSave(LS_MODEL_STAGING,MODELS_STAGING);
+  _modelUpdateStagingCount();
+  modelRender();
+}
+
+// ══════════════════════════════════════════════
+// VEGAS INFLUENCERS — Outreach Tracker
+// ══════════════════════════════════════════════
+
+var INFL_BASE = [
+  {num:5001,name:'Vegas Eats Daily',ig:'vegaseatsdaily',cat:'Food & Dining',followers:'127K',notes:'Daily Vegas restaurant coverage, huge local foodie community'},
+  {num:5002,name:'Strip Life LV',ig:'striplifeLV',cat:'Nightlife',followers:'214K',notes:'Nightclub & bar coverage, direct connections to venue PRs'},
+  {num:5003,name:'Eats & Beats Vegas',ig:'eatsandbeatsvegas',cat:'Food & Dining',followers:'88K',notes:'Restaurant reviews & live music coverage across LV'},
+  {num:5004,name:'The Luxe List LV',ig:'theluxelistlv',cat:'Lifestyle',followers:'153K',notes:'Luxury experiences, hotel reviews, fine dining focus'},
+  {num:5005,name:'702 Foodie',ig:'702foodie',cat:'Food & Dining',followers:'99K',notes:'Authentic local food content, strong Nevada audience'},
+  {num:5006,name:'Vegas Glam Life',ig:'vegasglamlife',cat:'Beauty & Fashion',followers:'76K',notes:'Beauty & fashion meets Vegas entertainment lifestyle'},
+  {num:5007,name:'Desert Bites LV',ig:'desertbiteslv',cat:'Food & Dining',followers:'61K',notes:'Hidden gems & off-Strip restaurant discovery'},
+  {num:5008,name:'Sin City Socials',ig:'sincitysocials',cat:'Lifestyle',followers:'182K',notes:'Broad Vegas lifestyle, events & hospitality partnerships'},
+  {num:5009,name:'VegasFit Nation',ig:'vegasfitnation',cat:'Health & Fitness',followers:'94K',notes:'Fitness & healthy eating in Vegas, gym & restaurant crossover'},
+  {num:5010,name:'LV Night Owl',ig:'lvnightowl',cat:'Nightlife',followers:'118K',notes:'Late-night Vegas content, club nights, late-night eats'},
+  {num:5011,name:'Neon & Noodles',ig:'neonandnoodles',cat:'Food & Dining',followers:'73K',notes:'Pan-Asian food content in Vegas, dedicated niche audience'},
+  {num:5012,name:'Vegas With Kids',ig:'vegaswithkids',cat:'Family',followers:'86K',notes:'Family-friendly Vegas experiences, large surprising audience'},
+  {num:5013,name:'High Roller Eats',ig:'highrollereats',cat:'Food & Dining',followers:'141K',notes:'High-end dining & steakhouse reviews on & off the Strip'},
+  {num:5014,name:'Cocktail County LV',ig:'cocktailcountylv',cat:'Food & Drinks',followers:'57K',notes:'Craft cocktail bars & speakeasies, drinks-first content'},
+  {num:5015,name:'Viva Las Foodie',ig:'vivalasfoodies',cat:'Food & Dining',followers:'109K',notes:'Bilingual content (EN/ES), huge Latino Vegas audience'},
+  {num:5016,name:'Vegas Sunset Life',ig:'vegassunsetlife',cat:'Lifestyle',followers:'93K',notes:'Sunsets, brunches, outdoor Vegas lifestyle'},
+  {num:5017,name:'The Vegas Table',ig:'thevegastable',cat:'Food & Dining',followers:'78K',notes:'Reservation dining, menu breakdowns, chef spotlights'},
+  {num:5018,name:'LV Luxe Travel',ig:'lvluxetravel',cat:'Travel',followers:'167K',notes:'Vegas hotel & resort reviews, drives significant bookings'},
+  {num:5019,name:'Brunch Boss LV',ig:'brunchbosslv',cat:'Food & Dining',followers:'84K',notes:'Weekend brunch culture, bottomless specials, strong Saturday reach'},
+  {num:5020,name:'Vegas Black Eats',ig:'vegasblackeats',cat:'Food & Dining',followers:'62K',notes:'Black-owned & Black-centric food businesses in Vegas'},
+  {num:5021,name:'Keto Vegas Life',ig:'ketovegaslife',cat:'Health & Fitness',followers:'48K',notes:'Keto & low-carb dining in Vegas, dedicated diet-niche audience'},
+  {num:5022,name:'Vegas Vegan Guide',ig:'vegasvegangh',cat:'Food & Dining',followers:'55K',notes:'Plant-based dining in Vegas, growing vegan travel niche'},
+  {num:5023,name:'LV Date Night',ig:'lvdatenight',cat:'Lifestyle',followers:'97K',notes:'Romantic restaurant & experience content, couples audience'},
+  {num:5024,name:'Vegas Party Starter',ig:'vegaspartystarter',cat:'Nightlife',followers:'203K',notes:'Event promotion & nightlife megaphone, all major venues'},
+  {num:5025,name:'Desert Eats Adventures',ig:'deserteatslv',cat:'Food & Dining',followers:'71K',notes:'Road trip food & Nevada dining adventures'}
+];
+
+// ── Staging ─────────────────────────────────────
+var LS_INFL_STAGING  = 'lv_infl_staging_v1';
+var LS_INFL_STGAPP   = 'lv_infl_staging_approved_v1';
+var INFL_STAGING     = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_STAGING))||[]; }catch(e){return[];} })();
+var _inflStagingApp  = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_STGAPP))||[]; }catch(e){return[];} })();
+(function(){ _inflStagingApp.forEach(function(r){ if(!INFL_BASE.find(function(m){return m.num===r.num;})) INFL_BASE.push(r); }); })();
+
+// ── Outreach state ──────────────────────────────
+var LS_INFL_STATUS     = 'lv_infl_status_v1';
+var LS_INFL_DM         = 'lv_infl_dm_v1';
+var LS_INFL_NOTES      = 'lv_infl_notes_v1';
+var LS_INFL_INTERESTED = 'lv_infl_interested_v1';
+var LS_INFL_FOLLOWUP   = 'lv_infl_followup_v1';
+
+var inflStatusMap     = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_STATUS))||{}; }catch(e){return{};} })();
+var inflDmMap         = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_DM))||{}; }catch(e){return{};} })();
+var inflNotesMap      = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_NOTES))||{}; }catch(e){return{};} })();
+var inflInterestedMap = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_INTERESTED))||{}; }catch(e){return{};} })();
+var inflFollowupMap   = (function(){ try{ return JSON.parse(localStorage.getItem(LS_INFL_FOLLOWUP))||{}; }catch(e){return{};} })();
+
+function _inflSave(key, obj){ try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){} }
+
+// ── View state ──────────────────────────────────
+var _inflFilter   = 'all';
+var _inflSearchQ  = '';
+var _inflStaging  = false;
+
+// ── Open / close ────────────────────────────────
+function openInflView() {
+  document.getElementById('view-dashboard').classList.remove('active');
+  var v=document.getElementById('view-influencers');
+  v.classList.add('active'); v.scrollTop=0;
+  _inflFilter='all'; _inflSearchQ=''; _inflStaging=false;
+  var si=document.getElementById('infl-search-input'); if(si) si.value='';
+  _inflUpdateStagingCount();
+  inflRender();
+}
+function closeInflView() {
+  document.getElementById('view-influencers').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
+}
+
+// ── Staging show/hide ──────────────────────────
+function _inflUpdateStagingCount() {
+  var el=document.getElementById('infl-stg-cnt'); if(el) el.textContent=INFL_STAGING.length;
+}
+function inflShowStaging() {
+  _inflStaging=true;
+  var bar=document.getElementById('infl-staging-bar'); if(bar) bar.style.display='block';
+  var lbl=document.getElementById('infl-stg-label');
+  if(lbl) lbl.textContent=INFL_STAGING.length+' record(s) pending review';
+  inflRender();
+}
+function inflShowMain() {
+  _inflStaging=false;
+  var bar=document.getElementById('infl-staging-bar'); if(bar) bar.style.display='none';
+  inflRender();
+}
+
+// ── Filter / search ─────────────────────────────
+function inflSetFilter(f) {
+  _inflFilter=f;
+  ['all','pending','sent','bounced','interested','followup'].forEach(function(id){
+    var el=document.getElementById('is-'+id); if(!el) return;
+    el.style.outline=(id===f)?'3px solid #fff':'none';
+    el.style.opacity=(id===f)?'1':'0.8';
+  });
+  inflRender();
+}
+function inflSearch(q){ _inflSearchQ=(q||'').toLowerCase().trim(); inflRender(); }
+
+// ── Render ──────────────────────────────────────
+function inflRender() {
+  var list=document.getElementById('infl-list'); if(!list) return;
+  if(_inflStaging){ _inflRenderStaging(list); return; }
+  var arr=INFL_BASE;
+  var counts={all:0,pending:0,sent:0,bounced:0,interested:0,followup:0};
+  var html='';
+  for(var i=0;i<arr.length;i++){
+    var c=arr[i];
+    var st=inflStatusMap[c.num]||'pending';
+    counts.all++; if(counts[st]===undefined) counts[st]=0; counts[st]++;
+    if(inflInterestedMap[c.num]) counts.interested++;
+    if(inflFollowupMap[c.num])   counts.followup++;
+    if(_inflFilter!=='all'){
+      if(_inflFilter==='pending'    && st!=='pending')             continue;
+      if(_inflFilter==='sent'       && st!=='sent')                continue;
+      if(_inflFilter==='bounced'    && st!=='bounced')             continue;
+      if(_inflFilter==='interested' && !inflInterestedMap[c.num])  continue;
+      if(_inflFilter==='followup'   && !inflFollowupMap[c.num])    continue;
+    }
+    if(_inflSearchQ){
+      var hay=(c.name+' '+c.ig+' '+c.cat+' '+(c.followers||'')).toLowerCase();
+      if(hay.indexOf(_inflSearchQ)<0) continue;
+    }
+    html+=_inflBuildCard(c,st,false);
+  }
+  ['all','pending','sent','bounced','interested','followup'].forEach(function(k){
+    var el=document.getElementById('ic-'+k); if(el) el.textContent=counts[k]||0;
+  });
+  list.innerHTML=html||'<div style="text-align:center;color:#aaa;padding:60px 20px;font-size:15px;">No influencers match.</div>';
+}
+function _inflRenderStaging(list) {
+  if(!INFL_STAGING.length){ list.innerHTML='<div style="text-align:center;color:#aaa;padding:60px 20px;font-size:15px;">No staging records. Use "Add New Influencer" to add one.</div>'; return; }
+  var html='';
+  for(var i=0;i<INFL_STAGING.length;i++) html+=_inflBuildCard(INFL_STAGING[i],'pending',true);
+  list.innerHTML=html;
+}
+function _inflCatColor(cat){
+  var m={'Food & Dining':'#BF360C','Nightlife':'#4A148C','Lifestyle':'#1493FF','Beauty & Fashion':'#880E4F','Health & Fitness':'#2E7D32','Family':'#1565C0','Travel':'#00695C','Food & Drinks':'#E65100'};
+  return m[cat]||'#555';
+}
+function _inflBuildCard(c, st, isStaging) {
+  var bgColor   = st==='sent'?'#C8E6C9':st==='bounced'?'#FFF0F0':'#FFFFFF';
+  var borderColor= st==='sent'?'#4CAF50':st==='bounced'?'#FFCDD2':'#E0E0E0';
+  var nameColor = st==='sent'?'#F57F17':st==='bounced'?'#C62828':'#0b1826';
+  var catColor  = _inflCatColor(c.cat);
+  var note      = inflNotesMap[c.num]||'';
+  var interested= inflInterestedMap[c.num];
+  var followup  = inflFollowupMap[c.num];
+  var dmDone    = !!inflDmMap[c.num];
+  var stagingBtns = isStaging
+    ? '<button class="btn" style="background:#1B5E20;font-size:13px;padding:8px 13px;" onclick="inflPromote('+c.num+')">✅ Promote</button>'
+      +'<button class="btn" style="background:#C62828;font-size:13px;padding:8px 13px;" onclick="inflRemoveStaging('+c.num+')">✕ Remove</button>'
+    : '';
+  return '<div class="card" style="background:'+bgColor+';border-color:'+borderColor+';">'
+    +'<div class="card-top">'
+    +'<span style="background:'+catColor+';color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">'+_esc(c.cat).toUpperCase()+'</span>'
+    +(c.followers?'<span style="background:#f0f4ff;color:#6200EA;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">'+_esc(c.followers)+'</span>':'')
+    +(st==='sent'?'<span style="background:#C8E6C9;color:#2E7D32;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✓ SENT</span>':'')
+    +(st==='bounced'?'<span style="background:#FFCDD2;color:#C62828;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">✗ BOUNCED</span>':'')
+    +(interested?'<span style="background:#E0F7FA;color:#00838F;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">👍 INTERESTED</span>':'')
+    +(followup?'<span style="background:#E8F5E9;color:#00695C;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">🔖 FOLLOW UP</span>':'')
+    +(isStaging?'<span style="background:#EDE7F6;color:#6200EA;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;">📋 STAGING</span>':'')
+    +'</div>'
+    +'<div style="font-size:19px;font-weight:900;color:'+nameColor+';margin-bottom:4px;line-height:1.2;">'+_esc(c.name)+'</div>'
+    +(c.ig?'<div style="font-size:13px;color:#6200EA;font-weight:700;margin-bottom:3px;"><a href="https://instagram.com/'+_esc(c.ig.replace(/^@/,''))+'" target="_blank" style="color:#6200EA;text-decoration:none;">@'+_esc(c.ig.replace(/^@/,''))+'</a></div>':'')
+    +(note?'<div style="font-size:11px;color:#F57F17;font-style:italic;margin:4px 0 6px;background:#FFF8E1;padding:5px 9px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+_esc(note)+'</div>':'')
+    +(c.notes?'<div style="font-size:11px;color:#888;margin-bottom:6px;font-style:italic;">'+_esc(c.notes)+'</div>':'')
+    +(isStaging
+      ? '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'+stagingBtns+'</div>'
+      : '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'
+        +'<button class="btn" style="background:#6200EA;" onclick="inflDM('+c.num+')">'+( dmDone?'✓ DM\'d':'💬 DM')+'</button>'
+        +(st!=='bounced'?'<button class="btn" style="background:#C62828;" onclick="inflBounce('+c.num+')">✗ Bounce</button>':'<button class="btn" style="background:#fff;color:#C62828;border:2px solid #C62828;" onclick="inflUnbounce('+c.num+')">Unbounce</button>')
+        +(st!=='sent'?'<button class="btn" style="background:#2E7D32;" onclick="inflMarkSent('+c.num+')">✓ Mark Sent</button>':'')
+        +'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">'
+        +'<button class="btn" style="background:'+(interested?'#00838F':'#fff')+';color:'+(interested?'#fff':'#00838F')+';border:2px solid #00838F;" onclick="inflToggleInterested('+c.num+')">'+(interested?'👍 Interested':'👍 Interested')+'</button>'
+        +'<button class="btn" style="background:'+(followup?'#00695C':'#fff')+';color:'+(followup?'#fff':'#00695C')+';border:2px solid #00695C;" onclick="inflToggleFollowup('+c.num+')">'+(followup?'🔖 Following Up':'🔖 Follow Up')+'</button>'
+        +'<button class="btn" style="background:'+(note?'#F57F17':'#fff')+';color:'+(note?'#fff':'#F57F17')+';border:2px solid #F57F17;" onclick="inflOpenNote('+c.num+')">📝 Note</button>'
+        +'</div>')
+    +'</div>';
+}
+
+// ── Actions ─────────────────────────────────────
+function inflDM(num) {
+  var c=INFL_BASE.find(function(x){return x.num===num;}); if(!c) return;
+  if(!inflDmMap[num]){ inflDmMap[num]=(new Date()).toLocaleDateString(); _inflSave(LS_INFL_DM,inflDmMap); }
+  window.open('https://ig.me/m/'+c.ig.replace(/^@/,''),'_blank');
+  inflRender();
+}
+function inflMarkSent(num){ inflStatusMap[num]='sent'; _inflSave(LS_INFL_STATUS,inflStatusMap); showDMToast('Marked as Sent ✓'); inflRender(); }
+function inflBounce(num){  inflStatusMap[num]='bounced'; _inflSave(LS_INFL_STATUS,inflStatusMap); inflRender(); }
+function inflUnbounce(num){ inflStatusMap[num]='pending'; _inflSave(LS_INFL_STATUS,inflStatusMap); inflRender(); }
+function inflToggleInterested(num){
+  if(inflInterestedMap[num]){ delete inflInterestedMap[num]; }
+  else{ inflInterestedMap[num]=true; _confettiBurst(window.innerWidth/2, window.innerHeight*0.45); }
+  _inflSave(LS_INFL_INTERESTED,inflInterestedMap); inflRender();
+}
+function inflToggleFollowup(num){
+  if(inflFollowupMap[num]) delete inflFollowupMap[num];
+  else inflFollowupMap[num]=true;
+  _inflSave(LS_INFL_FOLLOWUP,inflFollowupMap); inflRender();
+}
+
+// ── Note modal ───────────────────────────────────
+var _inflNoteNum=null;
+function inflOpenNote(num){
+  _inflNoteNum=num;
+  var c=INFL_BASE.find(function(x){return x.num===num;});
+  if(c) document.getElementById('infl-note-title').textContent=c.name;
+  document.getElementById('infl-note-input').value=inflNotesMap[num]||'';
+  var m=document.getElementById('infl-note-modal'); m.style.display='flex';
+  setTimeout(function(){ document.getElementById('infl-note-input').focus(); },150);
+}
+function inflCloseNote(){ document.getElementById('infl-note-modal').style.display='none'; _inflNoteNum=null; }
+function inflSaveNote(){
+  if(!_inflNoteNum) return;
+  var val=document.getElementById('infl-note-input').value.trim();
+  if(val) inflNotesMap[_inflNoteNum]=val; else delete inflNotesMap[_inflNoteNum];
+  _inflSave(LS_INFL_NOTES,inflNotesMap); inflCloseNote(); inflRender();
+}
+
+// ── Staging add / promote / remove ──────────────
+var _inflNextStagingNum = 5900;
+function inflOpenAdd(){ document.getElementById('infl-add-modal').style.display='flex'; }
+function inflCloseAdd(){ document.getElementById('infl-add-modal').style.display='none'; }
+function inflSubmitAdd(){
+  var name=(document.getElementById('iadd-name').value||'').trim();
+  var ig  =(document.getElementById('iadd-ig').value||'').trim().replace(/^@/,'');
+  if(!name||!ig){ alert('Name and Instagram handle are required.'); return; }
+  var num=_inflNextStagingNum++;
+  var rec={
+    num:num, name:name, ig:ig,
+    cat:document.getElementById('iadd-cat').value,
+    followers:(document.getElementById('iadd-followers').value||'').trim(),
+    notes:(document.getElementById('iadd-notes').value||'').trim()
+  };
+  INFL_STAGING.push(rec);
+  _inflSave(LS_INFL_STAGING,INFL_STAGING);
+  _inflUpdateStagingCount();
+  inflCloseAdd();
+  ['iadd-name','iadd-ig','iadd-followers','iadd-notes'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  showDMToast('Added to Influencer staging ✓');
+  inflRender();
+}
+function inflPromote(num){
+  var idx=INFL_STAGING.findIndex(function(r){return r.num===num;});
+  if(idx===-1) return;
+  var rec=INFL_STAGING[idx];
+  INFL_BASE.push(rec);
+  INFL_STAGING.splice(idx,1);
+  _inflSave(LS_INFL_STAGING,INFL_STAGING);
+  _inflStagingApp.push(rec);
+  _inflSave(LS_INFL_STGAPP,_inflStagingApp);
+  _inflUpdateStagingCount();
+  showDMToast('Influencer promoted to main list ✓');
+  inflRender();
+}
+function inflRemoveStaging(num){
+  var idx=INFL_STAGING.findIndex(function(r){return r.num===num;});
+  if(idx===-1) return;
+  if(!confirm('Remove this influencer from staging?')) return;
+  INFL_STAGING.splice(idx,1);
+  _inflSave(LS_INFL_STAGING,INFL_STAGING);
+  _inflUpdateStagingCount();
+  inflRender();
+}
 
 // ══════════════════════════════════════════════
 // ANIMATED STAT COUNTER ROLL-UP
