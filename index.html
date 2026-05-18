@@ -442,13 +442,13 @@ body { background: #0b1826 !important; }
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
         <span id="fb-msg" style="color:#6FBCFF;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Ready</span>
+        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:transparent;border:none;color:rgba(255,255,255,0.45);font-size:13px;font-weight:900;padding:0 0 0 6px;cursor:pointer;flex-shrink:0;line-height:1;">✕</button>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;">
         <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
         <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
-<button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;width:30px;height:30px;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
     </div>
