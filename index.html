@@ -58,14 +58,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: max(52px, calc(env(safe-area-inset-top, 0px) + 10px)) 16px 12px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+.hdr { background: #1B2E4A; padding: max(14px, env(safe-area-inset-top, 14px)) 16px 10px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
 /* ── STATS BADGES ── */
 .stats { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px 14px; background: #1B2E4A; }
-.badge { padding: 8px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #fff; white-space: nowrap; cursor: pointer; opacity: 0.9; transition: opacity .15s, transform .1s; user-select: none; }
-.badge:hover { opacity: 1; transform: scale(1.04); }
+.badge { padding: 8px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #fff; white-space: nowrap; cursor: pointer; opacity: 0.9; transition: opacity .15s; user-select: none; }
+.badge:hover { opacity: 1; }
 .badge.active-badge { outline: 3px solid #fff !important; box-shadow: 0 0 0 3px rgba(255,255,255,0.5) !important; opacity: 1 !important; }
 .b-problem.active-badge { outline: 3px solid #fff !important; box-shadow: 0 0 0 3px rgba(255,255,255,0.55) !important; opacity: 1 !important; }
 .adv-fbtn { margin: 3px !important; }
@@ -342,9 +342,6 @@ body { background: #0b1826 !important; }
 .sc-thumb { background: linear-gradient(180deg, #1493FF, #0a6cc4); }
 .sc-pct { color: rgba(111,188,255,0.8); }
 
-/* ── Nav scroll strip — hide scrollbar ── */
-#fb-bar div::-webkit-scrollbar { display: none; }
-
 /* ── Search bar — dark theme ── */
 .search-wrap { background: #0b1826; padding: 8px 14px; }
 .search-wrap input {
@@ -463,19 +460,19 @@ body { background: #0b1826 !important; }
 
   <div class="hdr">
     <div id="fb-bar">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
-        <span id="fb-msg" style="color:#90CAF9;font-size:12px;font-weight:700;">Ready</span>
+        <span id="fb-msg" style="color:#6FBCFF;font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Ready</span>
       </div>
-      <div style="display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;">
-        <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">✅ To-Do</button>
-        <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🚀 Projects</button>
-        <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">💼 ADS</button>
-        <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🎟 Rewards</button>
-        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">⛳ Golf</button>
-        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">💎 Models</button>
-        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">📱 Influencers</button>
-        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🔒 Log Out</button>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;">
+        <button onclick="showTasksTab('todos')" id="tasks-tab-btn" style="background:#E65100;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">✅ To-Do</button>
+        <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
+        <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
+        <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
+        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">⛳ Golf</button>
+        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💎 Models</button>
+        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Influencers</button>
+        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
     </div>
