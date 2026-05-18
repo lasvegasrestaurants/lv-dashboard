@@ -58,7 +58,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 .pin-msg { color: #EF5350; font-size: 13px; font-weight: 700; margin-top: 20px; min-height: 20px; }
 
 /* ── HEADER ── */
-.hdr { background: #1B2E4A; padding: max(14px, env(safe-area-inset-top, 14px)) 16px 10px; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+.hdr { background: #1B2E4A; padding: 14px 16px 10px; padding-top: max(20px, env(safe-area-inset-top, 20px)); position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
 .hdr h1 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
 .sub { color: #90CAF9; font-size: 11px; margin-top: 4px; }
 
@@ -278,11 +278,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 }
 .pin-logo {
   color: #ffffff;
-  font-size: 17px;
+  font-size: 13px;
   font-weight: 900;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 4px;
+  text-align: center;
 }
 .pin-sub { color: rgba(111,188,255,0.65); font-size: 12px; margin-bottom: 34px; letter-spacing: .5px; }
 .pin-dot { border: 2px solid rgba(20,147,255,0.35); background: transparent; }
@@ -413,11 +414,11 @@ body { background: #0b1826 !important; }
     <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="url(#fdShineGrad)"/>
     <!-- Border highlight -->
     <path d="M36 3L5 14.5V40C5 58 18 70 36 80C54 70 67 58 67 40V14.5L36 3Z" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-    <!-- LV letters -->
-    <text x="36" y="54" text-anchor="middle" fill="#ffffff" font-size="26" font-weight="900" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" letter-spacing="2">LV</text>
+    <!-- CRM letters -->
+    <text x="36" y="55" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" letter-spacing="1">CRM</text>
   </svg>
 
-  <div class="pin-logo">LV&nbsp;&nbsp;DASHBOARD</div>
+  <div class="pin-logo">LAS VEGAS RESTAURANTS</div>
   <div class="pin-sub">Enter your PIN to continue</div>
 
   <div class="pin-dots">
@@ -748,7 +749,7 @@ body { background: #0b1826 !important; }
 <div class="modal-backdrop" id="pin-change-backdrop">
   <div class="modal">
     <h2>Change PIN</h2>
-    <p class="modal-sub">Enter your current PIN, then your new 4-digit PIN.</p>
+    <p class="modal-sub">Enter your current PIN, then your new 6-digit PIN.</p>
     <label>Current PIN</label>
     <input type="password" id="pin-change-current" placeholder="Current PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
     <label>New PIN</label>
@@ -18378,7 +18379,7 @@ advRender = function(){
 <div class="view" id="view-rewards" style="background:#0D1B2E;">
 
   <!-- Sticky header — safe-area aware, 2 rows -->
-  <div style="background:#1B2E4A;padding:max(52px, calc(env(safe-area-inset-top, 0px) + 12px)) 16px 12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+  <div style="background:#1B2E4A;padding:12px 16px 12px;padding-top:max(20px,env(safe-area-inset-top,20px));position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
 
     <!-- Row 1: back · title · sign-up · refresh · lock -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
@@ -18428,7 +18429,7 @@ advRender = function(){
      VEGAS MODELS VIEW
      ══════════════════════════════════════════════════════════ -->
 <div class="view" id="view-models" style="background:#f5f7fa;">
-  <div id="model-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(173,20,87,0.25);">
+  <div id="model-hdr" style="background:#0b1826;padding:0 16px 0;padding-top:max(20px,env(safe-area-inset-top,20px));position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(173,20,87,0.25);">
     <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;">
       <button onclick="closeModelsView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
       <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">💎 Vegas Models</span>
@@ -18498,7 +18499,7 @@ advRender = function(){
      VEGAS INFLUENCERS VIEW
      ══════════════════════════════════════════════════════════ -->
 <div class="view" id="view-influencers" style="background:#f5f7fa;">
-  <div id="infl-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(98,0,234,0.25);">
+  <div id="infl-hdr" style="background:#0b1826;padding:0 16px 0;padding-top:max(20px,env(safe-area-inset-top,20px));position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(98,0,234,0.25);">
     <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;">
       <button onclick="closeInflView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
       <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">📱 Vegas Influencers</span>
@@ -18571,7 +18572,7 @@ advRender = function(){
 <div class="view" id="view-golf" style="background:#f5f7fa;">
 
   <!-- Sticky header -->
-  <div id="golf-hdr" style="background:#0b1826;padding:max(52px,calc(env(safe-area-inset-top,0px)+10px)) 16px 0;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(20,147,255,0.15);">
+  <div id="golf-hdr" style="background:#0b1826;padding:0 16px 0;padding-top:max(20px,env(safe-area-inset-top,20px));position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(20,147,255,0.15);">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
       <button onclick="closeGolfView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
       <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">⛳ Golf Courses</span>
