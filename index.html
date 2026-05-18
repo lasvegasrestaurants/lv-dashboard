@@ -338,6 +338,11 @@ body { background: #0b1826 !important; }
 
 /* ── Stats bar background ── */
 .stats { border-bottom: 1px solid rgba(20,147,255,0.12); }
+/* ── Main content tabs ── */
+#main-tab-row::-webkit-scrollbar { display: none; }
+.main-tab { background: transparent; color: rgba(111,188,255,0.5); border: none; border-bottom: 3px solid transparent; padding: 10px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: color .15s, border-bottom-color .15s; }
+.main-tab.active { color: #1493FF; border-bottom-color: #1493FF; }
+.main-tab:active { opacity: .7; }
 .b-total { background: #1a3a6b; }
 
 /* ── Scroller ── */
@@ -443,10 +448,7 @@ body { background: #0b1826 !important; }
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
         <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
-        <button onclick="openGolfView()" id="golf-tab-btn" style="background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">⛳ Golf</button>
-        <button onclick="openModelsView()" id="models-tab-btn" style="background:linear-gradient(135deg,#AD1457,#880E4F);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💎 Models</button>
-        <button onclick="openInflView()" id="infl-tab-btn" style="background:linear-gradient(135deg,#6200EA,#4A148C);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Influencers</button>
-        <button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Out</button>
+<button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Out</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
     </div>
@@ -470,12 +472,23 @@ body { background: #0b1826 !important; }
 
   </div>
 
-  <!-- ── Restaurant Staging Bar ──────────────────────────────────── -->
-  <div id="rs-staging-bar" style="padding:4px 12px 8px;background:rgba(255,179,0,0.04);border-top:2px dashed #37474F;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-    <button onclick="rsShowStaging()" id="rs-stg-btn" style="background:#E65100;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">📋 Staging <span id="rs-stg-cnt" style="background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 7px;margin-left:4px;font-size:12px;">0</span></button>
-    <button onclick="rsShowMain()" id="rs-back-btn" style="display:none;background:#1565C0;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back to Outreach</button>
+  <!-- ── Main content tabs ──────────────────────────────────── -->
+  <div id="main-tab-row" style="display:flex;border-bottom:2px solid rgba(20,147,255,0.12);background:#0b1826;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+    <button id="mtab-outreach" class="main-tab active" onclick="switchMainTab('outreach')">🍽 Outreach</button>
+    <button id="mtab-staging" class="main-tab" onclick="switchMainTab('staging')">📋 Staging <span id="rs-stg-cnt" style="background:rgba(20,147,255,0.15);border-radius:4px;padding:1px 5px;margin-left:3px;font-size:11px;">0</span></button>
+    <button id="mtab-golf" class="main-tab" onclick="switchMainTab('golf')">⛳ Golf</button>
+    <button id="mtab-models" class="main-tab" onclick="switchMainTab('models')">💎 Models</button>
+    <button id="mtab-infl" class="main-tab" onclick="switchMainTab('infl')">📱 Influencers</button>
+  </div>
+  <!-- Hidden compat elements referenced by JS -->
+  <div id="rs-staging-bar" style="display:none;">
+    <button id="rs-stg-btn" style="display:none;"></button>
+    <button id="rs-back-btn" style="display:none;"></button>
+    <span id="rs-stg-title"></span>
+  </div>
+  <!-- Staging action row: dupes button, visible only in staging tab -->
+  <div id="rs-staging-extras" style="display:none;padding:6px 12px;background:rgba(255,179,0,0.04);border-bottom:1px solid rgba(255,179,0,0.12);">
     <button onclick="rsShowDupesModal()" id="rs-dupes-btn" style="background:#6A1B9A;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔍 Dupes <span id="rs-dupes-cnt" style="background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 7px;margin-left:4px;font-size:12px;">0</span></button>
-    <span id="rs-stg-title" style="display:none;color:#FFD600;font-size:13px;font-weight:700;"></span>
   </div>
   <div class="search-wrap" style="display:flex;gap:8px;align-items:center;">
     <input type="text" id="dash-search" placeholder="Search by restaurant name..." autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="none" style="flex:1;">
@@ -12127,17 +12140,29 @@ function _rsUnregisterStaging() {
   _rsStagingNums = Object.create(null);
 }
 
+function _setMainTab(tab) {
+  ['outreach','staging','golf','models','infl'].forEach(function(t){
+    var b = document.getElementById('mtab-'+t);
+    if (b) b.classList.toggle('active', t === tab);
+  });
+  var extras = document.getElementById('rs-staging-extras');
+  if (extras) extras.style.display = (tab === 'staging') ? '' : 'none';
+}
+
+function switchMainTab(tab) {
+  _setMainTab(tab);
+  if (tab === 'outreach')  rsShowMain();
+  else if (tab === 'staging') rsShowStaging();
+  else if (tab === 'golf')    openGolfView();
+  else if (tab === 'models')  openModelsView();
+  else if (tab === 'infl')    openInflView();
+}
+
 function rsShowStaging() {
   _rsRegisterStaging();
   _rsIsStaging = true;
-  // Update staging bar UI
-  var stgBtn  = document.getElementById('rs-stg-btn');
-  var backBtn = document.getElementById('rs-back-btn');
-  var title   = document.getElementById('rs-stg-title');
-  if (stgBtn)  stgBtn.style.display  = 'none';
-  if (backBtn) backBtn.style.display = '';
-  if (title)   { title.style.display = ''; title.textContent = '📋 Restaurant Staging — ' + RESTAURANTS_STAGING.length + ' pending'; }
-  // Hide stats + search bar, clear list state
+  _setMainTab('staging');
+  // Hide stats + search bar
   var statsEl = document.querySelector('#view-dashboard .stats');
   if (statsEl) statsEl.style.display = 'none';
   var srBar = document.getElementById('search-result-bar');
@@ -12148,13 +12173,7 @@ function rsShowStaging() {
 function rsShowMain() {
   _rsUnregisterStaging();
   _rsIsStaging = false;
-  // Restore staging bar UI
-  var stgBtn  = document.getElementById('rs-stg-btn');
-  var backBtn = document.getElementById('rs-back-btn');
-  var title   = document.getElementById('rs-stg-title');
-  if (stgBtn)  stgBtn.style.display  = '';
-  if (backBtn) backBtn.style.display = 'none';
-  if (title)   title.style.display   = 'none';
+  _setMainTab('outreach');
   // Restore stats bar
   var statsEl = document.querySelector('#view-dashboard .stats');
   if (statsEl) statsEl.style.display = '';
@@ -13579,7 +13598,7 @@ function _enterFriendMode() {
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   // Hide ALL staging UI — friends never see staging anywhere
-  ['rs-staging-bar','ads-staging-rows',
+  ['mtab-staging','ads-staging-rows',
    'model-staging-bar','model-stg-btn',
    'infl-staging-bar','infl-stg-btn'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
@@ -13819,7 +13838,7 @@ function logOut() {
     if (el) el.style.display = '';
   });
   // Restore ALL staging UI hidden during friend mode
-  ['rs-staging-bar','ads-staging-rows',
+  ['mtab-staging','ads-staging-rows',
    'model-staging-bar','model-stg-btn',
    'infl-staging-bar','infl-stg-btn'].forEach(function(id){
     var el = document.getElementById(id);
