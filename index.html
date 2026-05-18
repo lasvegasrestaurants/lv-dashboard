@@ -13605,15 +13605,12 @@ function _enterFriendMode() {
   ['gh-push-btn','friend-hide-backup','friend-hide-excel','restore-btn'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
-  // Hide staging bars — friends never see staging
-  var _rsStgBar = document.getElementById('rs-staging-bar');
-  if (_rsStgBar) _rsStgBar.style.display = 'none';
-  var _adsStgRows = document.getElementById('ads-staging-rows');
-  if (_adsStgRows) _adsStgRows.style.display = 'none';
-  var _mStgBar = document.getElementById('model-staging-bar');
-  if (_mStgBar) _mStgBar.style.display = 'none';
-  var _iStgBar = document.getElementById('infl-staging-bar');
-  if (_iStgBar) _iStgBar.style.display = 'none';
+  // Hide ALL staging UI — friends never see staging anywhere
+  ['rs-staging-bar','ads-staging-rows',
+   'model-staging-bar','model-stg-btn',
+   'infl-staging-bar','infl-stg-btn'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
   // Reset ads view type away from staging so friend never lands there
   advViewType = 'all';
   try { localStorage.removeItem('lv_adv_viewtype_v1'); } catch(e) {}
@@ -13848,8 +13845,10 @@ function logOut() {
     var el = document.getElementById(id);
     if (el) el.style.display = '';
   });
-  // Restore staging bars hidden during friend mode
-  ['rs-staging-bar','ads-staging-rows','model-staging-bar','infl-staging-bar'].forEach(function(id){
+  // Restore ALL staging UI hidden during friend mode
+  ['rs-staging-bar','ads-staging-rows',
+   'model-staging-bar','model-stg-btn',
+   'infl-staging-bar','infl-stg-btn'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.style.display = '';
   });
