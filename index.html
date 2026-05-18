@@ -685,6 +685,7 @@ body { background: #0b1826 !important; }
     <input type="text" id="ar-address" placeholder="e.g. 123 Main St, Las Vegas, NV">
     <label>Notes</label>
     <textarea id="ar-notes" placeholder="Optional notes" maxlength="1000" style="height:100px;"></textarea>
+    <div id="ar-dupe-msg" style="display:none;color:#EF5350;font-size:13px;font-weight:700;margin-bottom:8px;padding:8px 12px;background:rgba(239,83,80,0.1);border-radius:8px;"></div>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeAddRecord()">Cancel</button>
       <button class="btn btn-save" onclick="saveNewRecord()">Add Restaurant</button>
@@ -12005,6 +12006,52 @@ function saveNewRecord() {
     setTimeout(function(){ nameEl.style.borderColor=''; nameEl.placeholder='e.g. Joe\'s Seafood'; }, 2000);
     return;
   }
+  // ── Dupe guard: IG handle ──────────────────────────────
+  var _arIG = document.getElementById('ar-instagram').value.trim().replace(/^@/,'').toLowerCase();
+  var _arDupeMsg = document.getElementById('ar-dupe-msg');
+  function _arShowErr(msg) {
+    if (_arDupeMsg) { _arDupeMsg.textContent = msg; _arDupeMsg.style.display = ''; }
+    setTimeout(function(){ if(_arDupeMsg) _arDupeMsg.style.display='none'; }, 4000);
+  }
+  if (_arIG) {
+    var _igMatch = null;
+    for (var _i=0; _i<RESTAURANTS.length; _i++) {
+      var _rr = RESTAURANTS[_i];
+      if (deletedMap[_rr.num]) continue;
+      if ((_rr.igHandle||_rr.instagram||'').replace(/^@/,'').toLowerCase() === _arIG) { _igMatch = _rr; break; }
+    }
+    if (!_igMatch) {
+      for (var _j=0; _j<RESTAURANTS_STAGING.length; _j++) {
+        var _rs = RESTAURANTS_STAGING[_j];
+        if ((_rs.ig||_rs.instagram||'').replace(/^@/,'').toLowerCase() === _arIG) { _igMatch = _rs; break; }
+      }
+    }
+    if (_igMatch) {
+      document.getElementById('ar-instagram').style.borderColor = '#EF5350';
+      _arShowErr('⚠️ Instagram @' + _arIG + ' already exists — ' + _igMatch.name);
+      setTimeout(function(){ document.getElementById('ar-instagram').style.borderColor=''; }, 4000);
+      return;
+    }
+  }
+  // ── Dupe guard: normalized name ────────────────────────
+  var _arNorm = _rsNormName(name);
+  if (_arNorm) {
+    var _nameMatch = null;
+    for (var _k=0; _k<RESTAURANTS.length; _k++) {
+      if (!deletedMap[RESTAURANTS[_k].num] && _rsNormName(RESTAURANTS[_k].name) === _arNorm) { _nameMatch = RESTAURANTS[_k]; break; }
+    }
+    if (!_nameMatch) {
+      for (var _l=0; _l<RESTAURANTS_STAGING.length; _l++) {
+        if (_rsNormName(RESTAURANTS_STAGING[_l].name) === _arNorm) { _nameMatch = RESTAURANTS_STAGING[_l]; break; }
+      }
+    }
+    if (_nameMatch) {
+      nameEl.style.borderColor = '#EF5350';
+      _arShowErr('⚠️ "' + _nameMatch.name + '" already exists (#' + _nameMatch.num + ')');
+      setTimeout(function(){ nameEl.style.borderColor=''; }, 4000);
+      return;
+    }
+  }
   // Use cached max num (updated when records added)
   var newNum = _getNextNum();
   var emailVal = document.getElementById('ar-email').value.trim().toLowerCase();
@@ -16596,12 +16643,15 @@ function rsDeleteAllDupes() {
     var sKey = _rsNormName(s.name);
     if (sKey && baseMap[sKey]) {
       _rsRm[s.num] = 1;
-      fetch(FB_URL.replace('.json','') + '/rsremoved/' + s.num + '.json', {
+      // Always write to owner Firebase so deletion sticks across all modes/devices
+      fetch(_OWNER_FB_BASE + '/rsremoved/' + s.num + '.json', {
         method: 'PUT', headers: {'Content-Type':'application/json'}, body: '1'
       }).catch(function(){});
     }
   });
+  // Save to both mode key and owner key
   try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+  try { localStorage.setItem('lv_rs_removed_v1', JSON.stringify(_rsRm)); } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r) { return !_rsRm[r.num]; });
   var cntEl = document.getElementById('rs-dupes-cnt');
   if (cntEl) cntEl.textContent = '0';
@@ -16610,15 +16660,17 @@ function rsDeleteAllDupes() {
   rsShowDupesModal();
 }
 
+var _OWNER_FB_BASE = 'https://lvr-data-a60c1-default-rtdb.firebaseio.com/dashboard';
 function rsDupesDelete(num) {
   // Remove from staging removed map → persists to localStorage + Firebase
   var _rsRm = {}; try { _rsRm = JSON.parse(localStorage.getItem(LS_RS_REMOVED)) || {}; } catch(e) {}
   _rsRm[num] = 1;
+  // Always save to BOTH mode key AND owner key so it sticks regardless of who deleted it
   try { localStorage.setItem(LS_RS_REMOVED, JSON.stringify(_rsRm)); } catch(e) {}
+  try { localStorage.setItem('lv_rs_removed_v1', JSON.stringify(_rsRm)); } catch(e) {}
   RESTAURANTS_STAGING = RESTAURANTS_STAGING.filter(function(r){ return r.num !== num; });
-  // Persist to Firebase so it sticks across devices
-  var _rsPayload = {}; _rsPayload[num] = 1;
-  fetch(FB_URL.replace('.json','') + '/rsremoved/' + num + '.json', {
+  // Always write to the OWNER's Firebase path so it persists across all modes/devices
+  fetch(_OWNER_FB_BASE + '/rsremoved/' + num + '.json', {
     method:'PUT', headers:{'Content-Type':'application/json'}, body:'1'
   }).catch(function(){});
   // Update count badge
