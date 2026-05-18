@@ -448,7 +448,7 @@ body { background: #0b1826 !important; }
         <button onclick="showTasksTab('projects')" id="projects-tab-btn" style="background:#1565C0;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🚀 Projects</button>
         <button onclick="showLawyersView()" ontouchend="event.preventDefault();showLawyersView();" id="advertisers-tab-btn" style="background:#00838F;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💼 ADS</button>
         <button onclick="openRewardsCRM()" id="rewards-tab-btn" style="background:#1348C8;color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🎟 Rewards</button>
-<button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Out</button>
+<button id="logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:7px;width:30px;height:30px;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
         <input type="file" id="import-file-input" accept=".json,application/json,text/plain,*/*" onchange="importBackup(event)" style="display:none;">
       </div>
     </div>
@@ -518,7 +518,7 @@ body { background: #0b1826 !important; }
       <div id="crm-dot" style="width:8px;height:8px;border-radius:50%;background:#F57F17;flex-shrink:0;"></div>
       <span id="crm-title" style="color:#fff;font-size:16px;font-weight:800;flex:1;">Customer CRM Demo</span>
       <button id="crm-back-btn" onclick="closeRewardsCRM()" style="display:none;background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;margin-right:6px;">← Dashboard</button>
-      <button id="crm-logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">🔒 Log Out</button>
+      <button id="crm-logout-btn" onclick="logOut()" ontouchstart="_logoutTouchStart()" ontouchend="_logoutTouchEnd()" onmousedown="_logoutTouchStart()" onmouseup="_logoutTouchEnd()" onmouseleave="_logoutTouchEnd()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">✕</button>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
       <button onclick="crmExportBackup()" style="background:#6A1B9A;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Backup</button>
@@ -15550,7 +15550,7 @@ window.addEventListener('load',function(){
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button onclick="showDashTab()" style="background:#1565C0;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">← Back</button>
       <span id="tasks-view-title" style="font-size:15px;font-weight:800;color:#111;flex:1;">✅ To-Do</span>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">🔒</button>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;">✕</button>
     </div>
   </div>
   <div class="tasks-nav" style="display:none;">
@@ -18442,7 +18442,7 @@ advRender = function(){
       <span style="color:#FFD600;font-size:16px;font-weight:800;flex:1;letter-spacing:0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🎟 LVR Rewards</span>
       <button onclick="window.open('https://lvr-data-a60c1.web.app/lvr-rewards.html','_blank')" style="background:#FFD600;color:#071A47;border:none;border-radius:9px;padding:9px 13px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;">📋 Sign-Up</button>
       <button onclick="_rewardsRefresh()" title="Refresh" style="background:rgba(255,255,255,0.08);color:#fff;border:none;border-radius:9px;padding:9px 11px;font-size:15px;cursor:pointer;flex-shrink:0;">🔄</button>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:9px;padding:9px 11px;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0;" title="Log Out">🔒</button>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:9px;padding:9px 11px;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0;" title="Log Out">✕</button>
     </div>
 
     <!-- Row 2: search · count -->
@@ -18634,7 +18634,7 @@ advRender = function(){
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
       <button onclick="closeGolfView()" style="background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;">← Back</button>
       <span style="color:#fff;font-size:17px;font-weight:900;flex:1;letter-spacing:.3px;">⛳ Golf Courses</span>
-      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">🔒</button>
+      <button onclick="logOut()" style="background:#C62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">✕</button>
     </div>
     <!-- Stat badges -->
     <div id="golf-stats" style="display:flex;flex-wrap:wrap;gap:6px;padding-bottom:10px;">
